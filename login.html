@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OAuth 2.0 Login</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .container { text-align: center; }
+    button { padding: 10px 20px; font-size: 16px; background-color: #4285F4; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #357ae8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sign in with Google</h1>
+    <button onclick="loginWithGoogle()">Login with Google</button>
+  </div>
+
+  <script>
+    function loginWithGoogle() {
+      const clientId = 'YOUR_GOOGLE_CLIENT_ID';  // Google OAuth 클라이언트 ID
+      const redirectUri = 'YOUR_REDIRECT_URI';   // 인증 후 리디렉션할 URI
+
+      const authUrl = `https://accounts.google.com/o/oauth2/auth?` +
+                      `client_id=${clientId}&` +
+                      `redirect_uri=${redirectUri}&` +
+                      `response_type=code&` +
+                      `scope=openid%20profile%20email`;
+
+      // OAuth 인증 페이지로 리디렉션
+      window.location.href = authUrl;
+    }
+  </script>
+</body>
+</html>
