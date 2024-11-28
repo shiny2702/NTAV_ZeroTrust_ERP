@@ -11,13 +11,17 @@ class App extends Component {
     const token = response.credential;  // Google OAuth 토큰
 
     // 일단 백엔드와의 요청을 주석처리하고, 직접 user 객체를 만들어 전달
-    const user = { name: 'NTAV' };  // 구글 로그인 후 받은 이름으로 대체
+    const user = { name: 'NTAV',
+                   email: "ntav1234@gmail.com",
+                   role: "user",
+                   dept: "CyberSecurity",
+                   projects: ["project1", "project2", "project3", "project4"]
+     };  // 구글 로그인 후 받은 이름으로 대체
     
     // 페이지 리디렉션 및 사용자 데이터 전달
     this.props.navigate('/main', { state: { user: user } });
   };
   
-
 
 // handleLoginSuccess = (response) => {
 //   console.log('로그인 성공:', response);
@@ -49,8 +53,6 @@ class App extends Component {
 //    });
 // };
 
-
-
   // 로그인 실패 처리 (아예 구글 인증조차 되지 않은 상태)
   handleLoginFailure = (error) => {
     console.log('구글 로그인 실패:', error);
@@ -65,12 +67,13 @@ class App extends Component {
         <div className="login-container">
           <div className="logo">NTAV</div>
           <div className="login-form">
-            <h2>로그인</h2>
-            <input type="text" placeholder="아이디" />
-            <input type="password" placeholder="비밀번호" />
+            <h2>LOGIN
+            </h2>
+            <input type="text" placeholder="ID" />
+            <input type="password" placeholder="password" />
             <div className="line" />
-            <button className="login-button">로그인</button>
-            <button className="signup-button">회원가입</button>
+            <button className="login-button">Login</button>
+            <button className="signup-button">Sign-up</button>
             <div className="google-login">
               <GoogleLogin
                 onSuccess={this.handleLoginSuccess}

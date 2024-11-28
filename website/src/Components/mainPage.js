@@ -36,6 +36,15 @@ class MainPage extends Component {
     const { user } = this.props.location.state || {};  // 기본값 처리
     console.log("받은 사용자 데이터:", user);
 
+    const lineStyle = {
+      border: "none",
+      borderTop: "1px solid #ccc",
+      marginTop: "30px", // 위쪽 간격
+      marginBottom: "30px", // 아래쪽 간격
+      width: "98%", // 줄의 가로 길이
+      marginLeft: "0", // 왼쪽 정렬
+    };
+
     return (
       <div className="mainPage">
         <div className="header">
@@ -50,7 +59,7 @@ class MainPage extends Component {
             </ul>
           </nav>
           <button className="logoutButton" onClick={this.handleLogoutClick}>
-            로그아웃
+            Logout
           </button>
         </div>
 
@@ -66,8 +75,62 @@ class MainPage extends Component {
         )}
 
         <div className="mainContent">
-          <h1>"메인 페이지"</h1>
-          <p>{user && user.name ? `${user.name}님 전용 페이지입니다.` : "user님 전용 페이지입니다."}</p>
+          <div className="profileCard">
+            <div className="profileImage"></div> {/* 프로필 이미지 자리 */}
+            <h3>{user ? user.name : "사용자 이름"}</h3>
+            <p>{user ? `E-mail :: ${user.email}` : "이메일 주소"}</p>
+            <p>{user ? `Dept :: ${user.dept}` : "부서 정보"}</p>
+            <p>{user ? `Role :: ${user.role}` : "직급"}</p>
+          </div> 
+
+          <div className="dashboard">
+            <h3>{user ? `${user.name}'s Dashboard` : "사용자 대시보드"}</h3>
+            <hr style={lineStyle} /> {/* h1 아래 줄 추가 */}
+            <table className="projectTable">
+              <thead>
+                <tr>
+                  <th>Number</th>
+                  <th>Project Name</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {user && user.projects && user.projects.length > 0 ? (
+                  user.projects.map((project, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td> {/* Number 열 */}
+                      <td>
+                        <a
+                          className="projectLink"
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault(); // 링크 기본 동작 방지
+                            this.handleProjectClick(project); // 기존 기능 유지
+                          }}
+                        >
+                          {project} {/* Project Name 열 */}
+                        </a>
+                      </td>
+                      <td></td> {/* Description 열 */}
+                      <td></td> {/* Team Members 열 */}
+                      <td></td> {/* Start Date 열 */}
+                      <td></td> {/* End Date 열 */}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6">No ongoing projects available.</td> {/* 빈 테이블 메시지 */}
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+          </div>
+
+
         </div>
       </div>
     );

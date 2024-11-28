@@ -58,7 +58,7 @@ class AdminPage extends Component {
             </ul>
           </nav>
           <button className="logoutButton" onClick={this.handleLogoutClick}>
-            로그아웃
+            Logout
           </button>
         </div>
 
@@ -73,9 +73,14 @@ class AdminPage extends Component {
           </div>
         )}
 
-        <div className="adminContent">
-          <h1>"관리자 페이지"</h1>
-          <p>{user && user.name ? `${user.name}님 전용 페이지입니다.` : "user님 전용 페이지입니다."}</p>
+        <div className="adminContent">        
+            <div className="profileCard">
+              <div className="profileImage"></div> {/* 프로필 이미지 자리 */}
+              <h3>{user ? user.name : "사용자 이름"}</h3>
+              <p>{user ? `E-mail :: ${user.email}` : "이메일 주소"}</p>
+              <p>{user ? `Dept :: ${user.dept}` : "부서 정보"}</p>
+              <p>{user ? `Role :: ${user.role}` : "직급"}</p>
+            </div>           
         </div>
       </div>
     );

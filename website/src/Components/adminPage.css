@@ -130,9 +130,50 @@
     pointer-events: auto; /* 요소 클릭 가능 */
 }
 
+/* 추가: 프로필 카드 스타일 */
+.profileCard {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 250px; /* 프로필 카드 너비 */
+    margin-top: 20px;
+}
+
+.profileCard h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+    text-align: center;
+}
+
+.profileCard p {
+    font-size: 1rem;
+    color: #666;
+    text-align: left;
+}
+
+.profileCard .profileImage {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto;
+    background-color: #ddd;
+    margin-bottom: 10px;
+}
+
+/* 레이아웃 구성 */
+.adminContent {
+    display: flex; /* 수평 정렬 */
+    justify-content: space-between; /* 콘텐츠 사이에 여백 */
+    align-items: flex-start; /* 상단 정렬 */
+    padding: 20px; /* 외부 여백 */
+}
+  
+
 
 /* 미디어 쿼리: 화면 크기가 1440px 이하일 때 (데스크탑에서 윈도우 크기 축소) */
-@media (max-width: 1440px) {
+@media (max-width: 1240px) {
     .header {
         padding: 15px;
     }
@@ -148,6 +189,10 @@
     .logoutButton {
         margin-left: 1;
         font-size: 0.7rem;
+    }
+    .mainContent {
+        flex-direction: column; /* 세로로 배치 */
+        align-items: center; /* 가운데 정렬 */
     }
 }
 
@@ -176,6 +221,10 @@
     .logoutButton {
         margin-left: 0;
         font-size: 1rem;
+    }
+
+    .profileCard {
+        width: 200px; /* 작은 화면에서는 프로필 카드 너비 줄이기 */
     }
 }
 
