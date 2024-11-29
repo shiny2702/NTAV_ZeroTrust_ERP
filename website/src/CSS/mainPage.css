@@ -13,7 +13,7 @@
 }
 
 .logo {
-    font-size: calc(1rem + 2vw);  /* 로고 크기 (반응형으로 설정하되 최대 크기 제한) */
+    font-size: calc(1rem + 2vw);  
     font-weight: bold;
     cursor: pointer;
     margin-top: 20px;
@@ -29,7 +29,7 @@
 
 .menu li {
     cursor: pointer;
-    font-size: calc(0.3rem + 1vw);  /* 메뉴 글씨 크기 (반응형으로 설정하되 최대 크기 제한) */
+    font-size: calc(0.3rem + 1vw);  
     color: white;
     white-space: nowrap;
 }
@@ -40,7 +40,7 @@
     border: none;
     padding: 10px 20px;
     cursor: pointer;
-    font-size: calc(0.1rem + 0.8vw);  /* 로그아웃 버튼 폰트 크기 */
+    font-size: calc(0.1rem + 0.8vw);  
     margin-left: 3vw;
     margin-right: 1vw;
 }
@@ -91,13 +91,12 @@
     opacity: 0.8;
 }
 
-/* 추가: 프로필 카드 스타일 */
 .profileCard {
     background-color: #f0f0f0;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 250px; /* 프로필 카드 너비 */
+    width: 250px; 
     margin-top: 20px;
 }
 
@@ -108,7 +107,7 @@
     text-align: center;
 }
 
-.profileCard p {
+.profileDetails p {
     font-size: 1rem;
     color: #666;
     text-align: left;
@@ -123,27 +122,27 @@
     margin-bottom: 10px;
 }
 
-/* 대시보드 스타일 */
+/* 대시보드 */
 .dashboard {
-    flex-grow: 1; /* 유동적으로 크기 조절 */
+    flex-grow: 1; 
     margin-left: 20px; /* 프로필 카드와의 간격 */
     margin-top: 20px;
     padding: 20px; /* 내부 여백 */
-    background-color: #f9f9f9; /* 배경색 */
-    border: 1px solid #ddd; /* 경계선 */
-    border-radius: 10px; /* 둥근 모서리 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .dashboard h3 {
-    font-size: 2rem; /* 제목 크기 */
-    color: #333; /* 제목 색상 */
+    font-size: 2rem; 
+    color: #333; 
     margin-top: 20px;
-    margin-bottom: 0; /* 제목 아래 여백 */
-    text-align: left; /* 제목 가운데 정렬 */
+    margin-bottom: 0; 
+    text-align: left; 
 }
 
-/* 프로젝트 테이블 스타일 */
+/* 프로젝트 테이블 */
 .projectTable {
     width: 100%;
     border-collapse: collapse;
@@ -182,7 +181,6 @@
     background-color: #f1f1f1;
   }
   
-  /* 빈 테이블 메시지 스타일 */
   .projectTable tbody tr td[colspan="6"] {
     text-align: center;
     color: #666;
@@ -198,13 +196,12 @@
 }
   
 
-/* 미디어 쿼리: 화면 크기가 1440px 이하일 때 (데스크탑에서 윈도우 크기 축소) */
 @media (max-width: 1024px) {
     .header {
         padding: 20px;
     }
     .logo {
-        font-size: calc(1.5rem + 1vw);  /* 로고 크기 조정 */
+        font-size: calc(1.5rem + 1vw); 
     }
     .menu ul {
         gap: 2vw;
@@ -225,7 +222,6 @@
 }
 
 
-/* 미디어 쿼리: 화면 크기가 768px 이하일 때 */
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
@@ -233,7 +229,7 @@
     }
 
     .logo {
-        font-size: 3rem;  /* 로고 크기 줄이기 */
+        font-size: 3rem;  
         margin-left: 0;
     }
 
@@ -253,19 +249,18 @@
     }
 
     .profileCard {
-        width: 200px; /* 작은 화면에서는 프로필 카드 너비 줄이기 */
+        width: 200px; 
     }
 
     .dashboard h3 {
-        font-size: 1.3rem; /* 제목 크기 축소 */
+        font-size: 1.3rem; 
     }
 
     .dashboard li {
-        font-size: 0.9rem; /* 텍스트 크기 축소 */
+        font-size: 0.9rem; 
     }
 }
 
-/* 미디어 쿼리: 화면 크기가 480px 이하일 때 */
 @media (max-width: 480px) {
     .logo {
         font-size: 2rem;
@@ -280,10 +275,10 @@
     }
 
     .dashboard h3 {
-        font-size: 1rem; /* 제목 크기 더 축소 */
+        font-size: 1rem; 
     }
 
     .dashboard li {
-        font-size: 0.8rem; /* 텍스트 크기 더 축소 */
+        font-size: 0.8rem; 
     }
 }

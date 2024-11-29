@@ -1,30 +1,25 @@
 import React, { Component } from "react";
-import withRouter from "../withRouter";  // withRouter HOC 가져오기
-import './mainPage.css';  // 스타일 파일
+import withRouter from "../hocs/withRouter";  // withRouter HOC 가져오기
+import '../CSS/mainPage.css';  // 스타일 파일
 
 class MainPage extends Component {
-  // 로그아웃 모달 상태 관리
   state = {
     showLogoutModal: false,  // 로그아웃 모달을 표시할지 여부
   };
 
-  // 로그아웃 버튼 클릭 시 모달을 표시
   handleLogoutClick = () => {
     this.setState({ showLogoutModal: true });
   };
 
   // 로그아웃 확인 후 동작
   handleLogoutConfirmation = (confirm) => {
-    if (confirm) {
-      // YES 클릭 시 로그인 페이지로 리디렉션
-      this.props.navigate('/'); // navigate를 사용하여 로그인 페이지로 리디렉션
-    } else {
-      // NO 클릭 시 모달을 닫음
+    if (confirm) { // YES 클릭 시 로그인 페이지로 리디렉션
+      this.props.navigate('/'); 
+    } else { // NO 클릭 시 모달을 닫음
       this.setState({ showLogoutModal: false });
     }
   };
 
-  // 로고 클릭 시 /main 페이지로 리디렉션
   handleLogoClick = () => {
     this.props.navigate('/main');
   };
@@ -39,10 +34,10 @@ class MainPage extends Component {
     const lineStyle = {
       border: "none",
       borderTop: "1px solid #ccc",
-      marginTop: "30px", // 위쪽 간격
-      marginBottom: "30px", // 아래쪽 간격
-      width: "98%", // 줄의 가로 길이
-      marginLeft: "0", // 왼쪽 정렬
+      marginTop: "30px", 
+      marginBottom: "30px", 
+      width: "98%", 
+      marginLeft: "0", 
     };
 
     return (
@@ -63,7 +58,6 @@ class MainPage extends Component {
           </button>
         </div>
 
-        {/* 로그아웃 확인 모달 */}
         {showLogoutModal && (
           <div className="logoutModal">
             <div className="modalContent">
@@ -78,14 +72,16 @@ class MainPage extends Component {
           <div className="profileCard">
             <div className="profileImage"></div> {/* 프로필 이미지 자리 */}
             <h3>{user ? user.name : "사용자 이름"}</h3>
-            <p>{user ? `E-mail :: ${user.email}` : "이메일 주소"}</p>
-            <p>{user ? `Dept :: ${user.dept}` : "부서 정보"}</p>
-            <p>{user ? `Role :: ${user.role}` : "직급"}</p>
+            <div className="profileDetails">
+              <p>{user ? `E-mail :: ${user.email}` : "E-mail :: 이메일 주소"}</p>
+              <p>{user ? `Dept :: ${user.dept}` : "Dept :: 부서 정보"}</p>
+              <p>{user ? `Role :: ${user.role}` : "Role :: 직급"}</p>
+            </div>
           </div> 
 
           <div className="dashboard">
             <h3>{user ? `${user.name}'s Dashboard` : "사용자 대시보드"}</h3>
-            <hr style={lineStyle} /> {/* h1 아래 줄 추가 */}
+            <hr style={lineStyle} /> 
             <table className="projectTable">
               <thead>
                 <tr>

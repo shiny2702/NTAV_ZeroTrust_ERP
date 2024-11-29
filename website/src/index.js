@@ -5,9 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GoogleOAuthProvider } from '@react-oauth/google'; 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MainPage from './Components/mainPage';
-import AdminPage from './Components/adminPage';
-import NoPermPage from './Components/noPermPage';
+import MainPage from './pageComponents/mainPage';
+import AdminPage from './pageComponents/adminPage'
+import NoPermPage from './pageComponents/noPermPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,9 +15,9 @@ root.render(
     <GoogleOAuthProvider clientId="105774342869-f21hqi363lkuo4m7ec9cc6fisgc1vpfu.apps.googleusercontent.com">  {/* 구글 클라이언트 ID */}
       <Router>
         <Routes>
-          <Route path="/" element={<App />} />          {/* 로그인 페이지 */}
-          <Route path="/main" element={<MainPage />} /> {/* 메인 페이지 */}
-          <Route path="/admin" element={<AdminPage />} /> {/* 관리자 페이지 */}
+          <Route path="/" element={<App />} />              {/* 로그인 페이지 */}
+          <Route path="/main" element={<MainPage />} />     {/* 메인 페이지 */}
+          <Route path="/admin" element={<AdminPage />} />   {/* 관리자 페이지 */}
           <Route path="/noPerm" element={<NoPermPage />} /> {/* 권한 없음 페이지 */}
         </Routes>
       </Router>

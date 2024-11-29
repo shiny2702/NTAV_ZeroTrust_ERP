@@ -6,6 +6,7 @@ function withRouter(Component) {
   return function(props) {
     const location = useLocation();
     const navigate = useNavigate();
+    
     return <Component {...props} location={location} navigate={navigate} />;
   };
 }

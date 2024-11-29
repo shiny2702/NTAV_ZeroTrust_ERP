@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import withRouter from './withRouter';  // withRouter HOC 사용
+import withRouter from './hocs/withRouter'; 
 import axios from 'axios';
 import './App.css';
 
@@ -16,7 +16,7 @@ class App extends Component {
                    role: "user",
                    dept: "CyberSecurity",
                    projects: ["project1", "project2", "project3", "project4"]
-     };  // 구글 로그인 후 받은 이름으로 대체
+     }; 
     
     // 페이지 리디렉션 및 사용자 데이터 전달
     this.props.navigate('/main', { state: { user: user } });
@@ -34,15 +34,13 @@ class App extends Component {
 //      const user = res.data.user;
 //      console.log('서버 응답:', res.data);
      
-//      // 사용자 권한에 맞는 페이지로  (db 응답 데이터와 함께 ; 얼마나 보낼건지 범위 지정 가능)
+//      // 사용자 권한에 맞는 페이지로  
+//      // (db 응답 데이터와 함께 ; 얼마나 어떤 형식으로 보낼건지 서버측에서 범위 지정 가능)
 //      if (user.role === 'admin') {
-//        // 관리자인 경우 /admin 페이지로 리디렉션
 //        this.props.navigate('/admin', { state: { user: user } });
 //      } else if (user.role === 'user') {
-//        // 일반 사용자일 경우 /main 페이지로 리디렉션
 //        this.props.navigate('/main', { state: { user: user } });
-//      } else {
-//        // 권한이 없는 사용자 (user: null로 반환되도록 함,, --> 서버측에서 명시적 처리 필요)는 /noPermPage로 리디렉션
+//      } else { // 권한이 없는 사용자 (user: null로 반환되도록 함,, --> 서버측에서 명시적 처리 필요)는 /noPermPage로 리디렉션
 //        this.props.navigate('/noPermPage');
 //      }
 //    })
@@ -67,8 +65,7 @@ class App extends Component {
         <div className="login-container">
           <div className="logo">NTAV</div>
           <div className="login-form">
-            <h2>LOGIN
-            </h2>
+            <h2>LOGIN</h2>
             <input type="text" placeholder="ID" />
             <input type="password" placeholder="password" />
             <div className="line" />

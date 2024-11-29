@@ -1,4 +1,3 @@
-/* MainPage 스타일 */
 .adminPage {
     font-family: Arial, sans-serif;
 }
@@ -13,7 +12,7 @@
 }
 
 .logo {
-    font-size: calc(1rem + 2vw);  /* 로고 크기 (반응형으로 설정하되 최대 크기 제한) */
+    font-size: calc(1rem + 2vw); 
     font-weight: bold;
     cursor: pointer;
     margin-top: 20px;
@@ -29,10 +28,10 @@
 
 .menu li {
     cursor: pointer;
-    font-size: calc(0.3rem + 1vw);  /* 메뉴 글씨 크기 (반응형으로 설정하되 최대 크기 제한) */
+    font-size: calc(0.3rem + 1vw);  
     color: white;
     white-space: nowrap;
-    padding: 15px 20px;  /* 여백(위 아래) 크기만 키워서 클릭 영역을 확대 */
+    padding: 15px 20px;
 }
 
 .logoutButton {
@@ -41,7 +40,7 @@
     border: none;
     padding: 10px 20px;
     cursor: pointer;
-    font-size: calc(0.1rem + 0.8vw);  /* 로그아웃 버튼 폰트 크기 */
+    font-size: calc(0.1rem + 0.8vw); 
     margin-left: 3vw;
     margin-right: 1vw;
 }
@@ -92,25 +91,23 @@
     opacity: 0.8;
 }
 
-/* 드롭다운 메뉴 */
 .dropdown {
-    position: relative; /* 부모를 기준으로 하위 메뉴 배치 */
+    position: relative; 
     cursor: pointer;
 }
 
-/* 하위 메뉴 */
 .dropdown-menu {
-    display: none !important;/* 기본적으로 숨김 */
-    position: absolute; /* 부모 요소 기준 배치 */
+    display: none !important; /* 기본적으로 숨김 */
+    position: absolute;
     top: 100%; /* 부모 요소 아래에 표시 */
     left: 0;
-    background-color: #76a8de; /* 드롭다운 배경색 */
+    background-color: #76a8de; 
     color: white;
     list-style-type: none;
     padding: 0;
     margin: 0;
-    border-radius: 4px; /* 모서리 둥글게 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    border-radius: 4px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     z-index: 100; /* 다른 요소 위에 표시 */
 }
 
@@ -122,7 +119,7 @@
 }
 
 .dropdown-menu li:hover {
-    background-color: #0056b3; /* 하이라이트 효과 */
+    background-color: #0056b3; 
 }
 
 .dropdown:hover .dropdown-menu {
@@ -130,13 +127,12 @@
     pointer-events: auto; /* 요소 클릭 가능 */
 }
 
-/* 추가: 프로필 카드 스타일 */
 .profileCard {
     background-color: #f0f0f0;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 250px; /* 프로필 카드 너비 */
+    width: 250px; 
     margin-top: 20px;
 }
 
@@ -171,14 +167,12 @@
 }
   
 
-
-/* 미디어 쿼리: 화면 크기가 1440px 이하일 때 (데스크탑에서 윈도우 크기 축소) */
 @media (max-width: 1240px) {
     .header {
         padding: 15px;
     }
     .logo {
-        font-size: calc(1.5rem + 1vw);  /* 로고 크기 조정 */
+        font-size: calc(1.5rem + 1vw);  
     }
     .menu ul {
         gap: 2.2vw;
@@ -197,7 +191,6 @@
 }
 
 
-/* 미디어 쿼리: 화면 크기가 768px 이하일 때 */
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
@@ -205,7 +198,7 @@
     }
 
     .logo {
-        font-size: 2.5rem;  /* 로고 크기 줄이기 */
+        font-size: 5rem;  
         margin-left: 0;
     }
 
@@ -224,11 +217,10 @@
     }
 
     .profileCard {
-        width: 200px; /* 작은 화면에서는 프로필 카드 너비 줄이기 */
+        width: 200px; 
     }
 }
 
-/* 미디어 쿼리: 화면 크기가 480px 이하일 때 (스마트폰) */
 @media (max-width: 480px) {
     .logo {
         font-size: 2rem;
