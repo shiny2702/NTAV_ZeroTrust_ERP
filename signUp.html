@@ -1,0 +1,41 @@
+<div>
+    <label for="email">이메일</label>
+    <!-- 이메일 입력 필드, 기본값은 서버에서 받은 email로 설정하고, 읽기 전용 설정 -->
+    <input type="text" id="email" class="form-control">
+    <p id="error-email" style="color: red"></p>
+</div>
+
+<div>
+    <!-- socialId는 서버에서 받은 값을 hidden input으로 설정 -->
+    <input type="text" id="socialId" class="form-control" hidden>
+</div>
+
+<script>
+// 서버에서 전달받은 값을 변수로 설정 (예시)
+const email = 'user@example.com';  // 예시로 이메일을 서버에서 받아옴
+const socialId = 'google-social-id-123';  // 예시로 소셜 ID를 서버에서 받아옴
+
+// 이메일 입력 필드 초기화
+const emailInput = document.getElementById('email');
+const socialIdInput = document.getElementById('socialId');
+
+// 이메일이 전달되었을 때 처리
+if (email) {
+    emailInput.value = email;
+    emailInput.readOnly = true;  // 이메일이 있을 경우 readonly 처리
+} else {
+    emailInput.readOnly = false;  // 이메일이 없으면 입력 가능
+}
+
+// 소셜 타입과 소셜 ID 설정 (hidden 필드)
+socialIdInput.value = socialId;
+
+// 추가적인 로직을 넣어서 이메일 검증이나 오류 처리 가능
+// 예를 들어, 이메일을 입력하지 않으면 오류 메시지를 표시하는 방식으로
+const errorEmail = document.getElementById('error-email');
+if (!email) {
+    errorEmail.textContent = '이메일을 입력해주세요.';
+} else {
+    errorEmail.textContent = '';
+}
+</script>

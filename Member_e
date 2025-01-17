@@ -1,0 +1,53 @@
+// bcrypt 라이브러리 사용을 가정 (npm install bcryptjs 필요)
+const bcrypt = require('bcryptjs');
+
+// Member 객체 생성
+class Member {
+  constructor(id, name, email, password, role, socialId) {
+    this.id = id;
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.role = role;
+    this.socialId = socialId;
+  }
+
+  // User를 생성하는 정적 메서드
+  static async createUser(dto) {
+    // 비밀번호 암호화
+    const encryptedPassword = await bcrypt.hash(dto.password, 10); // saltRounds = 10
+
+    // Member 객체 생성
+    const member = new Member(
+      dto.id,
+      dto.name,
+      dto.email,
+      encryptedPassword,  // 암호화된 비밀번호
+      'USER',  // 기본 역할 (USER)
+      dto.socialId
+    );
+    return member;
+  }
+}
+
+// MemberDTO 객체 예시
+const memberDTO = {
+  id: 1,
+  name: 'John Doe',
+  email: 'john.doe@google.com',
+  password: 'securePassword123',
+  socialId: 'google-social-id-123',
+};
+
+// 비밀번호를 암호화하여 User 객체 생성
+async function createMember() {
+  try {
+    const newMember = await Member.createUser(memberDTO);
+    console.log(newMember);
+  } catch (error) {
+    console.error('Error creating member:', error);
+  }
+}
+
+// createMember 함수를 호출하여 새로운 Member 객체 생성
+createMember();

@@ -1,0 +1,22 @@
+// 관리자 페이지로 이동하는 함수
+function loadOAuthSignUp(email, socialId) {
+    // 서버에 GET 요청을 보내서 관리자 페이지_직원관리 ? 를 요청
+    const url = `/oauth2/signUp?email=${encodeURIComponent(email)}&socialId=${encodeURIComponent(socialId)}`;
+
+    // GET 요청 보내기 (AJAX 또는 fetch 사용)
+    fetch(url)
+        .then(response => response.text())
+        .then(data => {
+            // 받은 응답 (HTML 또는 다른 처리)로 페이지 로드
+            document.getElementById('signUpContainer').innerHTML = data;
+        })
+        .catch(error => {
+            console.error('Error during sign-up:', error);
+        });
+}
+
+//  이메일, 소셜ID를 받아서 페이지 로드
+const email = 'user@google.com';
+const socialId = 'google-social-id-123';
+
+loadOAuthSignUp(email, socialId);
