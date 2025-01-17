@@ -1,0 +1,75 @@
+.App {
+    text-align: center;
+  }
+  
+  .App-logo {
+    height: 40vmin;
+    pointer-events: none;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+  
+  .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+  
+  .App-link {
+    color: #61dafb;
+  }
+  
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* 로딩바 스타일 추가 */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 화면 전체를 채움 */
+    background-color: #282c34;
+    color: white;
+  }
+  
+  .progress-bar {
+    width: 80%; /* 로딩 바 너비 */
+    height: 10px; /* 로딩 바 높이 */
+    background: #444; /* 로딩 바 배경색 */
+    border-radius: 5px; /* 둥근 모서리 */
+    overflow: hidden; /* 넘치는 부분 숨기기 */
+    margin-bottom: 20px; /* 텍스트와의 간격 */
+  }
+  
+  .progress {
+    width: 50%; /* 초기 너비 */
+    height: 100%;
+    background: #61dafb; /* 진행 색상 */
+    animation: load 3s linear infinite; /* 부드러운 애니메이션 */
+  }
+  
+  @keyframes load {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+  

@@ -1,0 +1,40 @@
+/* Loading container styles */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full-screen height */
+    background-color: #282c34;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Progress bar styles */
+  .progress-bar {
+    width: 80%; /* Adjust width as needed */
+    height: 10px;
+    background: #444; /* Dark background */
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px; /* Spacing below the progress bar */
+  }
+  
+  /* Progress animation */
+  .progress {
+    width: 50%; /* Initial width */
+    height: 100%;
+    background: #61dafb; /* Light blue color */
+    animation: load 2s linear infinite; /* Smooth animation */
+  }
+  
+  /* Keyframes for the loading animation */
+  @keyframes load {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+  
