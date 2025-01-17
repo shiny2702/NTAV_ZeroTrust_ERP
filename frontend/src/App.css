@@ -1,38 +1,77 @@
-.App {
+/* 전체 화면을 차지하는 배경 */
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f7fa;
+}
+
+/* 로그인 컨테이너 스타일 */
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 로고 영역 */
+.logo {
   text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: #4a90e2;
+  margin-bottom: 20px;
+  margin-right: 25px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* 로그인 폼 */
+.login-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 15px;
+}
+
+/* 입력 창 스타일 */
+input[type='text'],
+input[type='password'] {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* 선으로 구분 */
+.line {
+  height: 1px;
+  background-color: #ddd;
+  margin: 15px 0;
+}
+
+/* 로그인 버튼 스타일 */
+.login-button,
+.signup-button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-button {
+  background-color: #4a90e2;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.signup-button {
+  background-color: #fff;
+  border: 1px solid #4a90e2;
+  color: #4a90e2;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* 구글 로그인 버튼 스타일 */
+.google-login {
+  margin-top: 20px;
 }

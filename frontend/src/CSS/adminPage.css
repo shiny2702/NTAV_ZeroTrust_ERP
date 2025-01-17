@@ -1,0 +1,236 @@
+.adminPage {
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+}
+
+.logo {
+    font-size: calc(1rem + 2vw); 
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-left: 2vw;
+    white-space: nowrap;
+}
+
+.menu ul {
+    list-style-type: none;
+    display: flex;
+    gap: 5vw;
+}
+
+.menu li {
+    cursor: pointer;
+    font-size: calc(0.3rem + 1vw);  
+    color: white;
+    white-space: nowrap;
+    padding: 15px 20px;
+}
+
+.logoutButton {
+    background-color: #00bcd4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: calc(0.1rem + 0.8vw); 
+    margin-left: 3vw;
+    margin-right: 1vw;
+}
+
+.logoutButton:hover {
+    background-color: #0097a7;
+}
+
+.logoutModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalContent {
+    background-color: white;
+    padding: 2rem;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modalContent button {
+    margin: 10px;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    font-size: 1rem;
+    background-color: #8c8a8a;
+    color: white;
+    border: none;
+}
+
+.modalContent button:first-child {
+    background-color: #8c8a8a;
+}
+
+.modalContent button:last-child {
+    background-color: #8c8a8a;
+}
+
+.modalContent button:hover {
+    opacity: 0.8;
+}
+
+.dropdown {
+    position: relative; 
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none !important; /* 기본적으로 숨김 */
+    position: absolute;
+    top: 100%; /* 부모 요소 아래에 표시 */
+    left: 0;
+    background-color: #76a8de; 
+    color: white;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 4px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    z-index: 100; /* 다른 요소 위에 표시 */
+}
+
+/* 하위 메뉴 항목 */
+.dropdown-menu li {
+    padding: 15px 20px;
+    font-size: calc(0.2rem + 0.8vw);
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+
+.dropdown-menu li:hover {
+    background-color: #0056b3; 
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block !important; /* 드롭다운 메뉴를 항상 표시 */
+    pointer-events: auto; /* 요소 클릭 가능 */
+}
+
+.profileCard {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 250px; 
+    margin-top: 20px;
+}
+
+.profileCard h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+    text-align: center;
+}
+
+.profileCard p {
+    font-size: 1rem;
+    color: #666;
+    text-align: left;
+}
+
+.profileCard .profileImage {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto;
+    background-color: #ddd;
+    margin-bottom: 10px;
+}
+
+/* 레이아웃 구성 */
+.adminContent {
+    display: flex; /* 수평 정렬 */
+    justify-content: space-between; /* 콘텐츠 사이에 여백 */
+    align-items: flex-start; /* 상단 정렬 */
+    padding: 20px; /* 외부 여백 */
+}
+  
+
+@media (max-width: 1240px) {
+    .header {
+        padding: 15px;
+    }
+    .logo {
+        font-size: calc(1.5rem + 1vw);  
+    }
+    .menu ul {
+        gap: 2.2vw;
+    }
+    .menu li {
+        font-size: calc(0.7rem + 0.8vw);
+    }
+    .logoutButton {
+        margin-left: 1;
+        font-size: 0.7rem;
+    }
+    .mainContent {
+        flex-direction: column; /* 세로로 배치 */
+        align-items: center; /* 가운데 정렬 */
+    }
+}
+
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 5rem;  
+        margin-left: 0;
+    }
+
+    .menu ul {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .menu li {
+        font-size: 1.5rem;
+    }
+
+    .logoutButton {
+        margin-left: 0;
+        font-size: 1rem;
+    }
+
+    .profileCard {
+        width: 200px; 
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 2rem;
+    }
+
+    .menu li {
+        font-size: 1rem;
+    }
+
+    .logoutButton {
+        font-size: 1rem;
+    }
+}
