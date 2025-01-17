@@ -48,7 +48,14 @@ class MainPage extends Component {
             <ul>
               <li>경영</li>
               <li>재무회계</li>
-              <li>인사</li>
+              <li className="dropdown">인사 ▾
+                <ul className="dropdown-menu">
+                  <li>채용관리</li>
+                  <li>HR데이터분석및리포팅</li>
+                  <li>급여관리</li>
+                  <li>복리후생관리</li>
+                </ul>
+              </li>
               <li>고객관리</li>
               <li>물류관리</li>
             </ul>

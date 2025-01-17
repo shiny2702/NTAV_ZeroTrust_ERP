@@ -1,84 +1,82 @@
 import React, { Component } from 'react';
-import { GoogleLogin } from '@react-oauth/google';
-import withRouter from './hocs/withRouter'; 
+import withRouter from './hocs/withRouter';
 import axios from 'axios';
 import './App.css';
 
 class App extends Component {
-  // 로그인 성공 처리
-  handleLoginSuccess = (response) => {
-    console.log('로그인 성공:', response);
-    const token = response.credential;  // Google OAuth 토큰
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: '',
+      password: '',
+      error: null,
+    };
+  }
 
-    // 일단 백엔드와의 요청을 주석처리하고, 직접 user 객체를 만들어 전달
-    const user = { name: 'NTAV',
-                   email: "ntav1234@gmail.com",
-                   role: "user",
-                   dept: "CyberSecurity",
-                   projects: ["project1", "project2", "project3", "project4"]
-     }; 
-    
-    // 페이지 리디렉션 및 사용자 데이터 전달
-    this.props.navigate('/main', { state: { user: user } });
+  // ID와 Password 입력값을 상태에 저장
+  handleInputChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
   };
-  
 
-// handleLoginSuccess = (response) => {
-//   console.log('로그인 성공:', response);
-//   const token = response.credential;  // Google OAuth 토큰
+  // 로그인 버튼 클릭 시 실행
+  handleLogin = () => {
+    const { id, password } = this.state;
 
-//    // 백엔드로 토큰 전송 (HTTPS)
-//    axios.post('https://localhost:5000', { token })
-//    .then((res) => {
-//      // 백엔드에서 사용자 데이터와 권한 정보 받아오기
-//      const user = res.data.user;
-//      console.log('서버 응답:', res.data);
-     
-//      // 사용자 권한에 맞는 페이지로  
-//      // (db 응답 데이터와 함께 ; 얼마나 어떤 형식으로 보낼건지 서버측에서 범위 지정 가능)
-//      if (user.role === 'admin') {
-//        this.props.navigate('/admin', { state: { user: user } });
-//      } else if (user.role === 'user') {
-//        this.props.navigate('/main', { state: { user: user } });
-//      } else { // 권한이 없는 사용자 (user: null로 반환되도록 함,, --> 서버측에서 명시적 처리 필요)는 /noPermPage로 리디렉션
-//        this.props.navigate('/noPermPage');
-//      }
-//    })
-//    // 구글 인증은 되었지만 토큰 인증과정에서 문제가 있는 상태
-//    .catch((error) => {
-//      console.error('서버 요청 실패:', error);
-//      alert('로그인에 실패했습니다. 다시 시도해주세요.');
-//    });
-// };
+    if (!id || !password) {
+      alert('ID와 비밀번호를 입력하세요.');
+      return;
+    }
 
-  // 로그인 실패 처리 (아예 구글 인증조차 되지 않은 상태)
-  handleLoginFailure = (error) => {
-    console.log('구글 로그인 실패:', error);
-    alert('로그인에 실패했습니다. 다시 시도해주세요.');
+    // 서버로 로그인 요청
+    axios
+      .post('https://192.168.100.51', { id, password })
+      .then((response) => {
+        const { user } = response.data; // 서버에서 반환된 사용자 데이터
+        console.log('로그인 성공:', user);
 
-    this.props.navigate('/');
+        // 사용자 권한에 따라 페이지 리디렉션
+        if (user.role === 'admin') {
+          this.props.navigate('/admin', { state: { user } });
+        } else if (user.role === 'employee') {
+          this.props.navigate('/main', { state: { user } });
+        } else {
+          alert('권한이 없습니다.');
+          this.props.navigate('/noPermPage');
+        }
+      })
+      .catch((error) => {
+        console.error('로그인 실패:', error);
+        this.setState({ error: '로그인에 실패했습니다. 다시 시도해주세요.' });
+      });
   };
 
   render() {
+    const { error } = this.state;
+
     return (
       <div className="app">
         <div className="login-container">
           <div className="logo">NTAV</div>
           <div className="login-form">
             <h2>LOGIN</h2>
-            <input type="text" placeholder="ID" />
-            <input type="password" placeholder="password" />
+            <input
+              type="text"
+              name="id"
+              placeholder="ID"
+              onChange={this.handleInputChange}
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={this.handleInputChange}
+            />
+            {error && <p className="error-message">{error}</p>}
             <div className="line" />
-            <button className="login-button">Login</button>
+            <button className="login-button" onClick={this.handleLogin}>
+              Login
+            </button>
             <button className="signup-button">Sign-up</button>
-            <div className="google-login">
-              <GoogleLogin
-                onSuccess={this.handleLoginSuccess}
-                onError={this.handleLoginFailure}
-                useOneTap
-                clientId="105774342869-f21hqi363lkuo4m7ec9cc6fisgc1vpfu.apps.googleusercontent.com" // 구글에서 발급받은 클라이언트 ID
-              />
-            </div>
           </div>
         </div>
       </div>
@@ -86,6 +84,16 @@ class App extends Component {
   }
 }
 
-// withRouter를 사용하여 navigate prop을 전달
 export default withRouter(App);
 
+  //   // 일단 백엔드와의 요청을 주석처리하고, 직접 user 객체를 만들어 전달
+  //   const user = { name: 'NTAV_4',
+  //                  email: "ntav4@gmail.com",
+  //                  role: "employee",
+  //                  dept: "Finance & Accounting",
+  //                  projects: ["project_A", "project_B", "project_C", "project_D", "project_E", "project_F"]
+  //    }; 
+    
+  //   // 페이지 리디렉션 및 사용자 데이터 전달
+  //   this.props.navigate('/main', { state: { user: user } });
+  // };
