@@ -1,0 +1,13 @@
+/* top에 적용되는 css */
+@charset "UTF-8";
+@font-face {
+    font-family: 'RIDIBatang';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+body {
+    font-family: 'RIDIBatang';
+	font-size: 30px;
+	text-align: center;
+}

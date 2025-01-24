@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultra.net.nz/thymeleaf/layout" 
+	layout:decorate="~{layout/base_layout}">
+
+<!-- 계속바뀌는 fragmnet페이지마다 적용되는 css가 다르기때문에 별도로 각각css불러와서 사용해야한다 -->
+<!-- 홈화면 스타일 적용 -->
+	<!-- 외부css파일불러오기 -->
+<th:block layout:fragment="css">
+<!--<link rel="stylesheet" th:href="@{/css/menu.css}"> -->
+</th:block>
+	
+<div layout:fragment="content">
+		<h1>사원관리 시스템</h1>
+</div>
+</html>

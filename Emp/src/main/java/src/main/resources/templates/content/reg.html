@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultra.net.nz/thymeleaf/layout" 
+	layout:decorate="~{layout/base_layout}">
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/menu.css}">
+</th:block>
+	
+<div layout:fragment="content">
+<form class="row g-3" th:action="@{/emp/regEmp}" method="post" th:object="${empVO}">
+  <div class="row justify-center-center"> 
+	  <div class="col-12">
+	    <label for="inputEmail4" class="form-label">사원명</label>
+	    <input th:field="*{empName}" type="text" class="form-control"  placeholder="사원명을 입력하세요">
+	  </div>
+	  
+	  <div class="col-md-6">
+	    <label for="inputPassword4" class="form-label">직급</label>
+		<select th:field="*{job}" type="text" class="form-select" >
+	    	<option selected value="사원">사원</option>
+	    	<option value="대리">대리</option>
+	    	<option value="과장">과장</option>
+	    	<option value="부장">부장</option>
+	    </select>  
+	  </div>
+	  
+	  
+	  <div class="col-6">
+	    <label for="inputEmail3" class="col-sm-4 col-form-label">부서</label>
+        <select id="inputState" class="form-select" name="deptNo">
+           <th:block th:each="dept : ${deptList}">
+              <option th:text="${dept.deptName}" th:value="${dept.deptNo}"></option>
+           </th:block>
+	    </select>
+	  </div>
+	  
+	<div class="row mb-3">
+	  <div class="col-3">
+	      <label for="inputAddress2" class="form-label">성별</label>
+		  <div class="form-check">
+			  <input value="Female" class="form-check-input" type="radio" name="gender"  checked>
+			  <label class="form-check-label" for="flexRadioDefault1">Female</label>
+		  </div>
+      </div>
+      <div class="col-3">
+          <label for="inputEmail3" class="col-sm-4 col-form-label">&nbsp;</label>
+		  <div class="form-check">
+			  <input value="Male" class="form-check-input" type="radio" name="gender"  >
+			  <label class="form-check-label" for="flexRadioDefault2">Male</label>
+		  </div>
+	  </div>
+     </div>
+	
+	  <div class="col-6">
+	    <label for="inputCity" class="form-label">나이</label>
+	    <input th:field="*{age}" type="number" min="19" max="60" class="form-select"  >
+	  </div>
+	  
+	  <div class="col-12">
+	    <label for="inputState" class="form-label">연락처</label>
+	  </div>
+	  <div class="col-4">
+	      <input type="text" name="tell" class="form-control" >
+	  </div>
+	  <div class="col-4">
+	     <input type="text" name="tell" class="form-control"  >
+	  </div>
+	  <div class="col-4">
+	     <input type="text" name="tell" class="form-control" >
+	  </div>
+	  <div class="col-12" align="center">
+	    <button type="submit" class="btn btn-primary">Sign in</button>
+	  </div>
+  </div>
+</form>
+</div>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultra.net.nz/thymeleaf/layout" 
+	layout:decorate="~{layout/base_layout}">
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/menu.css}">
+</th:block>
+	
+<div align="center" layout:fragment="content">
+	
+	
+	<div  class="row">
+		<div class="col">
+			<form th:action="@{/dept/regDept}" method="post" th:object="${deptVO}">
+				<div class="col-12" align="left">
+					- 부서등록
+				</div>
+				<div class="col" align="left">
+				<div>
+					<span>부서명</span>
+					<span><input class="form-control" th:field="*{deptName}" type="text"></span>
+				</div>
+				<div>
+					<span>지역</span>
+					<span>
+						<select th:field="*{loc}" class="form-control">
+							<option value="부산" selected>부산</option>
+							<option value="대구">대구</option>
+							<option value="대전" >대전</option>
+							<option value="서울" >서울</option>
+							<option value="인천" >인천</option>
+						</select>
+					</span>
+				</div>
+				</div>
+				<div align="center">
+					<button type="submit">등록</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	
+	
+	
+	<div class="row ">
+		<div class="col">
+			<div align="left">
+			- 부서목록
+			</div>
+			<div>
+			<!-- 테이블에다가 클래스값 아래와 같이 값주면 테이블디자인 적용됨 -->
+				<table class="table table-striped table-hover" >
+					<tr>
+					<!-- th(thead)는 제목줄로 인식해서 자동정렬,굵게 자동생성!! -->
+						<th>부서번호</th>
+						<th>부서명</th>
+						<th>지역</th>
+					</tr>
+					<tbody>
+					<!-- 컨트롤러에서 dept 객체던지면 이값이 있냐 없냐에 따라 목록조회 -->
+					<!-- deptList 데이더 가져오는 방법 2가지가 있다 -->
+						<!-- 1번) <th:block th:if="${deptList != null}"> -->
+						<!-- 2번) -->
+						<th:block th:if="${#lists.size(deptList) != 0}">
+							<tr th:each="dept : ${deptList}">
+									<td th:text="${dept.deptNo}"></td>
+									<td th:text="${dept.deptName}"></td>
+									<td th:text="${dept.loc}"></td>
+							</tr>
+							</th:block>
+						</th:block>	
+						<th:block th:unless="${#lists.size(deptList) != 0}">
+						<!-- <th:block th:unless="${deptList != null}"> -->
+							<td colspan="3">조회된 게시글이 없습니다.</td>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+</html>

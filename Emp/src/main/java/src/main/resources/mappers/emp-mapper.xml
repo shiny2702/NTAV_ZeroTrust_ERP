@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="empMapper">
+<resultMap type="kh.study.emp.emp.vo.EmpVO" id="emp">
+	<id column="EMP_NO" property="empNo"/>
+	<result column="EMP_NAME" property="empName"/>
+	<result column="JOB" property="job"/>
+	<result column="AGE" property="age"/>
+	<result column="GENDER" property="gender"/>
+	<result column="TELL" property="tell"/>
+	<result column="DEPT_NO" property="deptNo"/>
+	<association property="deptInfo" resultMap="deptMapper.dept"/>
+</resultMap>  
+	<!-- 1:1 부서정보 : 사원정보 관계 (기본적으로 fk외래키가 있는 테이블 기준!!) -->
+	<!-- deptMapper(namespace값)에 있는 dept 를 불러와야한다!! -->
+
+
+<!-- 사원 등록 -->
+<insert id="insertEmp">
+	<selectKey resultType="String" keyProperty="empNo" order="BEFORE">
+		SELECT 'EMP' || TO_CHAR(LPAD(NVL(MAX(TO_NUMBER(SUBSTR(EMP_NO,5))),0)+1,3,'0'))
+ 		FROM TEST_EMP	
+	</selectKey>
+	INSERT INTO TEST_EMP (
+		EMP_NO
+		,EMP_NAME
+		,JOB
+		,AGE
+		,GENDER
+		,TELL
+		,DEPT_NO
+	) VALUES (
+		#{empNo}
+		, #{empName}
+		, #{job}
+		, #{age}
+		, #{gender}
+		, #{tell}
+		, #{deptNo}
+	)
+</insert>
+
+<!--사원 및 부서 목록조회 (조인)-->
+<select id="selectEmp" resultMap="emp">
+SELECT  EMP_NO
+		, EMP_NAME
+		, TELL
+		, AGE
+		, GENDER
+		, DEPT_NAME
+		, LOC
+FROM TEST_EMP  ,TEST_DEPARTMENT 
+WHERE TEST_EMP.DEPT_NO = TEST_DEPARTMENT.DEPT_NO
+ORDER BY EMP_NAME ASC
+</select>  
+</mapper>

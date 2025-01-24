@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="topFragment">
+	<th:block>
+		<link rel="stylesheet" th:href="@{/css/menu.css}">
+	</th:block>
+	<div style="margin-top: 50px; margin-bottom: 50px;" class="row-12">
+		<ul class="nav nav-pills nav-fill">
+		  <li class="nav-item">
+		    <a th:href="@{/emp/home}" class="nav-link active" aria-current="page" href="#">HOME</a>
+		  </li>
+		  <li class="nav-item">
+		    <a th:href="@{/dept/manage}" class="nav-link" href="#">MANAGE_DEPT</a>
+		  </li>
+		  <li class="nav-item">
+		    <a th:href="@{/emp/regEmp}" class="nav-link" href="#">REG_EMP</a>
+		  </li>
+		  <li class="nav-item">
+		    <a th:href="@{/emp/list}" class="nav-link" href="#">LIST_EMP</a>
+		  </li>
+		</ul>
+	</div>
+</div>
+</html>
