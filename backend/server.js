@@ -3,14 +3,14 @@
 
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const environmentRoutes = require('./routes/env_check');
+// const bodyParser = require('body-parser');
+require('dotenv').config();
+const environmentRoutes = require('./routes/envCheck');
 
 const app = express();
 
 // CORS 설정 (모든 도메인 허용)
 app.use(cors());
-
 // JSON 바디 파싱싱
 app.use(bodyParser.json());
 
@@ -18,9 +18,13 @@ app.use(bodyParser.json());
 app.use('/api/environment-check', environmentRoutes);  // 환경 체크 라우트
 
 // 서버 시작
-app.listen(5000, () => {
-  console.log('Server running on port 5000');
-});
+// app.listen(5000, () => {
+//   console.log('Server running on port 5000');
+// });
+const port = process.env.PORT || 5000;
+app.listen(port, '0.0.0.0', () => {
+  console.log(`The server is running on port ${port}.`);
+})
 
 
 // 특정 도메인만 CORS 허용

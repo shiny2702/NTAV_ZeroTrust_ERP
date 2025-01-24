@@ -2,8 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-const environmentController = require('../controllers/env_controller');
+const environmentController = require('../controllers/envController');
 
-router.post('/', environmentController.checkEnvironment);
+router.post('/quarantine-zone', environmentController.checkEnvironment);
 
 module.exports = router;
