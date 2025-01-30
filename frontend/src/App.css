@@ -61,7 +61,7 @@
     width: 50%; /* 초기 너비 */
     height: 100%;
     background: #61dafb; /* 진행 색상 */
-    animation: load 3s linear infinite; /* 부드러운 애니메이션 */
+    animation: load 1.5s linear infinite; /* 부드러운 애니메이션 */
   }
   
   @keyframes load {
