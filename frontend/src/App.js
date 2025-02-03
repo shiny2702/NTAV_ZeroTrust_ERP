@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { sendInfoToServer } from './api';
+import { sendInfoToServer, getDeviceToken } from './api';
 import './App.css';
+import withRouter from './hocs/withRouter'; // withRouter HOC 가져오기
 
 class App extends Component {
 
@@ -36,7 +37,6 @@ class App extends Component {
 
   // 네트워크 정보 수집
   getNetworkInfo = () => {
-    const getNetworkInfo = () => {
       const isOnline = navigator.onLine ? "Online" : "Offline";
       const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
       const networkType = connection ? connection.effectiveType : "Unknown";
@@ -59,8 +59,26 @@ class App extends Component {
         rtt,
         saveData,
       };
-    };
   };
+    // ✅ 서버에서 디바이스 토큰을 받아온 후, 리다이렉트
+    checkDeviceToken = async () => {
+      const { navigate } = this.props;
+  
+      try {
+        const token = await getDeviceToken(); // 서버에서 토큰 가져오기
+        console.log("Device Token: ", token);
+        // this.props.navigate('/login');
+        // this.setState({ loading: false });
+  
+        if (!token) {
+          console.warn("Device token not found, redirecting...");
+          // this.props.navigate("/noPerm"); // 토큰이 없으면 차단 페이지로 이동
+        }
+      } catch (error) {
+        console.error("Error fetching device token: ", error);
+        // this.props.navigate("/error"); // 오류 발생 시 에러 페이지로 이동
+      }
+    };
 
   // 보안 소프트웨어 확인은 프론트엔드에서 불가능
   // 보안 소프트웨어 관련 정보는 별도로 추가 필요
@@ -68,24 +86,33 @@ class App extends Component {
   // 컴포넌트가 마운트될 때 실행되는 메서드
   // 비동기 함수 async/await의 사용으로 네트워크 요청이 완료될 때까지 다른 코드 실행 X
   // sendInfoToServer(네트워크 요청을 보내는 비동기 작업)가 완료될 때까지 기다림
-  async componentDidMount() {
-      const osInfo = this.getOSInfo();
-      const browserInfo = this.getBrowserInfo();
-      const networkInfo = this.getNetworkInfo();
 
-      // 콘솔에 정보 출력
-      console.log("OS Info: ", osInfo);
-      console.log("Browser Info: ", browserInfo);
-      console.log("Network Info: ", networkInfo);
+  // ✅ 서버로 OS, 브라우저, 네트워크 정보 전송 후, 디바이스 토큰 확인
+  async initializeApp() {
+    const osInfo = this.getOSInfo();
+    const browserInfo = this.getBrowserInfo();
+    const networkInfo = this.getNetworkInfo();
 
-      // sendInfoToServer 호출하며 수집한 정보 전달
-      await sendInfoToServer(osInfo, browserInfo, networkInfo);
+    console.log("OS Info: ", osInfo);
+    console.log("Browser Info: ", browserInfo);
+    console.log("Network Info: ", networkInfo);
 
-      // 로딩 상태를 1.5초 후에 false로 설정정
-      setTimeout(() => {
-        this.setState({ loading: false });
-      }, 1500);
+    try {
+      await sendInfoToServer(osInfo, browserInfo, networkInfo); // 1️⃣ 서버로 정보 전송
+      await this.checkDeviceToken(); // 2️⃣ 서버에서 디바이스 토큰 확인
+    } catch (error) {
+      console.error("Error during initialization: ", error);
+      this.props.navigate("/error"); // 초기화 중 에러 발생 시 에러 페이지로 이동
     }
+
+    setTimeout(() => {
+      this.setState({ loading: false });
+    }, 2500);
+  }
+
+  async componentDidMount() {
+    await this.initializeApp(); // ✅ 초기화 함수 실행
+  }
 
     render() {
       const { loading } = this.state;
@@ -108,4 +135,4 @@ class App extends Component {
     }
 };
 
-export default App;
+export default withRouter(App);
