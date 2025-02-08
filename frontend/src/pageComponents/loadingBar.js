@@ -1,5 +1,5 @@
 import React from 'react';
-import '../CSS/loadingBar.css'; // Import the CSS file for styling
+import '../CSS/loadingBar.css'; // 로딩바 스타일
 
 const LoadingBar = () => {
   return (

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { sendInfoToServer, getDeviceToken } from '../api';
-import '../CSS/App.css';
 import withRouter from '../hocs/withRouter'; // withRouter HOC 가져오기
 import LoadingBar from './loadingBar.js'; // LoadingBar 컴포넌트 가져오기
+import '../CSS/loadingPage.css';
 
 class LoadingPage extends Component {
   constructor(props) {
@@ -92,7 +92,7 @@ class LoadingPage extends Component {
   }
 
   async componentDidMount() {
-    await this.initializeApp(); // ✅ 초기화 함수 실행
+    await this.initializeApp(); // 비동기 초기화 함수 실행
   }
 
   render() {

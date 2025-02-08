@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "../CSS/forbiddenPage.css"; // CSS 파일을 임포트
 
-class ErrorPage extends Component {
+class ForbiddenPage extends Component {
   render() {
     return (
       <div className="no-perm-container">
@@ -13,4 +13,4 @@ class ErrorPage extends Component {
   }
 }
 
-export default ErrorPage;
+export default ForbiddenPage;
