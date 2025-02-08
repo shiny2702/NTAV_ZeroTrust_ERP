@@ -9,6 +9,7 @@ class LoadingPage extends Component {
     super(props);
     this.state = {
       loading: true,
+      isVerified: true, // 서버에서 검증된 상태
     };
   }
 
@@ -61,11 +62,11 @@ class LoadingPage extends Component {
       console.log("Device Token: ", token);
       if (!token) {
         console.warn("Device token not found, redirecting...");
-        // this.props.navigate("/noPerm"); // 토큰이 없으면 차단 페이지로 이동
+        this.props.navigate("/noPerm"); // 토큰이 없으면 차단 페이지로 이동
       }
     } catch (error) {
       console.error("Error fetching device token: ", error);
-      // this.props.navigate("/error"); // 오류 발생 시 에러 페이지로 이동
+      this.props.navigate("/error"); // 오류 발생 시 에러 페이지로 이동
     }
   };
 
@@ -79,16 +80,25 @@ class LoadingPage extends Component {
     console.log("Network Info: ", networkInfo);
 
     try {
-      await sendInfoToServer(osInfo, browserInfo, networkInfo); // 1️⃣ 서버로 정보 전송
-      await this.checkDeviceToken(); // 2️⃣ 서버에서 디바이스 토큰 확인
+      // 서버로 OS, 브라우저, 네트워크 정보 전송
+      const response = await sendInfoToServer(osInfo, browserInfo, networkInfo); // 서버로 정보 전송
+      console.log("Server Response: ", response);
+
+      if (response.success) {
+        // 서버에서 성공적인 검증을 받으면
+        await this.checkDeviceToken(); // 서버에서 디바이스 토큰 확인
+        this.setState({ loading: false, isVerified: true });
+        this.props.navigate("/downloadPage"); // 검증 성공 후 downloadPage로 리디렉션
+      } else {
+        // 서버에서 검증 실패 응답 받으면
+        this.setState({ loading: false, isVerified: false });
+        this.props.navigate("/forbidden"); // 에러 페이지로 이동
+      }
     } catch (error) {
       console.error("Error during initialization: ", error);
+      this.setState({ loading: false });
       this.props.navigate("/error"); // 초기화 중 에러 발생 시 에러 페이지로 이동
     }
-
-    setTimeout(() => {
-      this.setState({ loading: false });
-    }, 2500);
   }
 
   async componentDidMount() {
@@ -96,14 +106,18 @@ class LoadingPage extends Component {
   }
 
   render() {
-    const { loading } = this.state;
+    const { loading, isVerified } = this.state;
     return (
       <div className="App">
         {loading ? (
           <LoadingBar /> // 로딩 중일 때 LoadingBar 컴포넌트 표시
-        ) : (
+        ) : isVerified ? (
           <header className="App-header">
             <p>You have entered NTAV's quarantine zone.</p>
+          </header>
+        ) : (
+          <header className="App-header">
+            <p>Verification failed. You are not authorized to proceed.</p>
           </header>
         )}
       </div>
