@@ -1,12 +1,10 @@
-const jwt = require("jsonwebtoken");
-
 const ALLOWED_OS = ["Windows", "MacOS", "Linux"];
 const ALLOWED_BROWSERS = ["Chrome", "Edge", "Firefox", "Safari", "Brave"];
 const ALLOWED_NETWORK_TYPES = ["ethernet", "wifi", "wimax", "cellular"];
 const MIN_DOWNLINK = 3; // 최소 3Mbps 필요
 const MAX_RTT = 250; // 최대 250ms 응답 시간
 
-//디바이스 정보 검증 후 deviceToken 발급
+// 검증만 담당
 function verifyDevice(deviceInfo) {
     const { osInfo, browserInfo, networkInfo } = deviceInfo;
     const { isOnline, networkType, downlink, rtt, saveData } = networkInfo;
@@ -38,11 +36,7 @@ function verifyDevice(deviceInfo) {
         throw new Error("데이터 절약 모드가 활성화되어 보안에 취약할 수 있습니다.");
     }
 
-    // 디바이스 토큰 발급
-    const deviceHash = `${osInfo}-${browserInfo}-${Date.now()}`;
-    const deviceToken = jwt.sign({ deviceHash }, SECRET_KEY, { expiresIn: "7d" });
-
-    return deviceToken;
+    return true;
 }
 
 module.exports = { verifyDevice };

@@ -27,10 +27,9 @@ class QuarantineZonePage extends Component {
 
     return (
       <div style={containerStyle}>
-        <h1>접근 권한 없음</h1>
+        <h1></h1>
         <hr style={lineStyle} /> {/* h1 아래 줄 추가 */}
-        <p>죄송합니다. 이 페이지에 접근할 권한이 없습니다.</p>
-        <a href="/" style={linkStyle}>로그인 페이지로 돌아가기</a>
+        <p>You have entered NTAV's quarantine zone.</p>
       </div>
     );
   }

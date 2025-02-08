@@ -1,40 +1,33 @@
-// 서버 설정 및 Express 앱 실행 파일
-// MySQL 데이터베이스 연결과 라우팅 처리
-
 const express = require('express');
 const cors = require('cors');
-// const bodyParser = require('body-parser');
 require('dotenv').config();
-const environmentRoutes = require('./routes/envCheck');
+
+const envRoute = require('./routes/envRoutes');
 
 const app = express();
 
-// CORS 설정 (모든 도메인 허용)
-app.use(cors());
-// JSON 바디 파싱싱
-app.use(bodyParser.json());
+// CORS 설정 (특정 도메인 허용)
+const corsOptions = {
+    origin: process.env.CLIENT_URL || '*',  // 허용할 도메인 환경변수에서 설정 가능
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization'
+};
+app.use(cors(corsOptions));
 
-// 환경 체크 라우트트
-app.use('/api/environment-check', environmentRoutes);  // 환경 체크 라우트
+// JSON 요청 본문 파싱
+app.use(express.json());
 
-// 서버 시작
-// app.listen(5000, () => {
-//   console.log('Server running on port 5000');
-// });
-const port = process.env.PORT || 5000;
-app.listen(port, '0.0.0.0', () => {
-  console.log(`The server is running on port ${port}.`);
-})
+// 환경 체크 라우트
+app.use('/api/environment-check', envRoute);
 
+// 기본 에러 처리 미들웨어 추가 (기타 예상치 못한 오류 처리)
+app.use((err, req, res, next) => {
+    console.error(err.stack); // 에러 로그 출력
+    res.status(500).json({ error: '서버에서 오류가 발생했습니다.' });
+});
 
-// 특정 도메인만 CORS 허용
-// const corsOptions = {
-//     origin: 'http://localhost:3000',  // 프론트엔드 도메인
-//     methods: 'GET,POST,PUT,DELETE',   // 허용할 HTTP 메소드
-//     allowedHeaders: 'Content-Type,Authorization'  // 허용할 헤더
-//   };
-  
-//   const app = express();
-  
-//   // CORS 미들웨어 적용
-//   app.use(cors(corsOptions));
+// 서버 실행
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 서버가 ${PORT}번 포트에서 실행 중입니다.`);
+});

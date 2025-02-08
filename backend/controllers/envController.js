@@ -1,34 +1,36 @@
-// 클라이언트에서 보낸 데이터(브라우저 정보, 네트워크 상태 등)를 처리하는 로직 작성
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const { verifyDevice } = require("./devicePolicy");
 
-// const checkEnvironment = (req, res) => {
-//     const { userAgent, networkStatus } = req.body;
-  
-//     // 여기에 정책 검증 로직 및 차단 여부 확인 추가
-  
-//     res.status(200).json({ message: 'Environment is OK' });
-//   };
-  
-//   module.exports = { checkEnvironment };
+const SECRET_KEY = process.env.SECRET_KEY; // 환경 변수에서 불러오기
 
-// 클라이언트 환경 체크 로직
-exports.checkEnvironment = (req, res) => {
-  const { userAgent, networkStatus } = req.body;
+// 환경 변수 확인
+if (!SECRET_KEY) {
+  throw new Error("환경 변수 SECRET_KEY가 설정되지 않았습니다.");
+}
 
-  // 정책 검증 로직 추가 (예: 브라우저 또는 네트워크 상태 기반으로 검사)
-  if (!userAgent || !networkStatus) {
-    return res.status(400).json({ message: '환경 정보가 부족합니다.' });
-  }
+// 디바이스 검증 후 토큰 발급 및 응답 반환
+exports.generateDeviceToken = (req, res) => {
+    try {
+        const { osInfo, browserInfo, networkInfo } = req.body;
 
-  // 예시: 특정 브라우저 차단
-  if (userAgent.includes('OutdatedBrowser')) {
-    return res.status(403).json({ message: '지원하지 않는 브라우저입니다.' });
-  }
+        if (!osInfo || !browserInfo || !networkInfo) {
+            return res.status(400).json({ error: "잘못된 요청입니다. 필수 데이터가 누락되었습니다." });
+        }
 
-  // 예시: 네트워크 상태 확인
-  if (networkStatus !== 'online') {
-    return res.status(503).json({ message: '네트워크 연결이 불안정합니다.' });
-  }
+        verifyDevice({ osInfo, browserInfo, networkInfo }); // 검증 수행
 
-  res.status(200).json({ message: 'Environment is OK' });
+        // 검증 성공 시 디바이스 토큰 발급
+        const deviceHash = `${osInfo}-${browserInfo}-${Date.now()}`;
+        const deviceToken = jwt.sign({ deviceHash }, SECRET_KEY, { expiresIn: "7d" });
+
+        return res.status(200).json({
+          success: true,
+          deviceToken,
+          message: "디바이스 검증 성공",
+        });
+    } catch (error) {
+      console.error("디바이스 토큰 생성 오류:", error.message); // 로그 기록
+      return res.status(400).json({ success: false, error: error.message });
+    }
 };
-  
