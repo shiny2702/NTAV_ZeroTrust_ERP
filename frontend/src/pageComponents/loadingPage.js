@@ -97,7 +97,7 @@ class LoadingPage extends Component {
     } catch (error) {
       console.error("Error during initialization: ", error);
       this.setState({ loading: false });
-      this.props.navigate("/error"); // 초기화 중 에러 발생 시 에러 페이지로 이동
+      this.props.navigate("/error"); // 에러 페이지로 리디렉션
     }
   }
 
@@ -110,7 +110,10 @@ class LoadingPage extends Component {
     return (
       <div className="App">
         {loading ? (
-          <LoadingBar /> // 로딩 중일 때 LoadingBar 컴포넌트 표시
+          <div>
+            <img src="../../public/ntav_loading.gif" alt="Loading..." /> 
+            <p>Loading...</p> {/* You can add a message while loading */}
+          </div>
         ) : isVerified ? (
           <header className="App-header">
             <p>You have entered NTAV's quarantine zone.</p>
@@ -123,6 +126,7 @@ class LoadingPage extends Component {
       </div>
     );
   }
+  
 }
 
 export default withRouter(LoadingPage);
