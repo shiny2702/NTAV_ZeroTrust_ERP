@@ -88,7 +88,7 @@ class LoadingPage extends Component {
         // 서버에서 성공적인 검증을 받으면
         await this.checkDeviceToken(); // 서버에서 디바이스 토큰 확인
         this.setState({ loading: false, isVerified: true });
-        this.props.navigate("/downloadPage"); // 검증 성공 후 downloadPage로 리디렉션
+        this.props.navigate("/download"); // 검증 성공 후 downloadPage로 리디렉션
       } else {
         // 서버에서 검증 실패 응답 받으면
         this.setState({ loading: false, isVerified: false });
