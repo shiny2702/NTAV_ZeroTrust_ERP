@@ -1,0 +1,130 @@
+.employeeManagement {
+    display: flex;
+    height: 100vh; /* 화면 전체 높이 사용 */
+  }
+  
+  .sidebar {
+    background-color: #f4f4f4;
+    padding: 20px;
+    width: 200px;
+    height: 100%; /* sidebar가 화면 높이를 꽉 채우도록 설정 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+  }
+  
+  .sidebar button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+  }
+  
+  .sidebar button:hover {
+    background-color: #0056b3;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto; /* 콘텐츠가 길어지면 스크롤 가능하도록 설정 */
+  }
+  
+  .registerTab .formGroup {
+    margin-bottom: 15px;
+  }
+  
+  .registerTab .formGroup label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .listTab table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .listTab th,
+  .listTab td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .listTab th {
+    background-color: #f4f4f4;
+  }
+  
+  .listTab {
+    position: relative; /* 부모 요소에 상대적인 위치 설정 */
+  }
+  
+  .deleteButton {
+    position: relative; /* 절대 위치를 상대 위치로 변경 */
+    margin-top: 10px; /* 테이블과 버튼 간격을 조금 띄우기 위해 margin-top 사용 */
+    left : 1135px; /* 버튼을 오른쪽에 배치 */
+    padding: 10px 20px;
+    background-color: #8c8a8a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .deleteButton:hover {
+    opacity: 0.8;
+  }
+  
+  
+  
+  /* 공통 스타일 */
+input[type="text"], input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox에서 숫자 입력란을 텍스트 필드처럼 보이게 */
+  appearance: textfield; /* 다른 브라우저에서도 동일하게 처리 */
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.modal {
+  position: fixed; /* 화면 전체를 덮도록 설정 */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 다른 요소보다 위에 표시 */
+}
+
+.modalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+  
