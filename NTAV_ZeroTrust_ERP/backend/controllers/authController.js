@@ -1,6 +1,7 @@
 const db = require('../config/db');
 const jwt = require('jsonwebtoken');
 
+// 로그인
 exports.login = (req, res) => {
   const { username, password } = req.body;
 
