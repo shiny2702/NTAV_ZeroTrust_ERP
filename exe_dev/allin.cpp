@@ -130,13 +130,27 @@ void sign_file(const string& filename, const string& private_key_file, const str
 void check_antivirus(const string& os_type) {
     if (os_type == "Windows") {
         cout << "Running Windows-specific commands..." << endl;
-        system("wmic /namespace:\\\\root\\SecurityCenter2 path AntiVirusProduct get displayName,pathToSignedProductExe > antivirus_result.txt");
+        //system("wmic /namespace:\\\\root\\SecurityCenter2 path AntiVirusProduct get displayName,pathToSignedProductExe > antivirus_result.txt");
+        system("powershell -Command \"Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntiVirusProduct | Select-Object displayName, pathToSignedProductExe | Out-File antivirus_result.txt\"");
     } else if (os_type == "macOS") {
         cout << "Running macOS-specific commands..." << endl;
-        system("system_profiler SPApplicationsDataType | grep -A 5 -i \"antivirus\" > antivirus_result.txt");
+        //system("system_profiler SPApplicationsDataType | grep -A 5 -i \"antivirus\" > antivirus_result.txt");
+        system("spctl --status > antivirus.txt");
+        system("system_profiler SPInstallHistoryDataType | grep -i 'xprotect' >> antivirus.txt");
+
     } else if (os_type == "Linux") {
         cout << "Running Linux-specific commands..." << endl;
-        system("ps aux | grep -i \"NTAV Antivirus\" > antivirus_result.txt");
+        //system("ps aux | grep -i \"NTAV Antivirus\" > antivirus_result.txt");
+        system("echo '=== Linux Security Check ===' > antivirus_result.txt; "
+            "if command -v clamscan > /dev/null 2>&1; then echo '[ClamAV Installed Check] ClamAV is installed.' >> antivirus_result.txt; else echo '[ClamAV Installed Check] ClamAV is NOT installed.' >> antivirus_result.txt; fi; "
+            "if pgrep -x 'clamd' > /dev/null; then echo '[ClamAV Running Check] ClamAV is running.' >> antivirus_result.txt; else echo '[ClamAV Running Check] ClamAV is NOT running.' >> antivirus_result.txt; fi; "
+            "echo '[LSM (Linux Security Module) Check]' >> antivirus_result.txt; "
+            "if [ -f /sys/kernel/security/lsm ]; then cat /sys/kernel/security/lsm >> antivirus_result.txt; else echo 'LSM information not available.' >> antivirus_result.txt; fi; "
+            "echo '[AppArmor / SELinux Status]' >> antivirus_result.txt; "
+            "if command -v aa-status > /dev/null 2>&1; then sudo aa-status >> antivirus_result.txt; "
+            "elif command -v getenforce > /dev/null 2>&1; then getenforce >> antivirus_result.txt; "
+            "else echo 'Neither AppArmor nor SELinux found.' >> antivirus_result.txt; fi; "
+            "echo 'Security check completed. Results saved in antivirus_result.txt' >> antivirus_result.txt;");
     } else {
         cout << "Invalid OS type: " << os_type << endl;
     }
