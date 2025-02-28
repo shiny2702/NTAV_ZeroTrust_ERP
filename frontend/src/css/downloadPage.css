@@ -1,0 +1,53 @@
+/* 기본 스타일 */
+.download-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background-color: #f4f4f4;
+  font-family: "Arial", sans-serif;
+  color: #333;
+  animation: fadeIn 1.5s ease-in-out; /* 애니메이션 지속 시간 증가 */
+}
+
+/* 제목 스타일 */
+.download-container h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+/* 설명 문구 스타일 */
+.download-container p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* 애니메이션 효과 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .download-container h1 {
+    font-size: 1.5rem;
+  }
+  
+  .download-container p {
+    font-size: 1rem;
+  }
+}
+
+
+  
