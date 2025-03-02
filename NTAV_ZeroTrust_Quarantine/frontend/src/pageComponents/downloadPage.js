@@ -1,53 +1,49 @@
 import React, { Component } from "react";
-import '../css/downloadPage.css';
+import "../css/downloadPage.css";
 
 class DownloadPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isUserConfirmed: null,
+      selectedFile: null, // 선택한 파일
     };
-    this.hasConfirmed = false; // 중복 실행 방지용 인스턴스 변수
   }
 
-  componentDidMount() {
-    // 이미 실행되었으면 더 이상 실행하지 않음
-    if (this.hasConfirmed) return;
-    this.hasConfirmed = true; // 실행 여부 업데이트
+  handleDownload = (event, fileName) => {
+    event.preventDefault(); // 기본 다운로드 동작 방지
 
-    const userConfirmed = window.confirm("보안 소프트웨어 탐지를 위해 네이티브 앱을 실행할까요?");
-    
+    const userConfirmed = window.confirm(`${fileName}을(를) 다운로드하시겠습니까?`);
+
     if (userConfirmed) {
-      this.setState({ isUserConfirmed: true }, () => {
+      this.setState({ selectedFile: fileName }, () => {
         setTimeout(() => {
-          window.location.href = "/download/exefile.exe"; // 1.5초 후 다운로드 시작
+          window.location.href = `https://github.com/notry345/test/releases/download/test/${fileName}`; // 다운로드 시작
         }, 1500);
-      });   
+      });
     } else {
-      this.setState({ isUserConfirmed: false });
+      this.setState({ selectedFile: null });
     }
-  }
+  };
 
   render() {
-    const { isUserConfirmed } = this.state;
+    const { selectedFile } = this.state;
 
     return (
       <div className="download-container">
-        {isUserConfirmed === null ? (
-          <>
-            <h1>보안 소프트웨어 탐지를 위한 확인</h1>
-            <p>잠시 후 보안 검사를 진행합니다...</p>
-          </>
-        ) : isUserConfirmed ? (
-          <h1>다운로드가 시작되었습니다.</h1>
-        ) : (
-          <h1>탐지가 취소되었습니다.</h1>
-        )}
+        <h1>파일 다운로드</h1>
+        <p>다운로드할 파일을 선택하세요.</p>
+
+        <ul className="download-links">
+          <li><a href="/download/file1.exe" onClick={(e) => this.handleDownload(e, "allin.exe")}>allin.exe</a></li>
+          <li><a href="/download/file1.exe" onClick={(e) => this.handleDownload(e, "window.exe")}>Windows</a></li>
+          <li><a href="/download/file2.exe" onClick={(e) => this.handleDownload(e, "mac.exe")}>macOS</a></li>
+          <li><a href="/download/file3.exe" onClick={(e) => this.handleDownload(e, "linux.exe")}>Linux</a></li>
+        </ul>
+
+        {selectedFile && <p>{selectedFile} 다운로드가 시작됩니다...</p>}
       </div>
     );
   }
 }
 
 export default DownloadPage;
-
-

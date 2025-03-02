@@ -26,6 +26,14 @@
   color: #555;
 }
 
+.download-links {
+  list-style-type: none;
+}
+
+.download-links a:hover {
+  color:#551A8B;
+}
+
 /* 애니메이션 효과 */
 @keyframes fadeIn {
   from {
