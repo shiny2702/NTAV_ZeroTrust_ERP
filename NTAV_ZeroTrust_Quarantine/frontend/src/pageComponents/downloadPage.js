@@ -34,10 +34,10 @@ class DownloadPage extends Component {
         <p>다운로드할 파일을 선택하세요.</p>
 
         <ul className="download-links">
-          <li><a href="/download/file1.exe" onClick={(e) => this.handleDownload(e, "allin.exe")}>allin.exe</a></li>
-          <li><a href="/download/file1.exe" onClick={(e) => this.handleDownload(e, "window.exe")}>Windows</a></li>
-          <li><a href="/download/file2.exe" onClick={(e) => this.handleDownload(e, "mac.exe")}>macOS</a></li>
-          <li><a href="/download/file3.exe" onClick={(e) => this.handleDownload(e, "linux.exe")}>Linux</a></li>
+          <li><a onClick={(e) => this.handleDownload(e, "allin.exe")}>allin.exe</a></li>
+          <li><a onClick={(e) => this.handleDownload(e, "window.exe")}>Windows</a></li>
+          <li><a onClick={(e) => this.handleDownload(e, "mac.exe")}>macOS</a></li>
+          <li><a onClick={(e) => this.handleDownload(e, "linux.exe")}>Linux</a></li>
         </ul>
 
         {selectedFile && <p>{selectedFile} 다운로드가 시작됩니다...</p>}
