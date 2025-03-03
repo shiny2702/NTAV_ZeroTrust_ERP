@@ -140,7 +140,6 @@ void check_antivirus(const string& os_type) {
 
     } else if (os_type == "Linux") {
         cout << "Running Linux-specific commands..." << endl;
-        //system("ps aux | grep -i \"NTAV Antivirus\" > antivirus_result.txt");
         system("echo '=== Linux Security Check ===' > antivirus_result.txt; "
 
         // LSM (Linux Security Module) 활성화 상태 확인

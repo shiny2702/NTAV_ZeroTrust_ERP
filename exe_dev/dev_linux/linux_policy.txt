@@ -1,0 +1,20 @@
+1. Linux Security Module(LSM) 상태 확인
+/sys/kernel/security/lsm 파일을 읽어, 현재 활성화된 **Linux Security Module(LSM)**을 확인
+이 파일에는 AppArmor, SELinux, Yama 등 활성화된 보안 모듈 목록이 포함됨
+파일이 없으면 "LSM information not available." 출력
+
+2. AppArmor 또는 SELinux 상태 확인
+AppArmor: 시스템 관리자가 프로그램 프로필 별로 프로그램의 역량을 
+제한할 수 있게 해주는 리눅스 커널 보안 모듈
+SELinux: Linux Kernel에 내장된 MAC(Mandatory Access Control) 시스템
+AppArmor가 설치되어 있으면 aa-status 명령어 실행 (현재 보호 상태 출력)
+SELinux가 설치되어 있으면 getenforce 명령어 실행 (현재 Enforcing, Permissive, Disabled 여부 출력)
+둘 다 없으면 "Neither AppArmor nor SELinux found." 출력
+
+3. UFW(Uncomplicated Firewall) 상태 확인
+UFW가 활성화(active)되었는지 확인
+설정된 규칙 목록 출력
+
+4. firewalld 상태 확인 (`RHEL, CentOS, Fedora 등에서 사용됨)
+active이면 firewalld가 실행 중
+inactive이면 실행되지 않음
