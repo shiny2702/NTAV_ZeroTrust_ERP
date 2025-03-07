@@ -1,4 +1,5 @@
 const fs = require('fs');
+const iconv = require('iconv-lite');
 const path = require('path');
 
 // security_result.txt 파일 경로 설정
@@ -6,16 +7,32 @@ const path = require('path');
 const filePath = path.join(__dirname, 'security_result.txt');
 
 // 보안 결과 파일을 읽어옵니다.
-const readSecurityResult = () => {
+/*const readSecurityResult = () => {
     if (!fs.existsSync(filePath)) {
         console.error("Error: security_result.txt 파일을 찾을 수 없습니다.");
         return null;
     }
     return fs.readFileSync(filePath, 'utf8').split("\n"); // 줄 단위로 나눠서 배열 반환
+};*/
+const readSecurityResult = () => {
+    if (!fs.existsSync(filePath)) {
+        console.error("Error: security_result.txt 파일을 찾을 수 없습니다.");
+        return null;
+    }
+
+    // 파일을 읽어서 버퍼로 반환
+    const buffer = fs.readFileSync(filePath);
+
+    // iconv-lite로 utf-8로 디코딩
+    const decodedData = iconv.decode(buffer, 'utf-16');  // 파일을 UTF-8로 변환
+
+    // 줄 단위로 나누어서 배열 반환
+    return decodedData.split("\n");
 };
 
 // 보안 결과를 검사하고 클라이언트가 통과할 수 있는지 확인합니다.
 const checkSecurityStatus = (lines) => {
+    console.log(lines);
     if (!lines) return false;
 
     const result = {
@@ -41,7 +58,10 @@ const checkSecurityStatus = (lines) => {
 
         switch (currentSection) {
             case "=== Antivirus Products ===":
-                if (trimmedLine.includes("Windows Defender")) result.antivirus = true;
+                console.log("Trimmed Line: ", trimmedLine);
+                if (/\bWindows Defender\b/.test(trimmedLine)) {
+                    result.antivirus = true;
+                }
                 break;
 
             case "=== Windows Defender Status ===":
