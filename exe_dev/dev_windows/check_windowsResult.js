@@ -15,16 +15,16 @@ const readSecurityResult = () => {
 };
 
 // 보안 결과를 검사하고 클라이언트가 통과할 수 있는지 확인합니다.
-const checkSecurityStatus = (securityResult) => {
+const checkSecurityStatus = (lines) => {
     if (!lines) return false;
 
     const result = {
         antivirus: false,
-        /*defenderStatus: false,
+        defenderStatus: false,
         firewallStatus: false,
         uacStatus: false,
         rdpStatus: false,
-        autoLoginStatus: false*/
+        autoLoginStatus: false
     };
 
     // 1. Antivirus Products: Windows Defender가 활성화되어 있는지 확인
@@ -77,8 +77,8 @@ const checkSecurityStatus = (securityResult) => {
                 break;
         }
     }
-}
     return Object.values(result).every(status => status);
+}
 
 // 보안 결과 파일을 읽어오고 체크합니다.
 const securityResult = readSecurityResult();
