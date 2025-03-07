@@ -10,6 +10,7 @@ using namespace std;
 // OS별 백신 검사 함수
 void check_security() {
     cout << "Running macOS-specific commands..." << endl;
+    system("mac >> security_result.txt");
 
     // 스파이웨어 및 보안 검사 관련 결과를 저장
     system("spctl --status > security_result.txt");

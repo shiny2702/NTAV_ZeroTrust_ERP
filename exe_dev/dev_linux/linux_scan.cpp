@@ -11,7 +11,7 @@ using namespace std;
 void check_security() {
     cout << "Running Linux-specific commands..." << endl;
     //system("ps aux | grep -i \"NTAV Security\" > security_result.txt");
-    system("echo '=== Linux Security Check ===' > security_result.txt; "
+    system("echo 'Linux' > security_result.txt; "
 
     // LSM (Linux Security Module) 활성화 상태 확인
     "echo '[LSM (Linux Security Module) Check]' >> security_result.txt; "
