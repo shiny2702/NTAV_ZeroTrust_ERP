@@ -1,8 +1,11 @@
-=== Linux Security Check ===
+Linux
 [LSM (Linux Security Module) Check]
 LSM information not available.
-[AppArmor / SELinux Status]
+[AppArmor/SELinux Status check]
+AppArmor not present or inactive.
+SELinux not installed or not active.
+[UFW and firewalld Status check]
 UFW is installed.
 UFW is inactive or access denied.
 firewalld not found.
-Security check completed. Results saved in security_result.txt
+-1
