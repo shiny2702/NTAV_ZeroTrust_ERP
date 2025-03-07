@@ -7,8 +7,10 @@
 void check_security() {
     std::cout << "Running Windows-specific security checks..." << std::endl;
 
+    system("powershell -Command \"'Windows' | Out-File security_result.txt\"");
+
     // Antivirus Products
-    system("powershell -Command \"'=== Antivirus Products ===' | Out-File security_result.txt\"");
+    system("powershell -Command \"'=== Antivirus Products ===' | Out-File security_result.txt -Append\"");
     system("powershell -Command \"Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntiVirusProduct | Select-Object displayName, pathToSignedProductExe | Out-File security_result.txt -Append\"");
 
     // Windows Defender Status
@@ -27,14 +29,18 @@ void check_security() {
     system("powershell -Command \"'=== Remote Desktop (RDP) Status ===' | Out-File security_result.txt -Append\"");
     system("powershell -Command \"Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections | Select-Object fDenyTSConnections | Out-File security_result.txt -Append\"");
 
-    // Windows Update Status
-    system("powershell -Command \"'=== Windows Update Status ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Get-WmiObject -Class Win32_OperatingSystem | Select-Object LastBootUpTime | Out-File security_result.txt -Append\"");
-
+    // Auto Login Status
     // Auto Login Status
     system("powershell -Command \"'=== Auto Login Status ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Try { (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -Name AutoAdminLogon | Select-Object AutoAdminLogon) | Out-File security_result.txt -Append } Catch { 'AutoAdminLogon: 없음' | Out-File security_result.txt -Append }\"");
-      
+
+    // AutoAdminLogon 확인 후 포맷 변경
+    system("powershell -Command \"$autoAdminLogon = Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -ErrorAction SilentlyContinue; "
+            "$status = if ($autoAdminLogon -and $autoAdminLogon.AutoAdminLogon -eq '1') { '1' } else { '0' }; "
+            "'AutoAdminLogon' + [System.Environment]::NewLine + '--------------' + [System.Environment]::NewLine + $status | Out-File security_result.txt -Append\"");
+
+    // Add ending marker to the file
+    system("powershell -Command \"echo '-1' | Out-File security_result.txt -Append\"");  // Corrected to append "-1" at the end
+
     std::cout << "Security detection completed. Results saved in security_result.txt." << std::endl;
 }
 
