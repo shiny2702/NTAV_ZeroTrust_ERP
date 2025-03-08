@@ -55,7 +55,7 @@ class LoginPage extends Component {
       // role에 따라 페이지 이동
       const { role } = user;
       if (role === 'admin') {
-        this.props.navigate('/admin');
+        this.props.navigate('/csuite');
       } else if (role === 'user') {
         this.props.navigate('/main');
       } else {

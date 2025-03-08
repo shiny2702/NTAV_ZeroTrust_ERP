@@ -1,0 +1,116 @@
+/* Profile Card */
+.profileCard {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    margin-top: 20px;
+}
+
+.profileCard h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+    text-align: center;
+}
+
+.profileCard p {
+    font-size: 1rem;
+    color: #666;
+    text-align: left;
+}
+
+.profileCard .profileImage {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto;
+    background-color: #ddd;
+    margin-bottom: 10px;
+}
+
+/* Admin Content */
+.adminContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.contentArea {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-left: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 20px;
+}
+
+.projectApprovalSection {
+    margin-top: 20px;
+}
+
+.projectApprovalButton {
+    background-color: #94989c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.projectApprovalButton:hover {
+    background-color: #5a5d5f;
+}
+
+.approvalStatus {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.approvedProjects, .unapprovedProjects {
+    width: 45%;
+}
+
+.approvedProjects ul, .unapprovedProjects ul {
+    list-style: none;
+    padding: 0;
+}
+
+.approvedProjects li, .unapprovedProjects li {
+    margin-bottom: 10px;
+}
+
+.divider {
+    width: 1px;
+    background-color: #ddd;
+    margin: 0 20px;
+    height: 200px;
+}
+
+h4 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Profile and Content Layout */
+.profileAndContent {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.profileCardWrapper {
+    flex: 2;
+}
+
+.contentWrapper {
+    flex: 8;
+}
+

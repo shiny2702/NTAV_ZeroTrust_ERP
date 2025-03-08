@@ -1,0 +1,93 @@
+.menu ul {
+    list-style-type: none;
+    display: flex;
+    gap: 5vw;
+}
+
+
+/* .menu li에 relative 위치 추가 */
+.menu li {
+    cursor: pointer;
+    font-size: calc(0.3rem + 1vw);
+    color: white;
+    white-space: nowrap;
+    padding: 15px 20px;
+    position: relative; /* 추가 */
+}
+
+/* .dropdown-menu 스타일 수정 */
+.dropdown-menu {
+    display: none !important;
+    position: absolute;
+    top: 100%; /* li 바로 아래 위치 */
+    left: 0;
+    background-color: #76a8de;
+    color: white;
+    padding: 10px;
+    margin: 0;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: flex;
+    flex-direction: row;
+    min-width: 300px;
+}
+
+/* 컬럼 스타일 */
+.dropdown-column {
+    flex: 1; /* 두 컬럼이 동일한 너비를 가지도록 설정 */
+    padding: 10px;
+    display: flex;
+    flex-direction: column; /* 내부 요소들을 세로 정렬 */
+    align-items: flex-start; /* 왼쪽 정렬 */
+}
+
+/* 세로 구분선 */
+.dropdown-divider {
+    width: 1px;
+    background: white;
+    margin: 0 10px; /* 좌우 간격 조정 */
+}
+
+/* 제목 스타일 */
+.dropdown-column h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    padding-bottom: 15px;
+    text-align: center;
+    width: 100%; /* 컬럼 너비에 맞게 제목 정렬 */
+}
+
+/* 리스트 스타일 */
+.dropdown-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* 리스트 내부 항목들을 세로 정렬 */
+    gap: 5px; /* li 요소 간 간격 추가 */
+}
+
+/* 리스트 아이템 스타일 */
+.dropdown-column ul li {
+    padding: 10px 15px;
+    font-size: calc(0.1rem + 0.8vw);
+    white-space: nowrap;
+    cursor: pointer;
+    text-align: left;
+    width: 100%; /* 전체 너비 차지 */
+}
+
+/* 리스트 아이템 hover 스타일 */
+.dropdown-column ul li:hover {
+    background-color: #0056b3;
+}
+
+/* 드롭다운 메뉴 hover 시 보이도록 설정 */
+.dropdown:hover .dropdown-menu {
+    display: flex !important; /* 기존 스타일 유지하면서 flex 활성화 */
+    pointer-events: auto;
+}
