@@ -1,0 +1,62 @@
+.updateWorkspace {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.projectInfoTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1px;
+}
+
+.projectInfoTable th, .projectInfoTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.projectInfoTable th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.projectInfoTable td {
+    vertical-align: top;
+}
+
+.projectInfoTable td div {
+    margin-bottom: 5px;
+}
+
+.workspace-separator {
+    border-top: 2px solid #ccc; /* 경계선 색상 및 두께 */
+    margin-top: 40px; /* 경계선과 다른 요소 간의 간격 */
+    margin-bottom: 20px;
+  }
+
+  /* updateWorkspace.css 파일에 추가 */
+  .headerWithEdit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .editButton {
+    background-color: #78a3da;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .editButton:hover {
+    background-color: #003377;
+  }
+  

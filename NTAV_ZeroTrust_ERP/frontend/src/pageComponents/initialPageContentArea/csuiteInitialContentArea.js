@@ -21,7 +21,7 @@ class CSuiteInitialContentArea extends Component {
                   <h4>결재 완료</h4>
                   <ul>
                     {approvedProjects.map((project) => (
-                      <li key={project.id}>{project.name} - {project.approvalDate}</li>
+                      <li key={project.id}>{project.name} - {project.startDate}</li>
                     ))}
                   </ul>
                 </div>

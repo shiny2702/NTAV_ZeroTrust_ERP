@@ -12,7 +12,22 @@ class ProjectApprovalPage extends Component {
     };
 
     handleViewChange = (viewMode) => {
-        this.setState({ viewMode });
+        this.setState((prevState) => {
+            const { selectedProjectId } = prevState;
+            const { approvedProjects, unapprovedProjects } = this.props;
+    
+            // 선택된 프로젝트가 approvedProjects에 속해 있을 때 결재미완료 버튼을 누르면 selectedProjectId를 null로 설정
+            if (viewMode === 'unapproved' && approvedProjects.some(project => project.no === selectedProjectId)) {
+                return { viewMode, selectedProjectId: null };
+            }
+    
+            // 선택된 프로젝트가 unapprovedProjects에 속해 있을 때 결재완료 버튼을 누르면 selectedProjectId를 null로 설정
+            if (viewMode === 'approved' && unapprovedProjects.some(project => project.no === selectedProjectId)) {
+                return { viewMode, selectedProjectId: null };
+            }
+    
+            return { viewMode };
+        });
     };
 
     handleProjectClick = (projectId) => {
@@ -37,7 +52,7 @@ class ProjectApprovalPage extends Component {
         }
 
         // 선택된 프로젝트 ID가 null일 때, 결재완료 프로젝트, 결재미완료 프로젝트 구분
-        const selectedProject = filteredProjects.find(project => project.id === selectedProjectId);
+        const selectedProject = filteredProjects.find(project => project.no === selectedProjectId);
 
         return (
             <div className="projectApprovalPage">
@@ -63,15 +78,15 @@ class ProjectApprovalPage extends Component {
                         </button>
                     </div>
 
-                    <div className="separator"></div>
+                    <div className="sidebar-separator"></div>
 
                     <div className="projectList">
                         {filteredProjects.map((project, index) => (
                             <button
-                                key={project.id}
-                                className={`projectItem ${approvedProjects.some(p => p.id === project.id) ? 'approved' : 'unapproved'} 
-                                                        ${selectedProjectId === project.id ? 'selected' : ''}`}
-                                onClick={() => this.handleProjectClick(project.id)}
+                                key={project.no}
+                                className={`projectItem ${approvedProjects.some(p => p.no === project.no) ? 'approved' : 'unapproved'} 
+                                                        ${selectedProjectId === project.no ? 'selected' : ''}`}
+                                onClick={() => this.handleProjectClick(project.no)}
                             >
                                 {index + 1} || &nbsp;{project.name}
                             </button>
@@ -86,9 +101,9 @@ class ProjectApprovalPage extends Component {
                     // 결재미완료된 프로젝트를 선택했을 때는 ApprovalWorkspace
                     selectedProjectId === null ? (
                     <NoneSelectedWorkspace />
-                    ) : approvedProjects.some(project => project.id === selectedProjectId) ? (
+                    ) : approvedProjects.some(project => project.no === selectedProjectId) ? (
                     <UpdateWorkspace project={selectedProject} />
-                    ) : unapprovedProjects.some(project => project.id === selectedProjectId) ? (
+                    ) : unapprovedProjects.some(project => project.no === selectedProjectId) ? (
                     <ApprovalWorkspace project={selectedProject} />
                     ) : null
                 }
