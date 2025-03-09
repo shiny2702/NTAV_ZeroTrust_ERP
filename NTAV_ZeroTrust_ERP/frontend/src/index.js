@@ -9,6 +9,7 @@ import NoPermPage from './pageComponents/noPermPage';
 import AccountManagement from "./pageComponents/admin_accountManagementPage";
 import PasswordResetPage from './pageComponents/passwordResetPage';
 import ProjectApprovalPage from './pageComponents/smallApplicationPage/CSuite/csuite/projectApprovalPage';
+import CsuiteInitialContentArea from './pageComponents/initialPageContentArea/csuiteInitialContentArea';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,12 +17,19 @@ root.render(
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />        {/* 기존 App 대신 LoginPage 적용 */}
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/csuite" element={<CSuitePage />} />
-        <Route path="/noPerm" element={<NoPermPage />} />
-        <Route path="/admin/accountManagement" element={<AccountManagement />} />
         <Route path="/passwordReset" element={<PasswordResetPage />} />
-        <Route path="/projectApproval" element={<ProjectApprovalPage />} />
+        
+        <Route path="/main" element={<MainPage />} />
+
+        <Route path="/csuite" element={<CSuitePage />} >
+          <Route index element={<CsuiteInitialContentArea />} />
+          <Route path="projectApproval" element={<ProjectApprovalPage />} />
+        </Route>
+
+        <Route path="/noPerm" element={<NoPermPage />} />
+
+        <Route path="/admin/accountManagement" element={<AccountManagement />} />
+
       </Routes>
     </Router>
   </React.StrictMode>

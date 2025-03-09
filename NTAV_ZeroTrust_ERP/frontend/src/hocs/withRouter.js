@@ -1,17 +1,19 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React from "react";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 
-// 클래스형 컴포넌트에서 useLocation과 useNavigate를 사용할 수 있도록 래핑하는 HOC
+// 클래스형 컴포넌트에서 useLocation, useNavigate, useOutletContext를 사용할 수 있도록 래핑
 function withRouter(Component) {
-  return function(props) {
+  return function (props) {
     const location = useLocation();
     const navigate = useNavigate();
-    
-    return <Component {...props} location={location} navigate={navigate} />;
+    const outletContext = useOutletContext(); // 🏆 Outlet에서 전달된 데이터 가져오기
+
+    return <Component {...props} location={location} navigate={navigate} {...outletContext} />;
   };
 }
 
 export default withRouter;
+
 
 
   

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Outlet } from "react-router-dom";
 import withRouter from "../hocs/withRouter";  
 import '../css/csuitePage.css';  
 import WholeHeaderBar from "./partialComponents/wholeHeaderBar";
@@ -25,10 +26,6 @@ class CSuitePage extends Component {
     this.props.navigate('/passwordReset');
   };
 
-  handleProjectApprovalClick = () => {
-    this.props.navigate('/projectApproval');
-  };
-
   render() {
     const { user, approvedProjects, unapprovedProjects } = this.state;
 
@@ -36,7 +33,7 @@ class CSuitePage extends Component {
       <div className="csuitePage">
         <WholeHeaderBar />
 
-        <div className="adminContent">
+        <div className="csuiteContent">
           <div className="profileCard">
             <div className="profileImage"></div>
             <h3>{user ? `${user.username}` : "사용자 이름"}</h3>
@@ -50,34 +47,9 @@ class CSuitePage extends Component {
             </button>
           </div>
 
+
           <div className="contentArea">
-            <div className="projectApprovalSection">
-              <button className="projectApprovalButton" onClick={this.handleProjectApprovalClick}>
-                프로젝트 결재 ‣
-              </button>
-
-              <div className="approvalStatus">
-                <div className="approvedProjects">
-                  <h4>결재 완료</h4>
-                  <ul>
-                    {approvedProjects.map((project) => (
-                      <li key={project.id}>{project.name} - {project.approvalDate}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="divider"></div>
-
-                <div className="unapprovedProjects">
-                  <h4>결재 미완료</h4>
-                  <ul>
-                    {unapprovedProjects.map((project) => (
-                      <li key={project.id}>{project.name} - 대기 중</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
+            <Outlet context={{ approvedProjects, unapprovedProjects }} />
           </div>
         </div>
       </div>

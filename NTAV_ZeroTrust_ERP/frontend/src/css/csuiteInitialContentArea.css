@@ -1,0 +1,48 @@
+.projectApprovalSection {
+    margin-top: 20px;
+}
+
+.projectApprovalButton {
+    background-color: #94989c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.projectApprovalButton:hover {
+    background-color: #5a5d5f;
+}
+
+.approvalStatus {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.approvedProjects, .unapprovedProjects {
+    width: 45%;
+}
+
+.approvedProjects ul, .unapprovedProjects ul {
+    list-style: none;
+    padding: 0;
+}
+
+.approvedProjects li, .unapprovedProjects li {
+    margin-bottom: 10px;
+}
+
+.divider {
+    width: 1px;
+    background-color: #ddd;
+    margin: 0 20px;
+    height: 200px;
+}
+
+h4 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
