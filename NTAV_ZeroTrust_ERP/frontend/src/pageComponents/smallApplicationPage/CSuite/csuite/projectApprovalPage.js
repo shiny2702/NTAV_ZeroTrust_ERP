@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import withRouter from "../../../../hocs/withRouter";  
 import '../../../../css/projectApprovalPage.css';  
+import ApprovalWorkspace from "./workspace/approvalWorkspace";
+import UpdateWorkspace from "./workspace/updateWorkspace";
+import NoneSelectedWorkspace from "./workspace/noneSelectedWorkspace";  
 
 class ProjectApprovalPage extends Component {
     state = {
@@ -33,6 +36,9 @@ class ProjectApprovalPage extends Component {
             filteredProjects = [...approvedProjects, ...unapprovedProjects];
         }
 
+        // 선택된 프로젝트 ID가 null일 때, 결재완료 프로젝트, 결재미완료 프로젝트 구분
+        const selectedProject = filteredProjects.find(project => project.id === selectedProjectId);
+
         return (
             <div className="projectApprovalPage">
                 <div className="sidebar">
@@ -63,7 +69,8 @@ class ProjectApprovalPage extends Component {
                         {filteredProjects.map((project, index) => (
                             <button
                                 key={project.id}
-                                className={`projectItem ${project.approvalDate ? 'approved' : 'unapproved'} ${selectedProjectId === project.id ? 'selected' : ''}`}
+                                className={`projectItem ${approvedProjects.some(p => p.id === project.id) ? 'approved' : 'unapproved'} 
+                                                        ${selectedProjectId === project.id ? 'selected' : ''}`}
                                 onClick={() => this.handleProjectClick(project.id)}
                             >
                                 {index + 1} || &nbsp;{project.name}
@@ -71,10 +78,20 @@ class ProjectApprovalPage extends Component {
                         ))}
                     </div>
                 </div>
-
+                   
                 <div className="workspace">
-                    
-                    
+                {
+                    // selectedProjectId가 null일 때는 NoneSelectedWorkspace
+                    // 결재완료된 프로젝트를 선택했을 때는 UpdateWorkspace
+                    // 결재미완료된 프로젝트를 선택했을 때는 ApprovalWorkspace
+                    selectedProjectId === null ? (
+                    <NoneSelectedWorkspace />
+                    ) : approvedProjects.some(project => project.id === selectedProjectId) ? (
+                    <UpdateWorkspace project={selectedProject} />
+                    ) : unapprovedProjects.some(project => project.id === selectedProjectId) ? (
+                    <ApprovalWorkspace project={selectedProject} />
+                    ) : null
+                }
                 </div>
             </div>
         );

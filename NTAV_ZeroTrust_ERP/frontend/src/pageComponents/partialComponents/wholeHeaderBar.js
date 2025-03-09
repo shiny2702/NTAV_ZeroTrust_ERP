@@ -5,7 +5,7 @@ import MenuBar from "./menuBar";
 
 class WholeHeaderBar extends Component {
     state = {
-        showLogoutModal: false
+        user: JSON.parse(localStorage.getItem('user')) || null,
     };
 
     handleLogoutClick = () => {
@@ -29,7 +29,7 @@ class WholeHeaderBar extends Component {
         return (
             <div>
                 <div className="header">
-                    <div className="logo" onClick={this.handleLogoClick}>NTAV</div>
+                    <div className="logo" onClick={this.props.handleLogoClick}>NTAV</div>
                     <nav className="menu">
                         <MenuBar/>
                     </nav>

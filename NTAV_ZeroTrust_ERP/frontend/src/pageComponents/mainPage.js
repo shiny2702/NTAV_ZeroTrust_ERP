@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import withRouter from "../hocs/withRouter";  // withRouter HOC 가져오기
 import '../css/mainPage.css';  // 스타일 파일
 import WholeHeaderBar from "./partialComponents/wholeHeaderBar";
+import ProfileCard from "./partialComponents/profileCard";
 
 // 일반 직원 페이지
 class MainPage extends Component {
@@ -33,22 +34,10 @@ class MainPage extends Component {
 
     return (
       <div className="mainPage">
-        <WholeHeaderBar />
-        
-        <div className="mainContent">
-          <div className="profileCard">
-            <div className="profileImage"></div> {/* 프로필 이미지 자리 */}
-            <h3>{user ? `${user.username}` : "사용자 이름"}</h3>
-            <div className="profileDetails">
-              <p>{user ? `E-mail :: ${user.email}` : "E-mail :: 이메일 주소"}</p>
-              <p>{user ? `Dept :: ${user.dept}` : "Dept :: 부서 정보"}</p>
-              <p>{user ? `Role :: ${user.role}` : "Role :: 직급"}</p>
-            </div>
-            <button className="passwordResetLink" onClick={this.handlePasswordResetClick}>
-              비밀번호 변경
-            </button> {/* 비밀번호 변경 링크 */}
-          </div> 
+        <WholeHeaderBar handleLogoClick={this.handleLogoClick} />
 
+        <div className="mainContent"> 
+          <ProfileCard/>
           <div className="dashboard">
             <h3>{user ? `${user.username}'s Dashboard` : "사용자 대시보드"}</h3>
             <hr style={lineStyle} /> 

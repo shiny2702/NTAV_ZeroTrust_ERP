@@ -3,11 +3,11 @@ import { Outlet } from "react-router-dom";
 import withRouter from "../hocs/withRouter";  
 import '../css/csuitePage.css';  
 import WholeHeaderBar from "./partialComponents/wholeHeaderBar";
+import ProfileCard from "./partialComponents/profileCard";
 
 // 경영진 페이지
 class CSuitePage extends Component {
   state = {
-    user: JSON.parse(localStorage.getItem('user')) || null,
     approvedProjects: [
       { id: 1, name: '프로젝트 A', approvalDate: '2025-03-01' },
       { id: 2, name: '프로젝트 B', approvalDate: '2025-02-20' }
@@ -22,32 +22,15 @@ class CSuitePage extends Component {
     this.props.navigate('/csuite');
   };
 
-  handlePasswordResetClick = () => {
-    this.props.navigate('/passwordReset');
-  };
-
   render() {
-    const { user, approvedProjects, unapprovedProjects } = this.state;
+    const { approvedProjects, unapprovedProjects } = this.state;
 
     return (
       <div className="csuitePage">
-        <WholeHeaderBar />
+        <WholeHeaderBar handleLogoClick={this.handleLogoClick} />
 
         <div className="csuiteContent">
-          <div className="profileCard">
-            <div className="profileImage"></div>
-            <h3>{user ? `${user.username}` : "사용자 이름"}</h3>
-            <div className="profileDetails">
-              <p>{user ? `E-mail :: ${user.email}` : "E-mail :: 이메일 주소"}</p>
-              <p>{user ? `Dept :: ${user.dept}` : "Dept :: 부서 정보"}</p>
-              <p>{user ? `Role :: ${user.role}` : "Role :: 직급"}</p>
-            </div>
-            <button className="passwordResetLink" onClick={this.handlePasswordResetClick}>
-              비밀번호 변경
-            </button>
-          </div>
-
-
+          <ProfileCard/>
           <div className="contentArea">
             <Outlet context={{ approvedProjects, unapprovedProjects }} />
           </div>
