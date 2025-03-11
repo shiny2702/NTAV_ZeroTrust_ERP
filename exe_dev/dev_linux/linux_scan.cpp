@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#define CURL_STATICLIB
 #include <curl/curl.h>
 #include <cstdlib>
 
@@ -65,7 +66,7 @@ void check_security() {
     
     cout << "Security detection completed. Results saved in security_result.txt." << endl;
 }
-/*
+
 // cURL 요청을 처리하는 함수
 bool uploadFile(const std::string& url, const std::string& filePath) {
     CURL *curl;
@@ -112,12 +113,12 @@ bool uploadFile(const std::string& url, const std::string& filePath) {
     curl_easy_cleanup(curl);
     return true;
 }
-*/
+
 int main() {
 
     std::cout << "Running security check for Linux system" << std::endl;
     check_security();
-/*
+
     std::cout << "Uploading the security result..." << std::endl;
 
     std::string url = "http://localhost:3001/upload";  // 서버 URL
@@ -128,7 +129,7 @@ int main() {
         std::cerr << "File upload failed!" << std::endl;
         return 1;
     }
-*/
+
     return 0;
 
 }

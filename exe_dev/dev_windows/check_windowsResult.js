@@ -7,13 +7,6 @@ const path = require('path');
 const filePath = path.join(__dirname, 'security_result.txt');
 
 // 보안 결과 파일을 읽어옵니다.
-/*const readSecurityResult = () => {
-    if (!fs.existsSync(filePath)) {
-        console.error("Error: security_result.txt 파일을 찾을 수 없습니다.");
-        return null;
-    }
-    return fs.readFileSync(filePath, 'utf8').split("\n"); // 줄 단위로 나눠서 배열 반환
-};*/
 const readSecurityResult = () => {
     if (!fs.existsSync(filePath)) {
         console.error("Error: security_result.txt 파일을 찾을 수 없습니다.");
@@ -44,7 +37,8 @@ const checkSecurityStatus = (lines) => {
         autoLoginStatus: false
     };
 
-    // 1. Antivirus Products: Windows Defender가 활성화되어 있는지 확인
+    let firewallTrueCount = 0;
+
     let currentSection = "";
 
     for (const line of lines) {
@@ -56,44 +50,60 @@ const checkSecurityStatus = (lines) => {
             continue;
         }
 
+        // 1. Antivirus Products: Windows Defender가 활성화되어 있는지 확인
         switch (currentSection) {
             case "=== Antivirus Products ===":
-                console.log("Trimmed Line: ", trimmedLine);
+                // console.log("Trimmed Line: ", trimmedLine);
                 if (/\bWindows Defender\b/.test(trimmedLine)) {
                     result.antivirus = true;
+                    console.log("Antivirus status changed: ", result.antivirus);
                 }
                 break;
 
             case "=== Windows Defender Status ===":
-                if (trimmedLine.startsWith("DisableRealtimeMonitoring")) {
-                    const value = trimmedLine.split(/\s+/).pop();
-                    if (value === "False") result.defenderStatus = true;
+                // console.log("Trimmed Line: ", trimmedLine);
+                if (/\bFalse\b/.test(trimmedLine)) {
+                    result.defenderStatus = true; // 실시간 모니터링이 활성화된 상태태
+                    console.log("Defender status changed: ", result.defenderStatus);
+                } else if (/\bTrue\b/.test(trimmedLine)) {
+                    result.defenderStatus = false; 
+                    console.log("Defender status changed: ", result.defenderStatus);
                 }
                 break;
 
             case "=== Firewall Status ===":
-                if (trimmedLine.startsWith("Domain") || trimmedLine.startsWith("Private") || trimmedLine.startsWith("Public")) {
-                    if (trimmedLine.endsWith("True")) {
+                // console.log("Trimmed Line: ", trimmedLine);
+                if (/\bTrue\b/.test(trimmedLine)) {
+                    firewallTrueCount++;
+                    console.log("Firewall True count: ", firewallTrueCount);
+                    if (firewallTrueCount === 3) {
                         result.firewallStatus = true;
+                        console.log("Firewall status changed: ", result.firewallStatus);
                     }
                 }
                 break;
 
             case "=== User Account Control (UAC) ===":
-                if (trimmedLine.startsWith("EnableLUA")) {
-                    if (trimmedLine.endsWith("1")) result.uacStatus = true;
+                // console.log("Trimmed Line: ", trimmedLine);
+                if (/\b1\b/.test(trimmedLine)) {
+                    result.uacStatus = true;
+                    console.log("UAC status changed: ", result.uacStatus);
                 }
                 break;
 
             case "=== Remote Desktop (RDP) Status ===":
-                if (trimmedLine.startsWith("fDenyTSConnections")) {
-                    if (trimmedLine.endsWith("1")) result.rdpStatus = true;
+                // console.log("Trimmed Line: ", trimmedLine);
+                if (/\b1\b/.test(trimmedLine)) {
+                    result.rdpStatus = true;
+                    console.log("RDP status changed: ", result.rdpStatus);
                 }
                 break;
             case "=== Auto Login Status ===":
-                if (trimmedLine.startsWith("AutoAdminLogon")) {
-                    if (trimmedLine.endsWith("0" || trimmedLine.endsWith(""))) result.rdpStatus = true;
-                }
+                // console.log("Trimmed Line: ", trimmedLine);
+                if (/\b0\b/.test(trimmedLine)) {
+                    result.autoLoginStatus = true;
+                    console.log("Auto Login status changed: ", result.autoLoginStatus);
+                } 
                 break;
         }
     }

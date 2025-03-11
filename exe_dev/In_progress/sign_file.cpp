@@ -65,4 +65,3 @@ int main() {
     sign_file(executable_path, private_key_file, signature_file);
     return 0;
 }
-

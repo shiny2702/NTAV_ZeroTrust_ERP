@@ -1,66 +1,17 @@
-/*#include <iostream>
-#include <cstdlib>
+#include <iostream>
+#include <fstream>
+#include <windows.h>
+#include <sstream>
 
 using namespace std;
 
 // OS별 보안 검사 함수 (Windows 전용)
 void check_security() {
-    cout << "Running Windows-specific security checks..." << endl;
-
-    // Antivirus Products
-    system("powershell -Command \"'=== Antivirus Products ===' | Out-File security_result.txt\"");
-    system("powershell -Command \"Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntiVirusProduct | Select-Object displayName, pathToSignedProductExe | Out-File security_result.txt -Append\"");
-
-    // Windows Defender Status
-    system("powershell -Command \"'=== Windows Defender Status ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Get-MpPreference | Select-Object -Property DisableRealtimeMonitoring | Out-File security_result.txt -Append\"");
-
-    // Firewall Status
-    system("powershell -Command \"'=== Firewall Status ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Get-NetFirewallProfile | Select-Object Name, Enabled | Out-File security_result.txt -Append\"");
-
-    // User Account Control (UAC)
-    system("powershell -Command \"'=== User Account Control (UAC) ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name EnableLUA | Select-Object EnableLUA | Out-File security_result.txt -Append\"");
-
-    // Remote Desktop (RDP) Status
-    system("powershell -Command \"'=== Remote Desktop (RDP) Status ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections | Select-Object fDenyTSConnections | Out-File security_result.txt -Append\"");
-
-    // Windows Update Status
-    system("powershell -Command \"'=== Windows Update Status ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Get-WmiObject -Class Win32_OperatingSystem | Select-Object LastBootUpTime | Out-File security_result.txt -Append\"");
-
-    // Auto Login Status
-    system("powershell -Command \"'=== Auto Login Status ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -Name AutoAdminLogon | Select-Object AutoAdminLogon | Out-File security_result.txt -Append\"");
-
-    cout << "Security detection completed. Results saved in security_result.txt." << endl;
-}
-
-int main() {
-    cout << "Running security check for Windows system" << endl;
-    check_security();
-    cout << "All tasks completed successfully!" << endl;
-    return 0;
-}*/
-
-#include <iostream>
-#include <fstream>
-#include <windows.h>
-#include <wininet.h>
-#include <cstdlib>
-#include <sstream>
-
-#pragma comment(lib, "wininet.lib")
-
-// OS별 보안 검사 함수 (Windows 전용)
-void check_security() {
     std::cout << "Running Windows-specific security checks..." << std::endl;
-    system("echo 'Windows' > security_result.txt; ");
+    system("powershell -Command \"'windows' | Out-File security_result.txt\"");
 
     // Antivirus Products
-    system("powershell -Command \"'=== Antivirus Products ===' | Out-File security_result.txt\"");
+    system("powershell -Command \"'=== Antivirus Products ===' | Out-File security_result.txt -Append\"");
     system("powershell -Command \"Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntiVirusProduct | Select-Object displayName, pathToSignedProductExe | Out-File security_result.txt -Append\"");
 
     // Windows Defender Status
@@ -80,16 +31,23 @@ void check_security() {
     system("powershell -Command \"Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections | Select-Object fDenyTSConnections | Out-File security_result.txt -Append\"");
 
     // Windows Update Status
-    system("powershell -Command \"'=== Windows Update Status ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Get-WmiObject -Class Win32_OperatingSystem | Select-Object LastBootUpTime | Out-File security_result.txt -Append\"");
+    system("powershell -Command \"'=== Windows Update Status ===' | Out-File security_result.txt -Append\"");  // Append to the file
+    system("powershell -Command \"Get-WmiObject -Class Win32_OperatingSystem | Select-Object LastBootUpTime | Out-File security_result.txt -Append\"");  // Append last boot time
 
     // Auto Login Status
     system("powershell -Command \"'=== Auto Login Status ===' | Out-File security_result.txt -Append\"");
-    system("powershell -Command \"Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -Name AutoAdminLogon | Select-Object AutoAdminLogon | Out-File security_result.txt -Append\"");
+
+    // AutoAdminLogon 확인 후 포맷 변경
+    system("powershell -Command \"$autoAdminLogon = Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -ErrorAction SilentlyContinue; "
+            "$status = if ($autoAdminLogon -and $autoAdminLogon.AutoAdminLogon -eq '1') { '1' } else { '0' }; "
+            "'AutoAdminLogon' + [System.Environment]::NewLine + '--------------' + [System.Environment]::NewLine + $status | Out-File security_result.txt -Append\"");
+
+    // Add ending marker to the file
+    system("powershell -Command \"echo '-1' | Out-File security_result.txt -Append\"");  // Corrected to append "-1" at the end
 
     std::cout << "Security detection completed. Results saved in security_result.txt." << std::endl;
 }
-
+/*
 // 파일을 서버로 전송하는 함수
 bool uploadFile(const std::string& filePath, const std::string& serverUrl) {
     HINTERNET hInternet, hConnect;
@@ -149,13 +107,13 @@ bool uploadFile(const std::string& filePath, const std::string& serverUrl) {
 
     std::cout << "파일 업로드 성공!" << std::endl;
     return true;
-}
+}*/
 
 int main() {
     std::cout << "Running security check for Windows system" << std::endl;
     check_security();
 
-    std::cout << "Uploading the security result..." << std::endl;
+    /*std::cout << "Uploading the security result..." << std::endl;
 
     // security_result.txt 파일을 서버로 업로드
     std::string filePath = "security_result.txt";  // 업로드할 파일 경로
@@ -165,7 +123,7 @@ int main() {
         std::cout << "Security result uploaded successfully!" << std::endl;
     } else {
         std::cerr << "Failed to upload the security result!" << std::endl;
-    }
+    }*/
 
     return 0;
 }
