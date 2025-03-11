@@ -45,10 +45,9 @@
   justify-content: center;
   height: 100vh; /* 화면 전체를 채움 */
   background-color: #282c34;
-  font-size: calc(15px + 2vmin);
+  font-size: calc(5px + 2vmin);
   color: white;
 }
-
 .progress-bar {
   width: 80%; /* 로딩 바 너비 */
   height: 10px; /* 로딩 바 높이 */
@@ -59,10 +58,10 @@
 }
 
 .progress {
-  width: 50%; /* 초기 너비 */
+  width: 0; /* 초기 너비 */
   height: 100%;
   background: #61dafb; /* 진행 색상 */
-  animation: load 1.5s linear infinite; /* 부드러운 애니메이션 */
+  transition: width 0.5s ease-in-out;
 }
 
 @keyframes load {

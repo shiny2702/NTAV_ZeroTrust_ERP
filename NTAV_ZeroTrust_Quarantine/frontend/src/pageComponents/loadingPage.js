@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { sendInfoToServer } from '../api';
+import { getDeviceToken, sendInfoToServer } from '../api';
 import withRouter from '../hocs/withRouter';
 import '../css/loadingPage.css';
 
@@ -10,11 +10,12 @@ class LoadingPage extends Component {
       loading: true,
       isVerified: false,
       error: null,
+      progress: 0, // 로딩 진행 상태
+      statusMessage: "Initializing..."
     };
     this.initialized = false;
   }
 
-  // OS 정보 추출
   getOSInfo = () => {
     const userAgent = navigator.userAgent;
     if (userAgent.includes("Win")) return "Windows";
@@ -23,93 +24,67 @@ class LoadingPage extends Component {
     return "Unknown OS";
   };
 
-  // 브라우저 정보 추출
   getBrowserInfo = () => {
     const userAgent = navigator.userAgent;
     if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) return "Chrome";
     if (userAgent.includes("Edg")) return "Edge";
     if (userAgent.includes("Firefox")) return "Firefox";
     if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) return "Safari";
-    if (userAgent.includes("Brave") || userAgent.includes("OPR")) return "Brave";
     return "Unknown Browser";
   };
 
-  // 네트워크 정보 추출
   getNetworkInfo = () => {
     const isOnline = navigator.onLine ? "Online" : "Offline";
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     const networkType = connection ? connection.effectiveType : "Unknown";
     const downlink = connection ? connection.downlink : "Unknown";
     const rtt = connection ? connection.rtt : "Unknown";
-    const saveData = connection ? connection.saveData : "Unknown";
-
-    fetch('https://api.ipify.org?format=json')
-      .then(response => response.json())
-      .then(data => {
-        console.log("IP Address: ", data.ip);
-      })
-      .catch(error => console.error("Error fetching IP: ", error));
 
     return {
       isOnline,
       networkType,
       downlink,
       rtt,
-      saveData,
     };
   };
 
-  // 앱 초기화 처리
   async initializeApp() {
     if (this.initialized) return;
     this.initialized = true;
 
-    // 2초 대기 후 실행
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    this.setState({ loading: true, error: null });
-
-    const osInfo = this.getOSInfo();
-    const browserInfo = this.getBrowserInfo();
-    const networkInfo = this.getNetworkInfo();
-
-    console.log("OS Info: ", osInfo);
-    console.log("Browser Info: ", browserInfo);
-    console.log("Network Info: ", networkInfo);
+    const steps = [
+      { progress: 10, statusMessage: "Gathering OS info...", action: this.getOSInfo },
+      { progress: 30, statusMessage: "Gathering browser info...", action: this.getBrowserInfo },
+      { progress: 50, statusMessage: "Gathering network info...", action: this.getNetworkInfo },
+      { progress: 70, statusMessage: "Sending data to server...", action: async () => sendInfoToServer(this.getOSInfo(), this.getBrowserInfo(), this.getNetworkInfo()) },
+      { progress: 80, statusMessage: "Processing server response...", action: async () => {} },
+      { progress: 90, statusMessage: "Generating device token...", action: getDeviceToken }
+    ];
 
     try {
-      const response = await sendInfoToServer(osInfo, browserInfo, networkInfo);
-      console.log("Server Response: ", response);
+      let response;
+      let deviceToken;
+      for (let step of steps) {
+        this.setState({ progress: step.progress, statusMessage: step.statusMessage });
+        await new Promise(resolve => setTimeout(resolve, 500));
+        if (step.progress === 70) response = await step.action();
+        if (step.progress === 90) deviceToken = await step.action();
+      }
 
-      this.setState(
-        {
-          loading: false,
-          isVerified: response.success,
-        },
-        () => {
-          // 상태가 변경된 후에 navigate 호출
-          if (this.state.isVerified) {
-            console.log("Verification successful. Navigating to /exe-download");          
-            // 1.5초 후에 navigate 호출
-            setTimeout(() => {
-              this.props.navigate("/exe-download");
-            }, 1500); 
-          } else {
-            console.log("Verification failed. Navigating to /forbidden");
-            // 1.5초 후에 navigate 호출
-            setTimeout(() => {
-              this.props.navigate("/forbidden");
-            }, 4000); 
-          }
-        }
-      );
+      if (response?.success) {
+        this.setState({ progress: 100, isVerified: true, deviceToken, statusMessage: "Verification complete!" }, () => {
+          setTimeout(() => this.props.navigate("/exe-download"), 1000);
+        });
+      } else {
+        this.setState({ progress: 100, isVerified: false, statusMessage: "Verification failed." }, () => {
+          setTimeout(() => this.props.navigate("/forbidden"), 4000);
+        });
+      }
     } catch (error) {
-      console.error("Error during initialization: ", error);
-      this.setState({ loading: false, error: 'Initialization failed' });
+      this.setState({ loading: false, error: "Initialization failed", statusMessage: "Error occurred." });
     }
   }
 
-  // componentDidMount에서 초기화 호출
   componentDidMount() {
     if (this.state.loading && !this.initialized) {
       this.initializeApp();
@@ -117,39 +92,26 @@ class LoadingPage extends Component {
   }
 
   render() {
-    const { loading, isVerified } = this.state;
-
-    if (loading) {
-      return (
-        <div className="loading-container">
-          <img src="ntav_loading.gif" alt="Loading..." />
-          <p>Loading...</p>
-        </div>
-      );
-    }
+    const { progress, statusMessage } = this.state;
+    const milestones = [10, 30, 50, 70, 80, 90];
 
     return (
-      <div className="App">
-        {isVerified ? (
-          <div className="loading-container">
-          <img src="ntav_loading.gif" alt="Loading..." />
-          <p>You have entered NTAV's quarantine zone.</p>
+      <div className="loading-container">
+        <img src="ntav_loading.gif" alt="Loading..." />
+        <div className="milestone-container" style={{ display: 'flex', justifyContent: 'space-between', width: '40%', margin: '10px auto' }}>
+          {milestones.map((milestone, index) => (
+            <span key={index} className={`milestone ${progress >= milestone ? 'checked' : ''}`} style={{ margin: '0 10px' }}>
+              {progress >= milestone ? '✔' : '○'}
+            </span>
+          ))}
         </div>
-        ) : (
-          <header className="App-header">
-            <p>Verification failed. You are not authorized to proceed.</p>
-          </header>
-        )}
+        <div className="progress-bar">
+          <div className="progress" style={{ width: `${progress}%` }}></div>
+        </div>
+        <p>{statusMessage} ({progress}%)</p>
       </div>
     );
   }
 }
 
 export default withRouter(LoadingPage);
-
-
-
-
-
-
-
