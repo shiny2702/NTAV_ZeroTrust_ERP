@@ -1,6 +1,10 @@
 const ALLOWED_OS = ["Windows", "MacOS", "Linux"];
 const ALLOWED_BROWSERS = ["Chrome", "Edge", "Firefox", "Safari", "Brave"];
-const ALLOWED_NETWORK_TYPES = ["4g", "ethernet", "wifi", "wimax", "cellular"];
+const ALLOWED_NETWORK_TYPES = [
+    "2g", "3g", "4g", "5g", "lte", "cellular", // 모바일 네트워크
+    "ethernet", // 유선 네트워크
+    "wifi", "wimax", // 무선 네트워크
+];
 const MIN_DOWNLINK = 3; // 최소 3Mbps 필요
 const MAX_RTT = 250; // 최대 250ms 응답 시간
 

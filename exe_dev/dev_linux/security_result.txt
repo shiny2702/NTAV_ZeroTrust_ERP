@@ -1,0 +1,7 @@
+Linux
+[LSM (Linux Security Module) Check]
+LSM information not available.
+[AppArmor / SELinux Status]
+UFW not found.
+firewalld not found.
+Security check completed. Results saved in security_result.txt
