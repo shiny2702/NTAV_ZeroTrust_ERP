@@ -36,54 +36,75 @@ class LoadingPage extends Component {
   getNetworkInfo = () => {
     const isOnline = navigator.onLine ? "Online" : "Offline";
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    const networkType = connection ? connection.effectiveType : "Unknown";
-    const downlink = connection ? connection.downlink : "Unknown";
-    const rtt = connection ? connection.rtt : "Unknown";
 
-    return {
-      isOnline,
-      networkType,
-      downlink,
-      rtt,
-    };
+    let networkType = "Unknown";
+    let downlink = "Unknown";
+    let rtt = "Unknown";
+
+    if (connection) {
+      networkType = connection.effectiveType || "Unknown";
+      downlink = connection.downlink || "Unknown";
+      rtt = connection.rtt || "Unknown";
+    }
+
+    return { isOnline, networkType, downlink, rtt };
   };
 
   async initializeApp() {
     if (this.initialized) return;
     this.initialized = true;
-
-    const steps = [
-      { progress: 10, statusMessage: "Gathering OS info...", action: this.getOSInfo },
-      { progress: 30, statusMessage: "Gathering browser info...", action: this.getBrowserInfo },
-      { progress: 50, statusMessage: "Gathering network info...", action: this.getNetworkInfo },
-      { progress: 70, statusMessage: "Sending data to server...", action: async () => sendInfoToServer(this.getOSInfo(), this.getBrowserInfo(), this.getNetworkInfo()) },
-      { progress: 80, statusMessage: "Processing server response...", action: async () => {} },
-      { progress: 90, statusMessage: "Generating device token...", action: getDeviceToken }
-    ];
-
+  
     try {
-      let response;
-      let deviceToken;
+      let response = null;
+      let deviceToken = null;
+  
+      const steps = [
+        { progress: 10, statusMessage: "Gathering OS info...", action: this.getOSInfo },
+        { progress: 30, statusMessage: "Gathering browser info...", action: this.getBrowserInfo },
+        { progress: 50, statusMessage: "Gathering network info...", action: this.getNetworkInfo },
+        { progress: 70, statusMessage: "Sending data to server...", action: async () => {
+            response = await sendInfoToServer(this.getOSInfo(), this.getBrowserInfo(), this.getNetworkInfo());
+            return response;
+        }},
+        { progress: 80, statusMessage: "Processing server response...", action: async () => {
+            if (!response?.success) throw new Error("Server verification failed"); // 🚨 서버 응답이 실패하면 에러 발생
+            return response;
+        }},
+        { progress: 90, statusMessage: "Generating device token...", action: async () => {
+            if (response?.success) {
+              deviceToken = await getDeviceToken();
+              return deviceToken;
+            } else {
+              throw new Error("Device token generation skipped due to failed verification");
+            }
+        }}
+      ];
+  
       for (let step of steps) {
         this.setState({ progress: step.progress, statusMessage: step.statusMessage });
         await new Promise(resolve => setTimeout(resolve, 500));
-        if (step.progress === 70) response = await step.action();
-        if (step.progress === 90) deviceToken = await step.action();
+  
+        try {
+          await step.action();
+        } catch (error) {
+          console.error(`❌ Error at step ${step.progress}:`, error.message);
+          this.setState({ progress: 100, isVerified: false, statusMessage: "Verification failed." });
+          setTimeout(() => this.props.navigate("/forbidden"), 3000);
+          return;
+        }
       }
-
-      if (response?.success) {
-        this.setState({ progress: 100, isVerified: true, deviceToken, statusMessage: "Verification complete!" }, () => {
-          setTimeout(() => this.props.navigate("/exe-download"), 1000);
-        });
-      } else {
-        this.setState({ progress: 100, isVerified: false, statusMessage: "Verification failed." }, () => {
-          setTimeout(() => this.props.navigate("/forbidden"), 4000);
-        });
-      }
+  
+      this.setState(
+        { progress: 100, isVerified: true, deviceToken, statusMessage: "Verification complete!" },
+        () => this.props.navigate("/exe-download")
+      );
+  
     } catch (error) {
+      console.error("❌ Error during initialization:", error);
       this.setState({ loading: false, error: "Initialization failed", statusMessage: "Error occurred." });
     }
   }
+  
 
   componentDidMount() {
     if (this.state.loading && !this.initialized) {

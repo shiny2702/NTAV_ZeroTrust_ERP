@@ -12,7 +12,7 @@ root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<DownLoadPage />} /> {/* 클라이언트가 접속 요청 시 시작되는 페이지 */}
+        <Route path="/" element={<LoadingPage />} /> {/* 클라이언트가 접속 요청 시 시작되는 페이지 */}
         <Route path="/exe-download" element={<DownLoadPage />} /> {/* quarantine zone */}
         <Route path="/forbidden" element={<ForbiddenPage />} /> {/* 권한 없음 페이지 */}
         <Route path="/error" element={<ErrorPage />} /> {/* 에러 페이지 */}
