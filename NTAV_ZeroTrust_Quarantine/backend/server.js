@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const envRoute = require('./routes/envRoutes');
+const envRoutes = require('./routes/envRoutes');
 const securityRoutes = require('./routes/securityRoutes');
 
 const app = express();

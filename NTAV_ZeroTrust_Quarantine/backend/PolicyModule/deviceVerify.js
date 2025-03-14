@@ -5,8 +5,8 @@ const ALLOWED_NETWORK_TYPES = [
     "ethernet", // 유선 네트워크
     "wifi", "wimax", // 무선 네트워크
 ];
-const MIN_DOWNLINK = 3; // 최소 3Mbps 필요
-const MAX_RTT = 250; // 최대 250ms 응답 시간
+const MIN_DOWNLINK = 2; // 최소 3Mbps 필요
+const MAX_RTT = 300; // 최대 250ms 응답 시간
 
 // 검증만 담당
 function verifyDevice(deviceInfo) {
