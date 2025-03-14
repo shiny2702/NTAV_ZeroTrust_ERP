@@ -47,8 +47,8 @@ class DownloadPage extends Component {
 
         <ul className="download-links">
           <li><a onClick={(e) => this.handleDownload(e, "Windows")}>Windows</a></li>
-          <li><a onClick={(e) => this.handleDownload(e, "macOS")}>macOS</a></li>
           <li><a onClick={(e) => this.handleDownload(e, "Linux")}>Linux</a></li>
+          <li><a onClick={(e) => this.handleDownload(e, "macOS")}>macOS</a></li>
         </ul>
         {selectedFile && <p>{selectedFile} 다운로드가 시작됩니다...</p>}
       </div>
