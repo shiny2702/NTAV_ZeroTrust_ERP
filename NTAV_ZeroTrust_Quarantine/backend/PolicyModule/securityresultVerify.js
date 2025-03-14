@@ -45,23 +45,47 @@ const checkSecurityStatusWindows = (lines) => {
 
         switch (currentSection) {
             case "=== Antivirus Products ===":
-                if (/\bWindows Defender\b/.test(trimmedLine)) result.antivirus = true;
+                if (/\bWindows Defender\b/.test(trimmedLine)) {
+                    result.antivirus = true;
+                    //console.log("Antivirus status changed: ", result.antivirus);
+                }
                 break;
             case "=== Windows Defender Status ===":
-                result.defenderStatus = /\bFalse\b/.test(trimmedLine);
+                if (/\bFalse\b/.test(trimmedLine)) {
+                    result.defenderStatus = true; // 실시간 모니터링이 활성화된 상태태
+                    //console.log("Defender status changed: ", result.defenderStatus);
+                } else if (/\bTrue\b/.test(trimmedLine)) {
+                    result.defenderStatus = false; 
+                    //console.log("Defender status changed: ", result.defenderStatus);
+                }
                 break;
             case "=== Firewall Status ===":
-                if (/\bTrue\b/.test(trimmedLine)) firewallTrueCount++;
-                if (firewallTrueCount === 3) result.firewallStatus = true;
+                if (/\bTrue\b/.test(trimmedLine)) {
+                    firewallTrueCount++;
+                    //console.log("Firewall True count: ", firewallTrueCount);
+                    if (firewallTrueCount === 3) {
+                        result.firewallStatus = true;
+                        //console.log("Firewall status changed: ", result.firewallStatus);
+                    }
+                }
                 break;
             case "=== User Account Control (UAC) ===":
-                if (/\b1\b/.test(trimmedLine)) result.uacStatus = true;
+                if (/\b1\b/.test(trimmedLine)) {
+                    result.uacStatus = true;
+                    //console.log("UAC status changed: ", result.uacStatus);
+                }
                 break;
             case "=== Remote Desktop (RDP) Status ===":
-                if (/\b1\b/.test(trimmedLine)) result.rdpStatus = true;
+                if (/\b1\b/.test(trimmedLine)) {
+                    result.rdpStatus = true;
+                    //console.log("RDP status changed: ", result.rdpStatus);
+                }
                 break;
             case "=== Auto Login Status ===":
-                if (/\b0\b/.test(trimmedLine)) result.autoLoginStatus = true;
+                if (/\b0\b/.test(trimmedLine)) {
+                    result.autoLoginStatus = true;
+                    //console.log("Auto Login status changed: ", result.autoLoginStatus);
+                }
                 break;
         }
     }
