@@ -3,7 +3,7 @@ const iconv = require('iconv-lite');
 const path = require('path');
 
 // uploads 디렉토리에서 가장 최근 파일 찾기
-const uploadsDir = path.join(__dirname, 'uploads');
+const uploadsDir = path.join(__dirname, '..', 'uploads');
 const getResultFilePath = () => {
     const files = fs.readdirSync(uploadsDir)
         .map(file => ({ file, time: fs.statSync(path.join(uploadsDir, file)).mtime.getTime() }))
@@ -20,7 +20,7 @@ const readSecurityResult = () => {
 
     // 파일을 읽어서 UTF-8로 디코딩 후 줄 단위로 분할
     const buffer = fs.readFileSync(filePath);
-    const decodedData = iconv.decode(buffer, 'utf-8');
+    const decodedData = iconv.decode(buffer, 'utf-16le');
     return decodedData.split("\n");
 };
 
@@ -83,7 +83,7 @@ if (securityResult) {
     const osType = securityResult[0].trim();
     let isClientSecure = false;
     
-    if (osType === "Windows") {
+    if (osType === "windows") {
         isClientSecure = checkSecurityStatusWindows(securityResult);
     } else if (osType === "Linux") {
         isClientSecure = checkSecurityStatusLinux(securityResult);
