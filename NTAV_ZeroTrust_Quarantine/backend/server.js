@@ -6,12 +6,13 @@ const path = require('path');
 require('dotenv').config();
 
 const envRoute = require('./routes/envRoutes');
+const securityRoutes = require('./routes/securityRoutes');
 
 const app = express();
 
 // CORS 설정
 const corsOptions = {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: process.env.CLIENT_URL || '*',
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type,Authorization'
 };
@@ -75,6 +76,10 @@ app.get('/uploads/:filename', (req, res) => {
         res.status(404).json({ error: '파일을 찾을 수 없습니다.' });
     }
 });
+
+// 라우트 등록
+app.use('/api', envRoutes);  // 디바이스 검증 API
+app.use('/security', securityRoutes);  // 보안 검사 API
 
 // 기본 에러 처리 미들웨어
 app.use((err, req, res, next) => {
