@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const envRoute = require('./routes/envRoutes');
+const envRoutes = require('./routes/envRoutes');
+const securityRoutes = require('./routes/securityRoutes');
 
 const app = express();
 
@@ -12,15 +13,16 @@ const corsOptions = {
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type,Authorization'
 };
-app.use(cors());
+app.use(cors(corsOptions)); // CORS 설정 적용
 
 // JSON 요청 본문 파싱
 app.use(express.json());
 
-// 환경 체크 라우트
-app.use('/api', envRoute);
+// 라우트 등록
+app.use('/api', envRoutes);  // 디바이스 검증 API
+app.use('/security', securityRoutes);  // 보안 검사 API
 
-// 기본 에러 처리 미들웨어 추가 (기타 예상치 못한 오류 처리)
+// 기본 에러 처리 미들웨어 추가 (예상치 못한 오류 처리)
 app.use((err, req, res, next) => {
     console.error(err.stack); // 에러 로그 출력
     res.status(500).json({ error: '서버에서 오류가 발생했습니다.' });
