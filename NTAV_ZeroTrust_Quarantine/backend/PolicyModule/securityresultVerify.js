@@ -5,18 +5,6 @@ const path = require('path');
 // 업로드 디렉토리 경로
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 
-// 파일 변경 감지를 위한 watch
-fs.watch(uploadsDir, (eventType, filename) => {
-    if (filename && eventType === 'rename') { // 파일이 추가되거나 삭제될 때 감지
-        const filePath = path.join(uploadsDir, filename);
-        if (fs.existsSync(filePath)) {  // 새 파일이 추가되었을 경우
-            console.log(`새로운 파일이 업로드됨: ${filename}`);
-            // 보안 검사 수행
-            performSecurityCheck();
-        }
-    }
-});
-
 // 파일 경로에서 가장 최근의 security_result.txt 파일을 읽기
 const getResultFilePath = () => {
     const files = fs.readdirSync(uploadsDir)
@@ -109,6 +97,7 @@ const checkSecurityStatusLinux = (lines) => {
     return Object.values(result).every(status => status);
 };
 
+// 보안 검사 수행 함수
 const performSecurityCheck = () => {
     const securityResult = readSecurityResult();
     if (securityResult) {
@@ -123,12 +112,40 @@ const performSecurityCheck = () => {
             console.error("Error: 지원되지 않는 운영체제입니다.");
         }
 
-        if (isClientSecure) {
-            console.log("✅ 클라이언트가 보안 요구 사항을 만족합니다.");
-        } else {
-            console.log("❌ 클라이언트는 보안 요구 사항을 만족하지 않습니다.");
-        }
+        return isClientSecure;
     }
+    return false;
+};
+
+// 파일 변경 감지 및 보안 검사 후 결과 반환하는 함수
+const watchUploadsAndCheckSecurity = (callback) => {
+    fs.watch(uploadsDir, (eventType, filename) => {
+        if (filename && eventType === 'rename') { // 파일이 추가되거나 삭제될 때 감지
+            const filePath = path.join(uploadsDir, filename);
+            if (fs.existsSync(filePath)) {  // 새 파일이 추가되었을 경우
+                console.log(`새로운 파일이 업로드됨: ${filename}`);
+                
+                // 보안 검사를 수행하고 결과를 반환
+                const isSecure = performSecurityCheck();
+                callback(isSecure);
+            }
+        }
+    });
+};
+
+// 외부에서 사용할 수 있는 API 함수
+const getSecurityVerification = (callback) => {
+    // 파일 변경 감지를 시작하고, 결과를 콜백으로 반환
+    watchUploadsAndCheckSecurity((isSecure) => {
+        callback({
+            isSecure,
+            message: isSecure ? "✅ 클라이언트가 보안 요구 사항을 만족합니다." : "❌ 클라이언트는 보안 요구 사항을 만족하지 않습니다."
+        });
+    });
+};
+
+module.exports = {
+    getSecurityVerification
 };
 
 
