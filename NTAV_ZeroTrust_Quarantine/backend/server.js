@@ -10,6 +10,9 @@ const app = express();
 // CORS 설정 (특정 도메인 허용)
 const corsOptions = {
     origin: process.env.CLIENT_URL || '*',  // 허용할 도메인 환경변수에서 설정 가능
+    //origin: process.env.CLIENT_URL,
+    //origin: "http://localhost:3002",
+    credentials: true,
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type,Authorization'
 };
