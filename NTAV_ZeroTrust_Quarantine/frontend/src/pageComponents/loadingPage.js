@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getDeviceToken, sendInfoToServer } from '../api';
+import { sendInfoToServer } from '../api';
 import withRouter from '../hocs/withRouter';
 import PropTypes from 'prop-types';
 import '../css/loadingPage.css';
@@ -78,7 +78,8 @@ class LoadingPage extends Component {
         }},
         { progress: 90, statusMessage: "Generating device token...", action: async () => {
             if (response?.success) {
-              deviceToken = await getDeviceToken();
+              //deviceToken = await getDeviceToken();
+              deviceToken = response.deviceToken;
               return deviceToken;
             } else {
               throw new Error("Device token generation skipped due to failed verification");

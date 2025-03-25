@@ -42,11 +42,11 @@ export const sendInfoToServer = async (osInfo, browserInfo, networkInfo) => {
   };
 
 // 서버에서 디바이스 토큰을 가져오는 함수
-export const getDeviceToken = async () => {
+/*export const getDeviceToken = async () => {
   try {
-    const response = await fetch(`${SERVER_URL}/api/environment-check`, {
-      method: "GET",
-      //credentials: "include", // 쿠키나 인증 정보를 함께 보낼 경우
+    const response = await fetch(`${SERVER_URL}/api/verify-device`, {
+      method: "GET"
+      //credentials: "include" // 쿠키나 인증 정보를 함께 보낼 경우
     });
 
     console.log("Server Response:", response);  // 서버 응답 확인
@@ -68,4 +68,4 @@ export const getDeviceToken = async () => {
     console.error("Error fetching device token:", error);
     return null; // 실패 시 null 반환
   }
-  };
+  };*/
