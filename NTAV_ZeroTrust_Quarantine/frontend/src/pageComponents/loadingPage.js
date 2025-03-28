@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { sendInfoToServer } from '../api';
 import withRouter from '../hocs/withRouter';
-import PropTypes from 'prop-types';
 import '../css/loadingPage.css';
 
 class LoadingPage extends Component {
@@ -16,11 +16,6 @@ class LoadingPage extends Component {
     };
     this.initialized = false;
   }
-
-  // PropTypes 정의
-  static propTypes = {
-    navigate: PropTypes.func.isRequired, // navigate를 함수로 명시
-  };
 
   getOSInfo = () => {
     const userAgent = navigator.userAgent;
@@ -69,25 +64,31 @@ class LoadingPage extends Component {
         { progress: 30, statusMessage: "Gathering browser info...", action: this.getBrowserInfo },
         { progress: 50, statusMessage: "Gathering network info...", action: this.getNetworkInfo },
         { progress: 70, statusMessage: "Sending data to server...", action: async () => {
+            console.log("🔹 서버로 데이터 전송 중...");
             response = await sendInfoToServer(this.getOSInfo(), this.getBrowserInfo(), this.getNetworkInfo());
+            console.log("🔹 서버 응답:", response);
             return response;
         }},
         { progress: 80, statusMessage: "Processing server response...", action: async () => {
-            if (!response?.success) throw new Error("Server verification failed"); // 🚨 서버 응답이 실패하면 에러 발생
+            if (!response?.success) {
+                console.error("🚨 서버 검증 실패:", response);
+                throw new Error("Server verification failed");
+            }
             return response;
         }},
         { progress: 90, statusMessage: "Generating device token...", action: async () => {
-            if (response?.success) {
-              //deviceToken = await getDeviceToken();
-              deviceToken = response.deviceToken;
-              return deviceToken;
-            } else {
-              throw new Error("Device token generation skipped due to failed verification");
-            }
+          if (response?.success) {
+            //deviceToken = await getDeviceToken();
+            deviceToken = response.deviceToken;
+            return deviceToken;
+          } else {
+            throw new Error("Device token generation skipped due to failed verification");
+          }
         }}
       ];
   
       for (let step of steps) {
+        console.log(`✅ [${step.progress}%] ${step.statusMessage}`);
         this.setState({ progress: step.progress, statusMessage: step.statusMessage });
         await new Promise(resolve => setTimeout(resolve, 500));
   
@@ -110,7 +111,7 @@ class LoadingPage extends Component {
       console.error("❌ Error during initialization:", error);
       this.setState({ loading: false, error: "Initialization failed", statusMessage: "Error occurred." });
     }
-  }
+}
   
 
   componentDidMount() {
@@ -141,5 +142,9 @@ class LoadingPage extends Component {
     );
   }
 }
+
+LoadingPage.propTypes = {
+  navigate: PropTypes.func.isRequired, // navigate 추가
+};
 
 export default withRouter(LoadingPage);
