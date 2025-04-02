@@ -104,7 +104,7 @@ const performSecurityCheck = () => {
         const osType = securityResult[0].trim();
         let isClientSecure = false;
 
-        if (osType === "windows") {
+        if (osType === "Windows") {
             isClientSecure = checkSecurityStatusWindows(securityResult);
         } else if (osType === "Linux") {
             isClientSecure = checkSecurityStatusLinux(securityResult);
@@ -136,6 +136,7 @@ const watchUploadsAndCheckSecurity = (callback) => {
 // 외부에서 사용할 수 있는 API 함수
 const getSecurityVerification = (callback) => {
     // 파일 변경 감지를 시작하고, 결과를 콜백으로 반환
+    //console.log("callback type: ", typeof callback); //에러체크용
     watchUploadsAndCheckSecurity((isSecure) => {
         callback({
             isSecure,

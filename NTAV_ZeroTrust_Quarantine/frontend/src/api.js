@@ -41,6 +41,37 @@ export const sendInfoToServer = async (osInfo, browserInfo, networkInfo) => {
     }
   };
 
+  export const getSecurityToken = async () => {
+    try {
+      console.log("Security Checking...");
+      // 디바이스 정보 전송
+      const response = await fetch(`${SERVER_URL}/security/verify-security`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Start security checking in client...");
+
+      // 서버 응답 처리
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          console.log("보안프로그램 정보 전송 성공:", data.message);
+          console.log(data);
+          return data; // 서버에서 반환한 security token 반환
+        } else {
+          console.error("보안프로그램 검증 실패:", data.error);
+        }
+      } else {
+        console.error("Failed to send data");
+      }
+    } catch (error) {
+      console.error("Error sending data:", error);
+    }
+  };
+
 // 서버에서 디바이스 토큰을 가져오는 함수
 /*export const getDeviceToken = async () => {
   try {
