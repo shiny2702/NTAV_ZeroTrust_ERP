@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchEmployees, registerEmployee, deleteSelectedEmployees, updateEmployee, sendEmployeeEmail } from '../api';
+import { fetchEmployees, fetchRegisterableEmployeeIds, fetchEmployeeDetails, registerEmployee, deleteSelectedEmployees, updateEmployee, sendEmployeeEmail } from '../api';
 import "../css/admin_accountManagementPage.css";
 
 const AccountManagement = () => {
@@ -7,9 +7,10 @@ const AccountManagement = () => {
   const [randomPassword, setRandomPassword] = useState("");
   // const [employees, setEmployees] = useState([]);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const [registerableIds, setRegisterableIds] = useState([]);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(""); // 한 명 선택
+  const [employeeInfo, setEmployeeInfo] = useState(null); // 해당 직원 정보
   const [selectedEmployees, setSelectedEmployees] = useState([]);
-  const [employeeId, setEmployeeId] = useState("");
-  const [employeeName, setEmployeeName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [editMode, setEditMode] = useState(null);
   const [editedData, setEditedData] = useState({});
@@ -17,8 +18,17 @@ const AccountManagement = () => {
   const [modalType, setModalType] = useState(null);
 
   useEffect(() => {
+    fetchRegisterableEmployeeIds().then(setRegisterableIds);
     generateRandomPassword();
   }, []);
+
+  useEffect(() => {
+    if (selectedEmployeeId) {
+      fetchEmployeeDetails(selectedEmployeeId).then(setEmployeeInfo);
+    } else {
+      setEmployeeInfo(null);
+    }
+  }, [selectedEmployeeId]);
 
   const generateRandomPassword = () => {
     const password = Math.random().toString(36).slice(-8);
@@ -30,8 +40,8 @@ const AccountManagement = () => {
     setFilteredEmployees(data);
   };
 
-  const handleRegisterEmployee = async (employeeId, name) => {
-    const success = await registerEmployee(employeeId, name, randomPassword);
+  const handleRegisterEmployee = async (employeeId) => {
+    const success = await registerEmployee(employeeId, randomPassword);
     if (success) {
       alert("직원이 성공적으로 등록되었습니다!");
 
@@ -43,9 +53,9 @@ const AccountManagement = () => {
         alert("초기 비밀번호 이메일 전송에 실패했습니다.");
       }
       
+      setSelectedEmployeeId(""); // 선택된 직원 초기화
+      setEmployeeInfo(null);     // 직원 상세 정보 초기화
       generateRandomPassword();
-      setEmployeeId("");
-      setEmployeeName("");
     } else {
       alert("직원 등록에 실패했습니다.");
     }
@@ -61,10 +71,6 @@ const AccountManagement = () => {
   };
 
   const handleEditConfirmation = () => {
-    if (!editedData.username || !editedData.role) {
-      alert("이름과 역할을 모두 입력해 주세요.");
-      return;
-    }
     setModalType("edit");
     setModalVisible(true);
   };
@@ -106,20 +112,56 @@ const AccountManagement = () => {
         {activeTab === "register" && (
           <div className="registerTab">
             <h2>직원 등록</h2>
+
+            {/* 직원 사번 드롭다운 */}
             <div className="formGroup">
               <label>직원 사번:</label>
-              <input type="number" value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} />
+              <select value={selectedEmployeeId} onChange={(e) => setSelectedEmployeeId(e.target.value)}>
+                <option value="">선택하세요</option>
+                {registerableIds.map(emp => (
+                  <option key={emp.employee_id} value={emp.employee_id}>
+                    {emp.employee_id}
+                  </option>
+                ))}
+              </select>
             </div>
+
+            {/* 직원 정보 표 */}
             <div className="formGroup">
-              <label>직원명:</label>
-              <input type="text" value={employeeName} onChange={(e) => setEmployeeName(e.target.value)} />
+              <label>직원정보:</label>
+              <table className="employeeInfoTable">
+                <thead>
+                  <tr>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>입사일</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{employeeInfo ? `${employeeInfo.first_name} ${employeeInfo.last_name}` : '-'}</td>
+                    <td>{employeeInfo ? employeeInfo.email : '-'}</td>
+                    <td>{employeeInfo ? employeeInfo.phone_num : '-'}</td>
+                    <td>{employeeInfo ? employeeInfo.hired_date.slice(0, 10) : '-'}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+
+            {/* 비밀번호 및 등록 버튼 */}
             <div className="formGroup">
               <label>초기 비밀번호:</label>
               <input type="text" value={randomPassword} readOnly />
               <button onClick={generateRandomPassword}>새 비밀번호 생성</button>
             </div>
-            <button onClick={() => handleRegisterEmployee(employeeId, employeeName)}>등록</button>
+            
+            <button
+              disabled={!selectedEmployeeId}
+              onClick={() => handleRegisterEmployee(selectedEmployeeId, `${employeeInfo.first_name} ${employeeInfo.last_name}`)}
+            >
+              등록
+            </button>
           </div>
         )}
         {activeTab === "list" && (
@@ -133,8 +175,16 @@ const AccountManagement = () => {
                 <tr>
                   <th>선택</th>
                   <th>ID</th>
+                  <th>성</th>
                   <th>이름</th>
-                  <th>역할</th>
+                  <th>활성여부</th>
+                  <th>초기비밀번호여부</th>
+                  <th>메일</th>
+                  <th>연락처</th>
+                  <th>생년월일</th>
+                  <th>입사일</th>
+                  <th>계정생성일</th>
+                  <th>마지막수정일</th>
                   <th>수정</th>
                 </tr>
               </thead>
@@ -150,21 +200,68 @@ const AccountManagement = () => {
                       }} />
                     </td>
                     <td>{employee.id}</td>
+                    <td>{employee.last_name || "-"}</td>
+                    <td>{employee.first_name || "-"}</td>
                     <td>
                       {editMode === employee.id ? (
-                        <input type="text" value={editedData.username} onChange={(e) => setEditedData({ ...editedData, username: e.target.value })} />
-                      ) : employee.username}
+                        <select
+                          value={editedData.is_active ? "yes" : "no"}
+                          onChange={(e) =>
+                            setEditedData({
+                              ...editedData,
+                              is_active: e.target.value === "yes",
+                            })
+                          }
+                        >
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </select>
+                      ) : employee.is_active ? (
+                        "Yes"
+                      ) : (
+                        "No"
+                      )}
                     </td>
                     <td>
                       {editMode === employee.id ? (
-                        <input type="text" value={editedData.role} onChange={(e) => setEditedData({ ...editedData, role: e.target.value })} />
-                      ) : employee.role}
+                        <select
+                          value={editedData.is_initial_password ? "yes" : "no"}
+                          onChange={(e) =>
+                            setEditedData({
+                              ...editedData,
+                              is_initial_password: e.target.value === "yes",
+                            })
+                          }
+                        >
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </select>
+                      ) : employee.is_initial_password ? (
+                        "Yes"
+                      ) : (
+                        "No"
+                      )}
                     </td>
+                    <td>{employee.email || "-"}</td>
+                    <td>{employee.phone || "-"}</td>
+                    <td>{employee.birth_date || "-"}</td>
+                    <td>{employee.join_date || "-"}</td>
+                    <td>{employee.created_at || "-"}</td>
+                    <td>{employee.updated_at || "-"}</td>
+                    
+                    {/* 수정 버튼 */}
                     <td>
                       {editMode === employee.id ? (
                         <button onClick={handleEditConfirmation}>저장</button>
                       ) : (
-                        <button onClick={() => { setEditMode(employee.id); setEditedData({ ...employee }); }}>편집</button>
+                        <button
+                          onClick={() => {
+                            setEditMode(employee.id);
+                            setEditedData({ ...employee }); // 전체 employee 복사해놓고 is_active만 수정하자!
+                          }}
+                        >
+                          편집
+                        </button>
                       )}
                     </td>
                   </tr>

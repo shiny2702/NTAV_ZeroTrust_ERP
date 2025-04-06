@@ -18,11 +18,11 @@ class ProfileCard extends Component {
             <div>
                 <div className="profileCard">
                     <div className="profileImage"></div>
-                    <h3>{user ? `${user.username}` : "사용자 이름"}</h3>
+                    <h3>{user ? `${user.name} (ID :: ${user.employee_id})` : "사용자 이름"}</h3>
                     <div className="profileDetails">
+                        <p>{user && user.department ? `Dept :: ${user.department.dept_name}` : "Dept :: 부서 정보"}</p>
+                        <p>{user && user.team ? `Team :: ${user.team.team_name}` : "Team :: 팀 정보"}</p>
                         <p>{user ? `E-mail :: ${user.email}` : "E-mail :: 이메일 주소"}</p>
-                        <p>{user ? `Dept :: ${user.dept}` : "Dept :: 부서 정보"}</p>
-                        <p>{user ? `Role :: ${user.role}` : "Role :: 직급"}</p>
                     </div>
                     <button className="passwordResetLink" onClick={this.handlePasswordResetClick}>
                         비밀번호 변경

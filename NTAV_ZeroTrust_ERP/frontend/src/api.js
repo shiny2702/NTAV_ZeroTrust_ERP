@@ -15,81 +15,6 @@ export const login = async (username, password) => {
   }
 };
 
-export const fetchEmployees = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/api/employees`);
-    return response.json();
-  } catch (error) {
-    console.error("직원 리스트를 가져오는 중 오류 발생:", error);
-  }
-};
-
-export const registerEmployee = async (employeeId, name, randomPassword) => {
-  try {
-    const response = await fetch(`${BASE_URL}/api/employees`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: employeeId, name, password: randomPassword }),
-    });
-    
-    if (!response.ok) {
-      throw new Error("직원 등록 실패");
-    }
-    
-    const data = await response.json();
-    return data.message === '직원 등록 성공'; // 성공 여부를 반환
-  } catch (error) {
-    console.error("직원 등록 중 오류 발생:", error);
-    return false;
-  }
-};
-
-export const deleteSelectedEmployees = async (selectedEmployees) => {
-  try {
-    const response = await fetch(`${BASE_URL}/api/employees`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ids: selectedEmployees }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('직원 삭제 실패:', errorData.error || '알 수 없는 오류');
-      return false;
-    }
-    return true;
-  } catch (error) {
-    console.error("직원 삭제 중 오류 발생:", error);
-    return false;
-  }
-};
-
-export const updateEmployee = async (id, data) => {
-  try {
-    console.log('Employee ID:', id); // ID가 올바르게 전달되는지 확인
-    const response = await fetch(`${BASE_URL}/api/employees/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: data.username,
-        role: data.role,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`직원 정보 업데이트 실패: ${errorData.error || '알 수 없는 오류'}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('직원 정보 업데이트 실패:', error);
-    alert('직원 정보 업데이트 실패');
-  }
-};
-
 export const verifyPassword = async (userId, password) => {
   try {
     const response = await fetch(`${BASE_URL}/api/auth/verify-password`, {
@@ -127,7 +52,7 @@ export const updatePassword = async (userId, newPassword) => {
 export const updateInitialPasswordStatus = async (userId) => {
   try {
     const response = await fetch(`${BASE_URL}/api/auth/update-initial-password`, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId }),
     });
@@ -141,9 +66,111 @@ export const updateInitialPasswordStatus = async (userId) => {
 };
 
 
+
+
+export const fetchEmployees = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/employee/employees`);
+    return response.json();
+  } catch (error) {
+    console.error("직원 리스트를 가져오는 중 오류 발생:", error);
+  }
+};
+
+
+export const fetchRegisterableEmployeeIds = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/employee/registerable`);
+    if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error('등록 가능한 직원 조회 실패:', err);
+    return []; // 혹은 null / 에러 throw
+  }
+};
+
+export const fetchEmployeeDetails = async (employeeId) => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/employee/details/${employeeId}`);
+    if (!res.ok) throw new Error(`직원 정보 조회 실패 (code: ${res.status})`);
+    return await res.json();
+  } catch (err) {
+    console.error('직원 상세 정보 조회 중 오류:', err);
+    return null; // 혹은 에러 throw
+  }
+};
+
+export const registerEmployee = async (employeeId, randomPassword) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/employee/employees`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ employee_id: employeeId, password: randomPassword }),
+    });
+    
+    if (!response.ok) {
+      throw new Error("직원 등록 실패");
+    }
+    
+    const data = await response.json();
+    return data.message === '직원 등록 성공'; // 성공 여부를 반환
+  } catch (error) {
+    console.error("직원 등록 중 오류 발생:", error);
+    return false;
+  }
+};
+
+export const deleteSelectedEmployees = async (selectedEmployees) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/employee/employees`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: selectedEmployees }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('직원 삭제 실패:', errorData.error || '알 수 없는 오류');
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("직원 삭제 중 오류 발생:", error);
+    return false;
+  }
+};
+
+export const updateEmployee = async (id, data) => {
+  try {
+    console.log('Employee ID:', id); // ID가 올바르게 전달되는지 확인
+    const response = await fetch(`${BASE_URL}/api/employee/employees/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        is_active: data.is_active,
+        is_initial_password: data.is_initial_password,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`직원 정보 업데이트 실패: ${errorData.error || '알 수 없는 오류'}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('직원 정보 업데이트 실패:', error);
+    alert('직원 정보 업데이트 실패');
+  }
+};
+
+
+
 export const sendEmployeeEmail = async (employeeId, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/send-email`, {
+    const response = await fetch(`${BASE_URL}/api/employee/send-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

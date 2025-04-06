@@ -13,7 +13,7 @@ router.post('/verify-password', verifyPassword);
 router.put("/update-password", updatePassword);
 
 // 초기 비밀번호 여부 업데이트 라우트
-router.put("/update-initial-password", updateInitialPasswordStatus);
+router.patch("/update-initial-password", updateInitialPasswordStatus);
 
 module.exports = router;
 
