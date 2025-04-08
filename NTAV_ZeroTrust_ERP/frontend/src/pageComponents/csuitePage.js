@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Outlet } from "react-router-dom";
-import withRouter from "../hocs/withRouter";  
+import withRouter from "../hocs/withRouter"; 
+import { roleInfoWholeRegenerate } from "../api"; 
 import '../css/csuitePage.css';  
 import WholeHeaderBar from "./partialComponents/wholeHeaderBar";
 import ProfileCard from "./partialComponents/profileCard";
@@ -9,75 +10,53 @@ import ProfileCard from "./partialComponents/profileCard";
 class CSuitePage extends Component {
   state = {
     approvedProjects: [
-      { 
-        no: 1, name: '프로젝트 A', startDate: '2025-03-01', 
-        leadDeptTeam: { dept: 'IT', team: 'Core Development', applications: { 
-          'System Architecture': { employees: [{ id: 'E001', name: 'Alice' }, { id: 'E003', name: 'Charlie' }] }, 
-          'Backend Development': { employees: [{ id: 'E002', name: 'Bob' }, { id: 'E003', name: 'Charlie' }] } } }, 
-        collabDeptTeam: [
-          { dept: 'HR', team: 'Team Alpha', applications: { 
-              'Recruitment': { employees: [{ id: 'E004', name: 'David' }] }, 
-              'Training': { employees: [{ id: 'E005', name: 'Eve' }, { id: 'E004', name: 'David' }] } } },
-          { dept: 'IT', team: 'Team Beta', applications: { 
-              'UI/UX Design': { employees: [{ id: 'E006', name: 'Frank' }] }, 
-              'Frontend Development': { employees: [{ id: 'E007', name: 'Grace' }] } } }
-        ],
-        securityLevel: '4', goalEndDate: '2025-12-31'
-      },
-      { 
-        no: 2, name: '프로젝트 B', startDate: '2025-02-20', 
-        leadDeptTeam: { dept: 'Finance', team: 'Risk Management', applications: { 
-          'Financial Analysis': { employees: [{ id: 'E008', name: 'Helen' }] }, 
-          'Fraud Detection': { employees: [{ id: 'E009', name: 'Ivy' }] } } }, 
-        collabDeptTeam: [
-          { dept: 'Finance', team: 'Team Gamma', applications: { 
-              'Investment Planning': { employees: [{ id: 'E010', name: 'Jack' }] }, 
-              'Budget Forecasting': { employees: [{ id: 'E011', name: 'Kara' }] } } },
-          { dept: 'Marketing', team: 'Team Delta', applications: { 
-              'Market Research': { employees: [{ id: 'E012', name: 'Leo' }] }, 
-              'Brand Strategy': { employees: [{ id: 'E013', name: 'Mia' }, { id: 'E012', name: 'Leo' }] } } }
-        ],
-        securityLevel: '3', goalEndDate: '2025-11-30'
-      }
     ],
     unapprovedProjects: [
-      { 
-        no: 3, name: '프로젝트 C', startDate: null, 
-        leadDeptTeam: { dept: 'Legal', team: 'Compliance', applications: { 
-          'Regulatory Compliance': { employees: [{ id: 'E014', name: 'Nina' }] }, 
-          'Contract Review': { employees: [{ id: 'E015', name: 'Oscar' }] } } }, 
-        collabDeptTeam: [
-          { dept: 'Legal', team: 'Team Epsilon', applications: { 
-              'Policy Drafting': { employees: [{ id: 'E016', name: 'Paul' }] }, 
-              'Litigation Support': { employees: [{ id: 'E017', name: 'Quincy' }] } } },
-          { dept: 'R&D', team: 'Team Zeta', applications: { 
-              'Product Innovation': { employees: [{ id: 'E018', name: 'Rachel' }] }, 
-              'Prototype Testing': { employees: [{ id: 'E019', name: 'Steve' }] } } }
-        ],
-        securityLevel: '5', goalEndDate: '2026-01-15'
-      },
-      { 
-        no: 4, name: '프로젝트 D', startDate: null, 
-        leadDeptTeam: { dept: 'Security', team: 'Incident Response', applications: { 
-          'Threat Monitoring': { employees: [{ id: 'E020', name: 'Tom' }] }, 
-          'Incident Handling': { employees: [{ id: 'E021', name: 'Uma' }] } } }, 
-        collabDeptTeam: [
-          { dept: 'Security', team: 'Team Theta', applications: { 
-              'Penetration Testing': { employees: [{ id: 'E022', name: 'Vera' }] }, 
-              'Forensics Analysis': { employees: [{ id: 'E023', name: 'Wendy' }] } } }
-        ],
-        securityLevel: '5', goalEndDate: '2026-06-30'
-      }
-    ]
+    ],
+    showModal: false,
+    isLoading: false
   };
   
-
   handleLogoClick = () => {
     this.props.navigate('/csuite');
   };
 
+
+  handleOpenModal = () => {
+    this.setState({ showModal: true });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ showModal: false });
+  };
+
+  handleConfirmRegenerate = async () => {
+    this.setState({ showModal: false, isLoading: true });
+    await this.handleRoleInfoRegenerate();  // 처리 위임
+  };
+  
+  handleRoleInfoRegenerate = async () => {
+    try {
+      const response = await roleInfoWholeRegenerate();  // api.js 함수
+  
+      this.setState({ isLoading: false });
+  
+      if (response.success) {
+        alert(response.message || "전체 직원 role정보 최신 업데이트 및 동기화 완료");
+      } else {
+        alert(response.message || "ERROR :: 전체 직원 role정보 최신 업데이트 및 동기화 실패. 재시도 필요");
+      }
+    } 
+    catch (error) {
+      console.error(error);
+      this.setState({ isLoading: false });
+      alert("ERROR :: 전체 직원 role정보 최신 업데이트 및 동기화 실패. 재시도 필요");
+    }
+  };
+  
+
   render() {
-    const { approvedProjects, unapprovedProjects } = this.state;
+    const { approvedProjects, unapprovedProjects, showModal, isLoading } = this.state;
 
     return (
       <div className="csuitePage">
@@ -85,10 +64,39 @@ class CSuitePage extends Component {
 
         <div className="csuiteContent">
           <ProfileCard/>
+
+          <div className="syncButtonContainer">
+            <button className="syncButton" onClick={this.handleOpenModal}>
+              role정보 전체동기화
+            </button>
+          </div>
+
           <div className="contentArea">
             <Outlet context={{ approvedProjects, unapprovedProjects }} />
           </div>
         </div>
+
+        {showModal && (
+          <div className="modalOverlay">
+            <div className="modalContent">
+              <p>전체 직원의 role정보를 최신으로 업데이트 및 동기화 하시겠습니까?</p>
+              <div className="modalButtons">
+                <button onClick={this.handleConfirmRegenerate}>Yes</button>
+                <button onClick={this.handleCloseModal}>No</button>
+              </div>
+            </div>
+          </div>
+        )}  
+
+        {isLoading && (
+          <div className="loadingOverlay">
+            <div className="loadingSpinner">
+              <div className="spinnerIcon" />
+              업데이트 중...
+            </div>
+          </div>
+        )}
+            
       </div>
     );
   }

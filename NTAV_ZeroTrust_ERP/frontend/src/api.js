@@ -100,23 +100,27 @@ export const fetchEmployeeDetails = async (employeeId) => {
   }
 };
 
-export const registerEmployee = async (employeeId, randomPassword) => {
+export const registerEmployee = async (employeeId) => {
   try {
     const response = await fetch(`${BASE_URL}/api/employee/employees`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ employee_id: employeeId, password: randomPassword }),
+      body: JSON.stringify({ employee_id: employeeId }),
     });
     
-    if (!response.ok) {
-      throw new Error("직원 등록 실패");
-    }
-    
     const data = await response.json();
-    return data.message === '직원 등록 성공'; // 성공 여부를 반환
-  } catch (error) {
+
+    return {
+      success: response.ok && data.success,
+      message: data.message || "알 수 없는 오류가 발생했습니다.",
+    };
+  } 
+  catch (error) {
     console.error("직원 등록 중 오류 발생:", error);
-    return false;
+    return {
+      success: false,
+      message: "네트워크 오류로 등록에 실패했습니다.", // 서버가 죽었거나, 응답을 못 받은 상황
+    };
   }
 };
 
@@ -140,15 +144,15 @@ export const deleteSelectedEmployees = async (selectedEmployees) => {
   }
 };
 
-export const updateEmployee = async (id, data) => {
+export const updateEmployee = async (data) => {
   try {
-    console.log('Employee ID:', id); // ID가 올바르게 전달되는지 확인
-    const response = await fetch(`${BASE_URL}/api/employee/employees/${id}`, {
+    const response = await fetch(`${BASE_URL}/api/employee/employees`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        id: data.id,  // id도 body에 포함
         is_active: data.is_active,
         is_initial_password: data.is_initial_password,
       }),
@@ -162,9 +166,39 @@ export const updateEmployee = async (id, data) => {
     return await response.json();
   } catch (error) {
     console.error('직원 정보 업데이트 실패:', error);
-    alert('직원 정보 업데이트 실패');
+    return {
+      success: false,
+      message: '직원 정보 업데이트 실패',
+    };
   }
 };
+
+
+
+export const resetInitPassword = async (data) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/employee/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: data.id,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`비밀번호 초기화 실패: ${errorData.error || '알 수 없는 오류'}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('비밀번호 초기화 실패:', error);
+    alert('비밀번호 초기화 실패');
+  }
+};
+
 
 
 
@@ -178,6 +212,7 @@ export const sendEmployeeEmail = async (employeeId, password) => {
       body: JSON.stringify({ employeeId, password }),
     });
 
+    if (!response.ok) throw new Error("이메일 전송 실패");
     const result = await response.json();
 
     return result.success;
@@ -187,6 +222,49 @@ export const sendEmployeeEmail = async (employeeId, password) => {
   }
 };
 
+
+export const roleInfoWholeRegenerate = async () => {
+  try {
+    const response = await fetch("/api/role/roleInfoWholeRegenerate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  } 
+  catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: "API 호출 중 오류 발생",
+    };
+  }
+};
+
+export const roleInfoRegenerate = async (employeeIdList) => {
+  try {
+    const response = await fetch("/api/role/roleInfoRegenerate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ids: employeeIdList }),
+    });
+
+    const data = await response.json();
+    return data;
+  } 
+  catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: "요청 실패",
+    };
+  }
+};
 
 
 

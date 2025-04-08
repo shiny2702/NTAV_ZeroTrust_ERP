@@ -2,6 +2,44 @@ const db = require('../config/db');
 const nodemailer = require("nodemailer");
 const bcrypt = require('bcrypt'); // register시 비밀번호 해시용
 
+const sendEmailToEmployee = async (employeeId, password) => {
+  try {
+    const [rows] = await db.promise().query(
+      "SELECT email FROM employee WHERE employee_id = ?",
+      [employeeId]
+    );
+
+    if (rows.length === 0) {
+      throw new Error("직원을 찾을 수 없습니다.");
+    }
+
+    const employeeEmail = rows[0].email;
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "april4326@gmail.com",
+        pass: "biwr zwzy dfzc kmfh",
+      },
+    });
+
+    const mailOptions = {
+      from: "april4326@gmail.com",
+      to: employeeEmail,
+      subject: "초기 비밀번호 안내",
+      text: `안녕하세요,\n\n귀하의 초기 비밀번호는 다음과 같습니다: ${password}\n\n로그인 후 비밀번호를 변경해 주세요.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    return true;
+
+  } catch (err) {
+    console.error("이메일 전송 실패:", err.message);
+    return false;
+  }
+};
+
+
 exports.getEmployees = (req, res) => {
   const query = `
     SELECT 
@@ -67,10 +105,10 @@ exports.getEmployeeInfo = (req, res) => {
 
 
 exports.registerEmployee = async (req, res) => {
-  const { employee_id, password } = req.body;
+  const { employee_id } = req.body;
 
-  if (!employee_id || !password) {
-    return res.status(400).json({ error: '사번과 비밀번호를 모두 입력해주세요.' });
+  if (!employee_id ) {
+    return res.status(400).json({ success: false, message: '사번을 선택해주세요.' });
   }
 
   try {
@@ -80,7 +118,7 @@ exports.registerEmployee = async (req, res) => {
       [employee_id]
     );
     if (employeeRows.length === 0) {
-      return res.status(400).json({ error: '존재하지 않는 직원입니다.' });
+      return res.status(400).json({ success: false, message: '존재하지 않는 직원입니다.' });
     }
 
     // 2. 이미 account 테이블에 등록된 사번인지 확인
@@ -89,12 +127,15 @@ exports.registerEmployee = async (req, res) => {
       [employee_id]
     );
     if (accountRows.length > 0) {
-      return res.status(409).json({ error: '이미 등록된 사번입니다.' });
+      return res.status(409).json({ success: false, message: '이미 등록된 사번입니다.' });
     }
 
     // 3. 비밀번호 해시 생성
+    const generatePassword = () => Math.random().toString(36).slice(-8);
+    const rawPassword = generatePassword();
+
     const saltRounds = 12;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    const passwordHash = await bcrypt.hash(rawPassword, saltRounds);
 
     // 4. account 테이블에 삽입
     await db.promise().query(
@@ -102,11 +143,19 @@ exports.registerEmployee = async (req, res) => {
       [employee_id, passwordHash]
     );
 
-    res.status(201).json({ message: '직원 계정 등록 성공' });
+    // 이메일 전송!
+    const emailSent = await sendEmployeeEmail(employee_id, rawPassword);
 
-  } catch (err) {
+    if (!emailSent) {
+      return res.status(500).json({ success: false, message: '계정은 생성되었으나 이메일 전송에 실패했습니다.\n등록된 직원계정 리스트에서 재전송 혹은 수동처리 필요.' });
+    }
+
+    return res.status(201).json({ success: true, message: '직원 계정 등록 성공' });
+
+  } 
+  catch (err) {
     console.error('직원 등록 중 오류 발생:', err);
-    res.status(500).json({ error: '서버 오류로 인해 등록 실패' });
+    return res.status(500).json({ success: false, message: '서버 오류로 인해 등록 실패' });
   }
 };
 
@@ -139,20 +188,28 @@ exports.deleteEmployees = (req, res) => {
 
 // 직원 상태 업데이트 (is_active, is_initial_password만 수정)
 exports.updateEmployee = async (req, res) => {
-  const { id } = req.params; // URL 파라미터에서 id 가져오기
-  const { is_active, is_initial_password } = req.body; // 요청 본문에서 값 추출
+  const { id, is_active, is_initial_password } = req.body;
 
   // 필수 값 체크
   if (typeof is_active !== 'boolean' || typeof is_initial_password !== 'boolean') {
-    return res.status(400).json({ error: 'is_active와 is_initial_password는 true 또는 false여야 합니다.' });
+    return res.status(400).json({
+      success: false,
+      message: 'is_active와 is_initial_password는 true 또는 false여야 합니다.',
+    });
   }
 
   try {
     // 직원 존재 여부 확인
-    const [employeeRows] = await db.promise().query('SELECT * FROM account WHERE employee_id = ?', [id]);
+    const [employeeRows] = await db.promise().query(
+      'SELECT * FROM account WHERE employee_id = ?',
+      [id]
+    );
 
     if (employeeRows.length === 0) {
-      return res.status(404).json({ error: '직원 정보를 찾을 수 없습니다.' });
+      return res.status(404).json({
+        success: false,
+        message: '직원 정보를 찾을 수 없습니다.',
+      });
     }
 
     // 직원 상태 업데이트
@@ -161,10 +218,66 @@ exports.updateEmployee = async (req, res) => {
       [is_active, is_initial_password, id]
     );
 
-    return res.status(200).json({ message: '직원 상태가 성공적으로 업데이트되었습니다.' });
+    return res.status(200).json({
+      success: true,
+      message: '직원 상태가 성공적으로 업데이트되었습니다.',
+    });
   } catch (error) {
     console.error('직원 상태 업데이트 오류:', error);
-    return res.status(500).json({ error: '직원 상태 업데이트에 실패했습니다.' });
+    return res.status(500).json({
+      success: false,
+      message: '직원 상태 업데이트에 실패했습니다.',
+    });
+  }
+};
+
+
+
+exports.resetInitPassword = async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ success: false, message: '직원 ID가 필요합니다.' });
+  }
+
+  try {
+    // 1. 비밀번호 해시 생성
+    const generatePassword = () => Math.random().toString(36).slice(-8);
+    const rawPassword = generatePassword();
+
+    const saltRounds = 12;
+    const passwordHash = await bcrypt.hash(rawPassword, saltRounds);
+
+    // 2. 해당 ID의 계정이 존재하는지 확인
+    const [rows] = await db.query(`SELECT * FROM account WHERE id = ?`, [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: '해당 ID의 계정을 찾을 수 없습니다.' });
+    }
+
+    // 3. password_hash 업데이트
+    await db.query(`UPDATE account SET password_hash = ? WHERE id = ?`, [passwordHash, id]);
+
+    // 4. is_initial_password 업데이트
+    await db.query(`UPDATE account SET is_initial_password = 1 WHERE id = ?`, [id]);
+
+    // 5. failed_attempts 초기화
+    await db.query(`UPDATE account SET failed_attempts = 0 WHERE id = ?`, [id]);
+
+    // 6. is_active 활성화
+    await db.query(`UPDATE account SET is_active = 1 WHERE id = ?`, [id]);
+
+    // 7. 이메일로 초기 비밀번호 발송
+    const emailSent = await sendEmployeeEmail(id, rawPassword);
+
+    if (!emailSent) {
+      return res.status(500).json({ success: false, message: '비밀번호는 초기화되었으나나 이메일 전송에 실패했습니다.\n등록된 직원계정 리스트에서 재전송 혹은 수동처리 필요.' });
+    }
+
+    return res.status(201).json({ success: true, message: '비밀번호 초기화 및 이메일 전송 성공' });
+
+  } catch (error) {
+    console.error('초기 비밀번호 리셋 실패:', error);
+    return res.status(500).json({ success: false, message: '서버 오류로 인해 초기화에 실패했습니다.' });
   }
 };
 
@@ -172,38 +285,12 @@ exports.updateEmployee = async (req, res) => {
 exports.sendEmployeeEmail = async (req, res) => {
   const { employeeId, password } = req.body;
 
-  try {
-    // 직원의 이메일 가져오기
-    const [rows] = await db.promise().query("SELECT email FROM employee WHERE employee_id = ?", [employeeId]);
+  const success = await sendEmailToEmployee(employeeId, password);
 
-    if (rows.length === 0) {
-      return res.status(404).json({ success: false, message: "직원을 찾을 수 없습니다." });
-    }
-
-    const employeeEmail = rows[0].email;
-
-    // 이메일 전송 설정
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "april4326@gmail.com", // 실제 Gmail 계정
-        pass: "biwr zwzy dfzc kmfh", // 앱 비밀번호 또는 OAuth 사용
-      },
-    });
-
-    const mailOptions = {
-      from: "april4326@gmail.com",
-      to: employeeEmail,
-      subject: "초기 비밀번호 안내",
-      text: `안녕하세요,\n\n귀하의 초기 비밀번호는 다음과 같습니다: ${password}\n\n로그인 후 비밀번호를 변경해 주세요.`,
-    };
-
-    // 이메일 전송 실행
-    await transporter.sendMail(mailOptions);
-
+  if (success) {
     res.status(200).json({ success: true, message: "이메일 전송 성공" });
-  } catch (error) {
-    console.error("이메일 전송 오류:", error);
+  } else {
     res.status(500).json({ success: false, message: "이메일 전송 실패" });
   }
 };
+

@@ -1,5 +1,5 @@
 const express = require('express');
-const { getEmployees, getRegisterableEmployees, getEmployeeInfo, registerEmployee, deleteEmployees, updateEmployee, sendEmployeeEmail } = require('../controllers/employeeController');
+const { getEmployees, getRegisterableEmployees, getEmployeeInfo, registerEmployee, deleteEmployees, updateEmployee, resetInitPassword, sendEmployeeEmail } = require('../controllers/employeeController');
 
 const router = express.Router();
 
@@ -20,6 +20,9 @@ router.delete('/employees', deleteEmployees);
 
 // 직원 정보 업데이트 (PUT)
 router.put('/employees/:id', updateEmployee);
+
+// 직원 비밀번호 초기화 (POST) 
+router.post('/reset-password', resetInitPassword);
 
 // 이메일 전송 API 추가
 router.post("/send-email", sendEmployeeEmail);

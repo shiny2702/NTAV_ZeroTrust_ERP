@@ -27,6 +27,7 @@ const bcrypt = require('bcrypt');
 //   });
 // };
 
+
 // 로그인  >>  sql injection 안전한 버전
 exports.login = async (req, res) => {
   const { username, password } = req.body;
@@ -150,7 +151,7 @@ exports.login = async (req, res) => {
       token,
       user: {
         employee_id: employee.employee_id,
-        name: `${employee.last_name} ${employee.first_name}`,
+        name: `${employee.last_name}${employee.first_name}`,
         email: employee.email,
         roleInfo: employee.roleInfo,
         is_initial_password: account.is_initial_password,
@@ -211,7 +212,7 @@ exports.updatePassword = async (req, res) => {
     }
 
     // 🔐 비밀번호 해시
-    const saltRounds = 10;
+    const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
     // 🔄 해시된 비밀번호로 DB 업데이트

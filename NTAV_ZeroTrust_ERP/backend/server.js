@@ -17,6 +17,7 @@ app.use(express.json()); // bodyParser와 중복되지만, 유지 가능
 // 라우터 연결
 app.use('/api/auth', authRoutes);
 app.use('/api/employee', employeeRoutes);
+app.use('/api/role', roleRoutes);
 
 // 서버 실행
 const PORT = process.env.PORT || 5000;

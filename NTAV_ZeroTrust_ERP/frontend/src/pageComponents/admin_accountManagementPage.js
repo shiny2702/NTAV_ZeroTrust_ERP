@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { fetchEmployees, fetchRegisterableEmployeeIds, fetchEmployeeDetails, registerEmployee, deleteSelectedEmployees, updateEmployee, sendEmployeeEmail } from '../api';
+import { fetchEmployees, fetchRegisterableEmployeeIds, fetchEmployeeDetails, registerEmployee, deleteSelectedEmployees, updateEmployee, resetInitPassword } from '../api';
 import "../css/admin_accountManagementPage.css";
 
 const AccountManagement = () => {
   const [activeTab, setActiveTab] = useState("register");
-  const [randomPassword, setRandomPassword] = useState("");
   // const [employees, setEmployees] = useState([]);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [registerableIds, setRegisterableIds] = useState([]);
@@ -13,13 +12,13 @@ const AccountManagement = () => {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [editMode, setEditMode] = useState(null);
-  const [editedData, setEditedData] = useState({});
+  const [editedData, setEditedData] = useState(null); // 수정용
+  const [resetTarget, setResetTarget] = useState(null); // 초기화용
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState(null);
 
   useEffect(() => {
     fetchRegisterableEmployeeIds().then(setRegisterableIds);
-    generateRandomPassword();
   }, []);
 
   useEffect(() => {
@@ -30,34 +29,20 @@ const AccountManagement = () => {
     }
   }, [selectedEmployeeId]);
 
-  const generateRandomPassword = () => {
-    const password = Math.random().toString(36).slice(-8);
-    setRandomPassword(password);
-  };
-
   const loadEmployees = async () => {
     const data = await fetchEmployees();
     setFilteredEmployees(data);
   };
 
-  const handleRegisterEmployee = async (employeeId) => {
-    const success = await registerEmployee(employeeId, randomPassword);
-    if (success) {
-      alert("직원이 성공적으로 등록되었습니다!");
-
-      // 이메일 전송 API 호출
-      const emailSuccess = await sendEmployeeEmail(employeeId, randomPassword);
-      if (emailSuccess) {
-        alert("초기 비밀번호가 이메일로 전송되었습니다.");
-      } else {
-        alert("초기 비밀번호 이메일 전송에 실패했습니다.");
-      }
-      
-      setSelectedEmployeeId(""); // 선택된 직원 초기화
-      setEmployeeInfo(null);     // 직원 상세 정보 초기화
-      generateRandomPassword();
+  const handleRegisterEmployee = async (employeeId, employeeName) => {
+    const result = await registerEmployee(employeeId);
+  
+    if (result.success) {
+      alert(`${employeeName} 님의 계정이 성공적으로 등록되었으며, 초기 비밀번호 이메일 전송 완료되었습니다.`);
+      setSelectedEmployeeId("");
+      setEmployeeInfo(null);
     } else {
-      alert("직원 등록에 실패했습니다.");
+      alert(result.message);  // 예: "이미 등록된 사번입니다." 등
     }
   };
 
@@ -75,6 +60,11 @@ const AccountManagement = () => {
     setModalVisible(true);
   };
 
+  const handleResetConfirmation = () => {
+    setModalType("reset");
+    setModalVisible(true);
+  };
+
   const handleConfirm = async () => {
     if (modalType === "delete") {
       const success = await deleteSelectedEmployees(selectedEmployees);
@@ -86,13 +76,29 @@ const AccountManagement = () => {
         alert("직원 삭제에 실패했습니다.");
       }
     } else if (modalType === "edit") {
-      const success = await updateEmployee(editedData.id, editedData);
-      if (success) {
-        alert("직원 정보가 업데이트되었습니다!");
+      if (!editedData) 
+        return alert("업데이트할 직원 정보가 없습니다.");
+    
+      const response = await updateEmployee(editedData);
+    
+      if (response?.success) {
+        alert(response.message || "직원 정보가 업데이트되었습니다!");
         setEditMode(null);
         loadEmployees();
       } else {
-        alert("업데이트에 실패했습니다.");
+        alert(response?.message || "업데이트에 실패했습니다.");
+      }
+    } else if (modalType === "reset") {
+      if (!resetTarget) 
+        return alert("비밀번호 초기화할 직원 정보가 없습니다.");
+
+      const response = await resetInitPassword(resetTarget);
+    
+      if (response?.success) {
+        alert(response.message || "초기비밀번호가 초기화되었습니다");
+        loadEmployees();
+      } else {
+        alert(response?.message || "초기비밀번호 초기화에 실패했습니다.");
       }
     }
     setModalVisible(false);
@@ -117,7 +123,7 @@ const AccountManagement = () => {
             <div className="formGroup">
               <label>직원 사번:</label>
               <select value={selectedEmployeeId} onChange={(e) => setSelectedEmployeeId(e.target.value)}>
-                <option value="">선택하세요</option>
+                <option value="">선택</option>
                 {registerableIds.map(emp => (
                   <option key={emp.employee_id} value={emp.employee_id}>
                     {emp.employee_id}
@@ -149,16 +155,10 @@ const AccountManagement = () => {
               </table>
             </div>
 
-            {/* 비밀번호 및 등록 버튼 */}
-            <div className="formGroup">
-              <label>초기 비밀번호:</label>
-              <input type="text" value={randomPassword} readOnly />
-              <button onClick={generateRandomPassword}>새 비밀번호 생성</button>
-            </div>
-            
+            {/* 등록 버튼 */}            
             <button
               disabled={!selectedEmployeeId}
-              onClick={() => handleRegisterEmployee(selectedEmployeeId, `${employeeInfo.first_name} ${employeeInfo.last_name}`)}
+              onClick={() => handleRegisterEmployee(selectedEmployeeId, `${employeeInfo.first_name}${employeeInfo.last_name}`)}
             >
               등록
             </button>
@@ -186,6 +186,7 @@ const AccountManagement = () => {
                   <th>계정생성일</th>
                   <th>마지막수정일</th>
                   <th>수정</th>
+                  <th>초기비밀번호reset</th>
                 </tr>
               </thead>
               <tbody>
@@ -252,7 +253,7 @@ const AccountManagement = () => {
                     {/* 수정 버튼 */}
                     <td>
                       {editMode === employee.id ? (
-                        <button onClick={handleEditConfirmation}>저장</button>
+                        <button onClick={handleEditConfirmation}>save</button>
                       ) : (
                         <button
                           onClick={() => {
@@ -260,10 +261,23 @@ const AccountManagement = () => {
                             setEditedData({ ...employee }); // 전체 employee 복사해놓고 is_active만 수정하자!
                           }}
                         >
-                          편집
+                          edit
                         </button>
                       )}
                     </td>
+
+                    {/* 초기비밀번호 reset 버튼 */}
+                    <td>
+                      <button
+                        onClick={() => {
+                          setResetTarget({ ...employee });  // reset용 target 지정
+                          handleResetConfirmation();       // 모달 띄우기
+                        }}
+                      >
+                        reset
+                      </button>
+                    </td>
+
                   </tr>
                 ))}
               </tbody>
@@ -276,7 +290,11 @@ const AccountManagement = () => {
       {modalVisible && (
         <div className="modal">
           <div className="modalContent">
-            <p>{modalType === "delete" ? "선택한 직원을 삭제하시겠습니까?" : "변경 내용을 저장하시겠습니까?"}</p>
+          <p>
+            {modalType === "delete" && "선택한 직원을 삭제하시겠습니까?"}
+            {modalType === "edit" && `${editedData?.last_name}${editedData?.first_name}님의 변경 내용을 저장하시겠습니까?`}
+            {modalType === "reset" && `${resetTarget?.last_name}${resetTarget?.first_name}님의 비밀번호를 초기화하시겠습니까?`}
+          </p>
             <button onClick={handleConfirm}>Yes</button>
             <button onClick={handleCancel}>No</button>
           </div>
