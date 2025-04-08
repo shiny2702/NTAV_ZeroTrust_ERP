@@ -169,8 +169,10 @@ exports.deleteEmployees = (req, res) => {
     return res.status(400).json({ error: '삭제할 직원 ID 목록을 제공해주세요.' });
   }
 
-  const query = 'DELETE FROM account WHERE employee_id IN (?)';
-
+  // IN 절에 들어갈 만큼의 placeholders 생성 (?, ?, ...)
+  const placeholders = ids.map(() => '?').join(', ');
+  const query = `DELETE FROM account WHERE employee_id IN (${placeholders})`;
+  
   db.query(query, [ids], (err, result) => {
     if (err) {
       console.error('직원 삭제 중 오류 발생:', err);

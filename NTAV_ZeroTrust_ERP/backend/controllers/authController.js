@@ -32,11 +32,17 @@ const bcrypt = require('bcrypt');
 exports.login = async (req, res) => {
   const { username, password } = req.body;
 
+  // 입력값 형식 검증 (사번은 숫자여야 함)
+  const employeeId = Number(username);
+  if (isNaN(employeeId)) {
+    return res.status(400).json({ message: '잘못된 사용자 ID 형식입니다.' });
+  }
+
   try {
     // 1. 계정 정보 조회
     const [accountResult] = await db.promise().query(
       'SELECT * FROM account WHERE employee_id = ?',
-      [username]
+      [employeeId]
     );
     if (accountResult.length === 0) {
       return res.status(401).json({ message: '잘못된 사용자 이름 또는 비밀번호' });
@@ -44,7 +50,6 @@ exports.login = async (req, res) => {
 
     const account = accountResult[0];
 
-  
     // 1-1. 계정이 잠겨 있는지 확인
     if (account.is_active === 0) {
       return res.status(403).json({

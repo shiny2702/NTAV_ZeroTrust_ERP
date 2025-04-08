@@ -47,20 +47,28 @@ class LoginPage extends Component {
       }
 
       // 초기 비밀번호 여부 확인
-      if (user.init) {
+      if (user.is_initial_password) {
         this.setState({ showPasswordResetModal: true });
         return;
       }
 
-      // role에 따라 페이지 이동
-      const { role } = user;
-      if (role === 'admin') {
+      // 역할에 따라 페이지 이동
+      const { department, team } = user;
+
+      if (department?.dept_no === 8) {
         this.props.navigate('/csuite');
-      } else if (role === 'user') {
-        this.props.navigate('/main');
+      } else if (department?.dept_no === 7 && department?.is_manager === 1) {
+        this.props.navigate('/itDeptHead');
+      } else if (team?.team_no === 12) {
+        this.props.navigate('/itSecurity');
+      } else if (team?.team_no === 13) {
+        this.props.navigate('/erpManagement');
+      } else if (department?.is_manager === 1) {
+        this.props.navigate('/deptHead');
       } else {
-        this.props.navigate('/noPerm');
+        this.props.navigate('/main');
       }
+      
     } catch (error) {
       console.error('Login failed:', error);
       this.setState({ error: error.response?.data?.message || 'Login failed' });
