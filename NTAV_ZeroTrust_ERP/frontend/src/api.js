@@ -225,7 +225,7 @@ export const sendEmployeeEmail = async (employeeId, password) => {
 
 export const roleInfoWholeRegenerate = async () => {
   try {
-    const response = await fetch("/api/role/roleInfoWholeRegenerate", {
+    const response = await fetch(`${BASE_URL}/api/role/roleInfoWholeRegenerate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -246,7 +246,7 @@ export const roleInfoWholeRegenerate = async () => {
 
 export const roleInfoRegenerate = async (employeeIdList) => {
   try {
-    const response = await fetch("/api/role/roleInfoRegenerate", {
+    const response = await fetch(`${BASE_URL}/api/role/roleInfoRegenerate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

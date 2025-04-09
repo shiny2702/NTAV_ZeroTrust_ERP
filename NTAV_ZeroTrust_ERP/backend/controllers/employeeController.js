@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt'); // register시 비밀번호 해시용
 
 const sendEmailToEmployee = async (employeeId, password) => {
   try {
-    const [rows] = await db.promise().query(
+    const [rows] = await db.query(
       "SELECT email FROM employee WHERE employee_id = ?",
       [employeeId]
     );
@@ -40,7 +40,7 @@ const sendEmailToEmployee = async (employeeId, password) => {
 };
 
 
-exports.getEmployees = (req, res) => {
+exports.getEmployees = async (req, res) => {
   const query = `
     SELECT 
       a.employee_id,
@@ -53,55 +53,61 @@ exports.getEmployees = (req, res) => {
       e.birth_date,
       e.hired_date,
       a.created_at,
-      a.updated_at,
+      a.updated_at
     FROM account a
     JOIN employee e ON a.employee_id = e.employee_id
   `;
 
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('직원 목록 조회 중 오류 발생:', err);
-      return res.status(500).json({ error: 'DB 오류' });
-    }
+  try {
+    const [results] = await db.query(query);
     res.json(results);
-  });
-  };
+  } catch (err) {
+    console.error('직원 목록 조회 중 오류 발생:', err);
+    res.status(500).json({ error: 'DB 오류' });
+  }
+};
+
 
 // 직원 등록
-exports.getRegisterableEmployees = (req, res) => {
+exports.getRegisterableEmployees = async (req, res) => {
   const query = `
     SELECT e.employee_id
     FROM employee e
     LEFT JOIN account a ON e.employee_id = a.employee_id
     WHERE e.is_active = 1 AND a.employee_id IS NULL
   `;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('등록 가능한 직원 목록 조회 실패:', err);
-      return res.status(500).json({ error: '직원 목록 조회 실패' });
-    }
+
+  try {
+    const [results] = await db.query(query);
     res.json(results); // [{ employee_id: 1001 }, { employee_id: 1002 }, ...]
-  });
+  } catch (err) {
+    console.error('등록 가능한 직원 목록 조회 실패:', err);
+    res.status(500).json({ error: '직원 목록 조회 실패' });
+  }
 };
 
-exports.getEmployeeInfo = (req, res) => {
+exports.getEmployeeInfo = async (req, res) => {
   const { id } = req.params;
   const query = `
-    SELECT last_name, first_name, email, phone_num, hired_date
+    SELECT last_name, first_name, email, phone_no, hired_date
     FROM employee
     WHERE employee_id = ?
   `;
-  db.query(query, [id], (err, results) => {
-    if (err) {
-      console.error('직원 정보 조회 실패:', err);
-      return res.status(500).json({ error: '직원 정보 조회 실패' });
-    }
+
+  try {
+    const [results] = await db.query(query, [id]);
+
     if (results.length === 0) {
       return res.status(404).json({ error: '직원을 찾을 수 없습니다.' });
     }
+
     res.json(results[0]);
-  });
+  } catch (err) {
+    console.error('직원 정보 조회 실패:', err);
+    res.status(500).json({ error: '직원 정보 조회 실패' });
+  }
 };
+
 
 
 exports.registerEmployee = async (req, res) => {
@@ -113,7 +119,7 @@ exports.registerEmployee = async (req, res) => {
 
   try {
     // 1. employee_id가 employee 테이블에 실제 존재하는지 확인
-    const [employeeRows] = await db.promise().query(
+    const [employeeRows] = await db.query(
       'SELECT * FROM employee WHERE employee_id = ?',
       [employee_id]
     );
@@ -122,7 +128,7 @@ exports.registerEmployee = async (req, res) => {
     }
 
     // 2. 이미 account 테이블에 등록된 사번인지 확인
-    const [accountRows] = await db.promise().query(
+    const [accountRows] = await db.query(
       'SELECT * FROM account WHERE employee_id = ?',
       [employee_id]
     );
@@ -138,7 +144,7 @@ exports.registerEmployee = async (req, res) => {
     const passwordHash = await bcrypt.hash(rawPassword, saltRounds);
 
     // 4. account 테이블에 삽입
-    await db.promise().query(
+    await db.query(
       `INSERT INTO account (employee_id, password_hash) VALUES (?, ?)`,
       [employee_id, passwordHash]
     );
@@ -162,31 +168,30 @@ exports.registerEmployee = async (req, res) => {
 
 
 // 직원 삭제
-exports.deleteEmployees = (req, res) => {
-  const { ids } = req.body;  // 삭제할 직원들의 ID 배열을 받음
-  
+exports.deleteEmployees = async (req, res) => {
+  const { ids } = req.body; // 삭제할 직원 ID 배열
+
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
     return res.status(400).json({ error: '삭제할 직원 ID 목록을 제공해주세요.' });
   }
 
-  // IN 절에 들어갈 만큼의 placeholders 생성 (?, ?, ...)
   const placeholders = ids.map(() => '?').join(', ');
   const query = `DELETE FROM account WHERE employee_id IN (${placeholders})`;
-  
-  db.query(query, [ids], (err, result) => {
-    if (err) {
-      console.error('직원 삭제 중 오류 발생:', err);
-      return res.status(500).json({ error: '직원 삭제 중 오류 발생' });
-    }
 
-    // 삭제된 직원 수를 확인하고, 결과를 클라이언트에 반환
+  try {
+    const [result] = await db.query(query, ids);
+
     if (result.affectedRows > 0) {
       res.status(200).json({ message: `${result.affectedRows}명의 직원이 삭제되었습니다.` });
     } else {
       res.status(404).json({ message: '삭제할 직원이 없습니다.' });
     }
-  });
+  } catch (err) {
+    console.error('직원 삭제 중 오류 발생:', err);
+    res.status(500).json({ error: '직원 삭제 중 오류 발생' });
+  }
 };
+
 
 // 직원 상태 업데이트 (is_active, is_initial_password만 수정)
 exports.updateEmployee = async (req, res) => {
@@ -202,7 +207,7 @@ exports.updateEmployee = async (req, res) => {
 
   try {
     // 직원 존재 여부 확인
-    const [employeeRows] = await db.promise().query(
+    const [employeeRows] = await db.query(
       'SELECT * FROM account WHERE employee_id = ?',
       [id]
     );
@@ -215,7 +220,7 @@ exports.updateEmployee = async (req, res) => {
     }
 
     // 직원 상태 업데이트
-    await db.promise().query(
+    await db.query(
       'UPDATE account SET is_active = ?, is_initial_password = ? WHERE employee_id = ?',
       [is_active, is_initial_password, id]
     );

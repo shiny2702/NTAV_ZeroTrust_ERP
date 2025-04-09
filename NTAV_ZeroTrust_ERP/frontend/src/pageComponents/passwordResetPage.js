@@ -21,7 +21,7 @@ class PasswordResetPage extends Component {
     };
   }
 
-  userId = JSON.parse(localStorage.getItem("user"))?.id;
+  userId = JSON.parse(localStorage.getItem("user"))?.employee_id;
 
   handlePasswordChange = (e) => {
     this.setState({ password: e.target.value });
@@ -57,6 +57,9 @@ class PasswordResetPage extends Component {
   };
 
   handleVerify = async () => {
+    console.log("userId:", this.userId);
+    console.log("password:", this.state.password);
+
     if (!this.userId) {
       this.setState({ error: "사용자 정보가 없습니다." });
       return;
@@ -64,7 +67,8 @@ class PasswordResetPage extends Component {
 
     try {
       const result = await verifyPassword(this.userId, this.state.password);
-
+      console.log("API result:", result); 
+      
       if (result.success) {
         this.setState({ message: "비밀번호가 일치합니다.", error: "", isPasswordVerified: true });
       } else {

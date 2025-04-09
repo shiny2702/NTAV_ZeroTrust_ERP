@@ -12,6 +12,9 @@ const roleGeneratingLogic = async (employeeIds) => {
     const [rows] = await db.query(
         `SELECT DISTINCT table_no FROM app_table_mapping WHERE app_no IN (${placeholders})`, apps
     );
+    // 방어 코드 추가
+    if (!rows || !Array.isArray(rows)) return [];
+
     return rows.map(row => row.table_no);
   };
 
@@ -125,9 +128,21 @@ const generateResultResponse = (allIds, failedIds) => {
 exports.roleInfoWholeRegenerate = async (req, res) => {
     try {
       // 1. 활성화된 직원들의 ID 조회
-      const [rows] = await db.execute(
+    //   const [rows] = await db.execute(
+    //     "SELECT employee_id FROM employee WHERE is_active = 1"
+    //   );
+      const resultVal = await db.execute(
         "SELECT employee_id FROM employee WHERE is_active = 1"
       );
+      console.log("쿼리 결과 ::", resultVal);
+      const [rows] = resultVal;
+
+      if (!Array.isArray(rows)) {
+        return res.status(500).json({
+          success: false,
+          message: "쿼리 결과가 배열이 아님. DB 응답 확인 필요",
+        });
+      }
   
       const employeeIdList = rows.map(row => row.employee_id);
   
