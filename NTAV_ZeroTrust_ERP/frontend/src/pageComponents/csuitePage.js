@@ -9,10 +9,10 @@ import ProfileCard from "./partialComponents/profileCard";
 // 경영진 페이지
 class CSuitePage extends Component {
   state = {
-    approvedProjects: [
-    ],
-    unapprovedProjects: [
-    ],
+    waitingForApprovalProjects: [ ],
+    approvedOngoingProjects: [ ],
+    approvedEndedProjects: [ ],
+    rejectedProjects: [ ],
     showModal: false,
     isLoading: false
   };
@@ -56,7 +56,7 @@ class CSuitePage extends Component {
   
 
   render() {
-    const { approvedProjects, unapprovedProjects, showModal, isLoading } = this.state;
+    const { waitingForApprovalProjects, approvedOngoingProjects, approvedEndedProjects, rejectedProjects, showModal, isLoading } = this.state;
 
     return (
       <div className="csuitePage">
@@ -72,7 +72,7 @@ class CSuitePage extends Component {
           </div>
 
           <div className="contentArea">
-            <Outlet context={{ approvedProjects, unapprovedProjects }} />
+            <Outlet context={{ waitingForApprovalProjects, approvedOngoingProjects, approvedEndedProjects, rejectedProjects }} />
           </div>
         </div>
 

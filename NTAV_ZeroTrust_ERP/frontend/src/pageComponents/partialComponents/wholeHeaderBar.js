@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import withRouter from '../../hocs/withRouter';    
 import '../../css/wholeHeaderBar.css';
+
 import MenuBar from "./menuBar";
+import ItSecurityMenuBar from "./itSecurityMenuBar";
+import ERPManagementMenuBar from "./erpManagementMenuBar";
+import ItDeptHeadMenuBar from "./itDeptHeadMenuBar";
 
 class WholeHeaderBar extends Component {
     state = {
@@ -23,6 +27,24 @@ class WholeHeaderBar extends Component {
         }
     };
 
+    // MenuBar 매핑 정의
+    menuBarMap = {
+        '/itSecurity': <ItSecurityMenuBar />,
+        '/erpManagement': <ERPManagementMenuBar />,
+        '/itDeptHead': <ItDeptHeadMenuBar />,
+        '/main': <MenuBar />,
+        '/deptHead': <MenuBar />,
+        '/csuite': <MenuBar />,
+    };
+
+    // 현재 경로에 따라 MenuBar 결정
+    renderMenuBar = () => {
+        const { pathname } = this.props.location;
+        const path = Object.keys(this.menuBarMap).find(p => pathname.startsWith(p));
+        return this.menuBarMap[path] || null;
+    };
+
+
     render() {
         const { showLogoutModal } = this.state;
 
@@ -31,7 +53,7 @@ class WholeHeaderBar extends Component {
                 <div className="header">
                     <div className="logo" onClick={this.props.handleLogoClick}>NTAV</div>
                     <nav className="menu">
-                        <MenuBar/>
+                        {this.renderMenuBar()}
                     </nav>
                     <button className="logoutButton" onClick={this.handleLogoutClick}>
                         Logout
