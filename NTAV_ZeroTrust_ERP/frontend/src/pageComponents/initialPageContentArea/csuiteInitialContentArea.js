@@ -17,11 +17,13 @@ class CSuiteInitialContentArea extends Component {
               </button>
 
               <div className="approvalStatus">
+                <div className="divider"></div>
+
                 <div className="waitingForApprovalProjects">
                   <h4>결재 대기중</h4>
                   <ul>
                     {waitingForApprovalProjects.map((project) => (
-                      <li key={project.proj_no}>{project.proj_no} &gt; {project.proj_name} | {project.created_at}</li>
+                      <li key={project.proj_no}>{project.proj_no} &gt; {project.proj_name} &nbsp;|&nbsp; {project.created_at}</li>
                     ))}
                   </ul>
                 </div>
@@ -32,7 +34,7 @@ class CSuiteInitialContentArea extends Component {
                 <h4>진행중인 프로젝트</h4>
                 <ul>
                     {approvedOngoingProjects.map((project) => (
-                    <li key={project.proj_no}>{project.proj_no} &gt; {project.proj_name} | {project.start_date} | {project.status}</li>
+                    <li key={project.proj_no}>{project.proj_no} &gt; {project.proj_name} &nbsp;|&nbsp; {project.start_date} &nbsp;|&nbsp; {project.status}</li>
                     ))}
                 </ul>
                 </div>

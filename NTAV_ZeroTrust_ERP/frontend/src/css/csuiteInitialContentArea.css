@@ -17,28 +17,28 @@
 
 .approvalStatus {
     display: flex;
-    justify-content: space-between;
+    align-items: stretch;
+    gap: 40px; /* 섹션 간 간격 */
     margin-top: 20px;
+  }
+
+.waitingForApprovalProjects, .approvedOngoingProjects {
+    flex: 1;
 }
 
-.approvedProjects, .unapprovedProjects {
-    width: 45%;
-}
-
-.approvedProjects ul, .unapprovedProjects ul {
+.waitingForApprovalProjects ul, .approvedOngoingProjects ul {
     list-style: none;
     padding: 0;
 }
 
-.approvedProjects li, .unapprovedProjects li {
+.waitingForApprovalProjects li, .approvedOngoingProjects li {
     margin-bottom: 10px;
 }
 
 .divider {
     width: 1px;
     background-color: #ddd;
-    margin: 0 20px;
-    height: 200px;
+    align-self: stretch;
 }
 
 h4 {

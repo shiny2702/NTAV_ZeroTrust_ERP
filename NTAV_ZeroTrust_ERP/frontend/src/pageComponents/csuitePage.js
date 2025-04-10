@@ -56,6 +56,8 @@ const CSuitePage = () => {
       try {
         const projects = await fetchProjects();
 
+        console.log("백엔드에서 받아온 프로젝트 데이터:", projects); 
+
         const waiting = [];
         const ongoing = [];
         const ended = [];
@@ -101,12 +103,13 @@ const CSuitePage = () => {
       <WholeHeaderBar handleLogoClick={handleLogoClick} />
 
       <div className="csuiteContent">
-        <ProfileCard />
-
-        <div className="syncButtonContainer">
-          <button className="syncButton" onClick={handleOpenModal}>
-            role정보 전체동기화
-          </button>
+        <div>
+          <ProfileCard />
+          <div className="syncButtonContainer">
+            <button className="syncButton" onClick={handleOpenModal}>
+              role정보 전체동기화
+            </button>
+          </div>
         </div>
 
         <div className="contentArea">
