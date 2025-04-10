@@ -7,6 +7,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const roleRoutes = require('./routes/roleRoutes');
+const projectRoutes = require('./routes/projectRoutes');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.json()); // bodyParser와 중복되지만, 유지 가능
 app.use('/api/auth', authRoutes);
 app.use('/api/employee', employeeRoutes);
 app.use('/api/role', roleRoutes);
+app.use('/api/project', projectRoutes);
 
 // 서버 실행
 const PORT = process.env.PORT || 5000;

@@ -8,7 +8,7 @@ class CSuiteInitialContentArea extends Component {
     };
 
     render() {
-        const { waitingForApprovalProjects, approvedOngoingProjects, approvedEndedProjects, rejectedProjects } = this.props;
+        const { waitingForApprovalProjects, approvedOngoingProjects } = this.props;
 
         return (
             <div className="projectApprovalSection">
@@ -21,7 +21,7 @@ class CSuiteInitialContentArea extends Component {
                   <h4>결재 대기중</h4>
                   <ul>
                     {waitingForApprovalProjects.map((project) => (
-                      <li key={project.no}>{project.name} | {project.created_at}</li>
+                      <li key={project.proj_no}>{project.proj_no} &gt; {project.proj_name} | {project.created_at}</li>
                     ))}
                   </ul>
                 </div>
@@ -32,7 +32,7 @@ class CSuiteInitialContentArea extends Component {
                 <h4>진행중인 프로젝트</h4>
                 <ul>
                     {approvedOngoingProjects.map((project) => (
-                    <li key={project.no}>{project.name} | {project.start_date} | {project.status}</li>
+                    <li key={project.proj_no}>{project.proj_no} &gt; {project.proj_name} | {project.start_date} | {project.status}</li>
                     ))}
                 </ul>
                 </div>

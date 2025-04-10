@@ -19,28 +19,28 @@ class ProjectApprovalPage extends Component {
             
             if (
                 (viewMode === 'waitingForApprovalProjects' || viewMode === 'approvedOngoingProjects' || viewMode === 'approvedEndedProjects') &&
-                rejectedProjects.some(project => project.no === selectedProjectId)
+                rejectedProjects.some(project => project.proj_no === selectedProjectId)
               ) {
                 return { viewMode, selectedProjectId: null };
               }
 
             if (
                 (viewMode === 'waitingForApprovalProjects' || viewMode === 'approvedOngoingProjects' || viewMode === 'rejectedProjects') &&
-                approvedEndedProjects.some(project => project.no === selectedProjectId)
+                approvedEndedProjects.some(project => project.proj_no === selectedProjectId)
               ) {
                 return { viewMode, selectedProjectId: null };
               }
 
             if (
                 (viewMode === 'waitingForApprovalProjects' || viewMode === 'approvedEndedProjects' || viewMode === 'rejectedProjects') &&
-                approvedOngoingProjects.some(project => project.no === selectedProjectId)
+                approvedOngoingProjects.some(project => project.proj_no === selectedProjectId)
               ) {
                 return { viewMode, selectedProjectId: null };
               }
 
             if (
                 (viewMode === 'approvedOngoingProjects' || viewMode === 'approvedEndedProjects' || viewMode === 'rejectedProjects') &&
-                waitingForApprovalProjects.some(project => project.no === selectedProjectId)
+                waitingForApprovalProjects.some(project => project.proj_no === selectedProjectId)
               ) {
                 return { viewMode, selectedProjectId: null };
               }
@@ -75,7 +75,7 @@ class ProjectApprovalPage extends Component {
         }
 
         // 선택된 프로젝트 ID가 null일 때, 결재완료 프로젝트, 결재미완료 프로젝트 구분
-        const selectedProject = filteredProjects.find(project => project.no === selectedProjectId);
+        const selectedProject = filteredProjects.find(project => project.proj_no === selectedProjectId);
 
         return (
             <div className="projectApprovalPage">
@@ -119,23 +119,23 @@ class ProjectApprovalPage extends Component {
                         {filteredProjects.map((project, index) => {
                             let projectStatus = '';
 
-                            if (waitingForApprovalProjects.some(p => p.no === project.no)) {
+                            if (waitingForApprovalProjects.some(p => p.proj_no === project.proj_no)) {
                                 projectStatus = 'waitingForApproval';
-                            } else if (approvedOngoingProjects.some(p => p.no === project.no)) {
+                            } else if (approvedOngoingProjects.some(p => p.proj_no === project.proj_no)) {
                                 projectStatus = 'approvedOngoing';
-                            } else if (approvedEndedProjects.some(p => p.no === project.no)) {
+                            } else if (approvedEndedProjects.some(p => p.proj_no === project.proj_no)) {
                                 projectStatus = 'approvedEnded';
-                            } else if (rejectedProjects.some(p => p.no === project.no)) {
+                            } else if (rejectedProjects.some(p => p.proj_no === project.proj_no)) {
                                 projectStatus = 'rejected';
                             }
 
                             return (
                                 <button
-                                    key={project.no}
-                                    className={`projectItem ${projectStatus} ${selectedProjectId === project.no ? 'selected' : ''}`}
-                                    onClick={() => this.handleProjectClick(project.no)}
+                                    key={project.proj_no}
+                                    className={`projectItem ${projectStatus} ${selectedProjectId === project.proj_no ? 'selected' : ''}`}
+                                    onClick={() => this.handleProjectClick(project.proj_no)}
                                 >
-                                    {index + 1} || &nbsp;{project.name}
+                                    {index + 1} || &nbsp;{project.proj_name}
                                 </button>
                             );
                         })}
@@ -146,11 +146,11 @@ class ProjectApprovalPage extends Component {
                 {
                     selectedProjectId === null ? (
                         <NoneSelectedWorkspace />
-                    ) : waitingForApprovalProjects.some(project => project.no === selectedProjectId) ? (
+                    ) : waitingForApprovalProjects.some(project => project.proj_no === selectedProjectId) ? (
                         <ApprovalWorkspace project={selectedProject} />
-                    ) : approvedOngoingProjects.some(project => project.no === selectedProjectId) ? (
+                    ) : approvedOngoingProjects.some(project => project.proj_no === selectedProjectId) ? (
                         <UpdateWorkspace project={selectedProject} />
-                    ) : approvedEndedProjects.some(project => project.no === selectedProjectId) || rejectedProjects.some(project => project.no === selectedProjectId) ? (
+                    ) : approvedEndedProjects.some(project => project.proj_no === selectedProjectId) || rejectedProjects.some(project => project.proj_no === selectedProjectId) ? (
                         <ReadOnlyWorkspace project={selectedProject} />
                     ) : null
                 }

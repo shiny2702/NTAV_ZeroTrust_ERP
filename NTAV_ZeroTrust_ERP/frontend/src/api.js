@@ -267,7 +267,14 @@ export const roleInfoRegenerate = async (employeeIdList) => {
 };
 
 
-
+export const fetchProjects = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/project/projects`); 
+    return response.json();
+  } catch (error) {
+    console.error("프로젝트트 리스트를 가져오는 중 오류 발생:", error);
+  }
+};
 
 
 
