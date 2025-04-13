@@ -8,7 +8,7 @@ import NoneSelectedWorkspace from "./workspace/noneSelectedWorkspace";
 
 class ProjectApprovalPage extends Component {
     state = {
-        viewMode: 'all', // 'all', 'approved', 'unapproved' 중 하나
+        viewMode: null, 
         selectedProjectId: null, // 선택된 프로젝트 ID
     };
 
@@ -70,8 +70,11 @@ class ProjectApprovalPage extends Component {
             filteredProjects = approvedEndedProjects;
         } else if (viewMode === 'rejectedProjects') {
             filteredProjects = rejectedProjects;
-        } else {
+        } else if (viewMode === 'all') {
             filteredProjects = [...waitingForApprovalProjects, ...approvedOngoingProjects, ...approvedEndedProjects, ...rejectedProjects];
+        } else {
+            // viewMode가 null인 경우 빈 목록
+            filteredProjects = [];
         }
 
         // 선택된 프로젝트 ID가 null일 때, 결재완료 프로젝트, 결재미완료 프로젝트 구분
@@ -80,38 +83,39 @@ class ProjectApprovalPage extends Component {
         return (
             <div className="projectApprovalPage">
                 <div className="sidebar">
-                    <div className="buttonContainer">
-                        <button 
-                            className={`viewButton ${viewMode === 'waitingForApprovalProjects' ? 'active' : ''}`}
-                            onClick={() => this.handleViewChange('waitingForApprovalProjects')}
-                        >
-                            결재대기건
-                        </button>
-                        <button 
-                            className={`viewButton ${viewMode === 'approvedOngoingProjects' ? 'active' : ''}`}
-                            onClick={() => this.handleViewChange('approvedOngoingProjects')}
-                        >
-                            진행건
-                        </button>
-                        <button 
-                            className={`viewButton ${viewMode === 'approvedEndedProjects' ? 'active' : ''}`}
-                            onClick={() => this.handleViewChange('approvedEndedProjects')}
-                        >
-                            종료건
-                        </button>
-                        <button 
-                            className={`viewButton ${viewMode === 'rejectedProjects' ? 'active' : ''}`}
-                            onClick={() => this.handleViewChange('rejectedProjects')}
-                        >
-                            반려건
-                        </button>
-                        <button 
-                            className={`viewButton ${viewMode === 'all' ? 'active' : ''}`}
-                            onClick={() => this.handleViewChange('all')}
-                        >
-                            전체보기
-                        </button>
+                <div className="buttonContainer">
+                    <button 
+                        className={`viewButton waitingView ${viewMode === 'waitingForApprovalProjects' ? 'active' : ''}`}
+                        onClick={() => this.handleViewChange('waitingForApprovalProjects')}
+                    >
+                        결재대기건
+                    </button>
+                    <button 
+                        className={`viewButton approvedOngoingView ${viewMode === 'approvedOngoingProjects' ? 'active' : ''}`}
+                        onClick={() => this.handleViewChange('approvedOngoingProjects')}
+                    >
+                        진행건
+                    </button>
+                    <button 
+                        className={`viewButton approvedEndedView ${viewMode === 'approvedEndedProjects' ? 'active' : ''}`}
+                        onClick={() => this.handleViewChange('approvedEndedProjects')}
+                    >
+                        종료건
+                    </button>
+                    <button 
+                        className={`viewButton rejectedView ${viewMode === 'rejectedProjects' ? 'active' : ''}`}
+                        onClick={() => this.handleViewChange('rejectedProjects')}
+                    >
+                        반려건
+                    </button>
+                    <button 
+                        className={`viewButton allView ${viewMode === 'all' ? 'active' : ''}`}
+                        onClick={() => this.handleViewChange('all')}
+                    >
+                        전체보기
+                    </button>
                     </div>
+
 
                     <div className="sidebar-separator"></div>
 
