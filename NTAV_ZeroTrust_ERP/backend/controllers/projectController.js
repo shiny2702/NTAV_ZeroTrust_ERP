@@ -143,3 +143,32 @@ exports.getProjects = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+exports.updateProjectTitleSection = async (req, res) => {
+  const { proj_no, security_level, remark } = req.body;
+
+  try {
+    // 1. 업데이트 실행
+    await db.query(
+      'UPDATE project SET security_level = ?, remark = ? WHERE proj_no = ?',
+      [security_level, remark, proj_no]
+    );
+
+    // 2. 업데이트된 데이터 다시 가져오기 (선택적)
+    const [updatedProjectRows] = await db.query(
+      'SELECT * FROM project WHERE proj_no = ?',
+      [proj_no]
+    );
+
+    if (updatedProjectRows.length === 0) {
+      return res.status(404).json({ message: '프로젝트를 찾을 수 없습니다.' });
+    }
+
+    res.status(200).json(updatedProjectRows[0]);
+  } catch (error) {
+    console.error('프로젝트 업데이트 오류:', error);
+    res.status(500).json({ message: '프로젝트 업데이트 실패' });
+  }
+};
+

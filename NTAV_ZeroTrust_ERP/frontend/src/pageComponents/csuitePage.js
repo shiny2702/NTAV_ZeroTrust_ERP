@@ -51,50 +51,54 @@ const CSuitePage = () => {
     }
   };
 
+  const loadProjects = async () => {
+    try {
+      const projects = await fetchProjects();
+
+      console.log("백엔드에서 받아온 프로젝트 데이터:", projects); 
+
+      const waiting = [];
+      const ongoing = [];
+      const ended = [];
+      const rejected = [];
+
+      projects.forEach((project) => {
+        switch (project.status) {
+          case "waiting for approval":
+            waiting.push(project);
+            break;
+          case "approved":
+          case "planning":
+          case "in progress":
+          case "paused":
+            ongoing.push(project);
+            break;
+          case "completed":
+          case "canceled":
+            ended.push(project);
+            break;
+          case "rejected":
+            rejected.push(project);
+            break;
+          default:
+            console.warn("알 수 없는 프로젝트 상태:", project.status);
+        }
+      });
+
+      setWaitingForApprovalProjects(waiting);
+      setApprovedOngoingProjects(ongoing);
+      setApprovedEndedProjects(ended);
+      setRejectedProjects(rejected);
+    } catch (error) {
+      console.error("프로젝트 데이터를 분류하는 중 오류 발생:", error);
+    }
+  };
+
+  const reloadProjects = async () => {
+    loadProjects();
+  };
+
   useEffect(() => {
-    const loadProjects = async () => {
-      try {
-        const projects = await fetchProjects();
-
-        console.log("백엔드에서 받아온 프로젝트 데이터:", projects); 
-
-        const waiting = [];
-        const ongoing = [];
-        const ended = [];
-        const rejected = [];
-
-        projects.forEach((project) => {
-          switch (project.status) {
-            case "waiting for approval":
-              waiting.push(project);
-              break;
-            case "approved":
-            case "planning":
-            case "in progress":
-            case "paused":
-              ongoing.push(project);
-              break;
-            case "completed":
-            case "canceled":
-              ended.push(project);
-              break;
-            case "rejected":
-              rejected.push(project);
-              break;
-            default:
-              console.warn("알 수 없는 프로젝트 상태:", project.status);
-          }
-        });
-
-        setWaitingForApprovalProjects(waiting);
-        setApprovedOngoingProjects(ongoing);
-        setApprovedEndedProjects(ended);
-        setRejectedProjects(rejected);
-      } catch (error) {
-        console.error("프로젝트 데이터를 분류하는 중 오류 발생:", error);
-      }
-    };
-
     loadProjects();
   }, []);
 
@@ -119,6 +123,7 @@ const CSuitePage = () => {
               approvedOngoingProjects,
               approvedEndedProjects,
               rejectedProjects,
+              reloadProjects, 
             }}
           />
         </div>

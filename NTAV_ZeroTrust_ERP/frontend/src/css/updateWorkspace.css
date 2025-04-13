@@ -1,62 +1,132 @@
-.updateWorkspace {
-    padding: 20px;
-    font-family: Arial, sans-serif;
+.read-only-container {
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
 }
 
-h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.projectInfoTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1px;
-}
-
-.projectInfoTable th, .projectInfoTable td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.projectInfoTable th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
-
-.projectInfoTable td {
-    vertical-align: top;
-}
-
-.projectInfoTable td div {
-    margin-bottom: 5px;
-}
-
-.workspace-separator {
-    border-top: 2px solid #ccc; /* 경계선 색상 및 두께 */
-    margin-top: 40px; /* 경계선과 다른 요소 간의 간격 */
-    margin-bottom: 20px;
-  }
-
-  /* updateWorkspace.css 파일에 추가 */
-  .headerWithEdit {
+.workspace-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 5px;
-  }
-  
-  .editButton {
-    background-color: #78a3da;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.5rem;
+}
+
+.workspace-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    border: none !important; 
+}
+
+.section {
+    margin-bottom: 2rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 0.7rem;
+    column-gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.description-block {
+    margin-top: 1rem;
+    background-color: #f9f9f9;
+    padding: 0.8rem;
+    border-left: 4px solid #ccc;
+    border-radius: 6px;
+}
+
+.info-link {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.team-block {
+    margin: 0.3rem 0;
+}
+
+.app-block {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background-color: #f2f8ff;
+    border: 1px solid #d0e3ff;
+    border-radius: 8px;
+}
+
+.app-name {
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.app-item ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    list-style: disc;
+}
+
+.team-title {
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+}
+
+.no-data {
+    font-style: italic;
+    color: #777;
+}
+
+.manager-block {
+    background-color: #eafce8;
+    padding: 0.8rem;
+    border-left: 5px solid #6abf69;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.timestamp-block {
+    font-size: 0.85rem;
+    color: #666;
+    text-align: right;
+    margin-top: 2rem;
+}
+
+.edit-button {
+    padding: 6px 12px;
+    font-size: 14px;
+    background-color: #007bff;
     color: white;
     border: none;
-    padding: 5px 10px;
+    border-radius: 6px;
     cursor: pointer;
-  }
-  
-  .editButton:hover {
-    background-color: #003377;
-  }
+    transition: background-color 0.2s ease;
+}
+
+.edit-button:hover {
+    background-color: #0056b3;
+}
+
+.input-select {
+    padding: 4px 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.remark-input {
+    width: 100%;
+    min-height: 80px;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
   

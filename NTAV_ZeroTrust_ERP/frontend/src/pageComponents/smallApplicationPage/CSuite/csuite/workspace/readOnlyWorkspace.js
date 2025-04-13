@@ -20,9 +20,9 @@ class ReadOnlyWorkspace extends Component {
                         <div><strong>프로젝트명 :</strong> {project.proj_name}</div>
                         <div><strong>보안등급 :</strong> {project.security_level}</div>
                         <div><strong>상태 :</strong> {project.status}</div>
-                        <div><strong>시작일 :</strong> {project.start_date || " - "}</div>
+                        <div><strong>시작일 :</strong> {project.start_date || "  - "}</div>
                         <div><strong>예상 기간 :</strong> {project.expected_duration_month}</div>
-                        <div><strong>종료일 :</strong> {project.actual_end_date || " - "}</div>
+                        <div><strong>종료일 :</strong> {project.actual_end_date || "  - "}</div>
                     </div>
                     <div className="description-block">
                         <strong>설명 :</strong>
@@ -35,7 +35,7 @@ class ReadOnlyWorkspace extends Component {
                     )}
                     <div className="description-block">
                         <strong>비고 :</strong>
-                        <p>{project.remark || ' - '}</p>
+                        <p>{project.remark || '  - '}</p>
                     </div>
                 </section>
 

@@ -276,5 +276,27 @@ export const fetchProjects = async () => {
   }
 };
 
+// api.js
+export const updateProjectTitleSection = async (updatedData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/project/updateProjectTitleSection`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (!response.ok) {
+      throw new Error('프로젝트 수정 실패');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('updateProjectTitleSection error:', error);
+    throw error;
+  }
+}
+
 
 

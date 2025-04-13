@@ -57,7 +57,7 @@ class ProjectApprovalPage extends Component {
     };
 
     render() {
-        const { waitingForApprovalProjects, approvedOngoingProjects, approvedEndedProjects, rejectedProjects } = this.props;
+        const { waitingForApprovalProjects, approvedOngoingProjects, approvedEndedProjects, rejectedProjects, reloadProjects } = this.props;
         const { viewMode, selectedProjectId } = this.state;
 
         // 필터링된 프로젝트 목록
@@ -153,7 +153,7 @@ class ProjectApprovalPage extends Component {
                     ) : waitingForApprovalProjects.some(project => project.proj_no === selectedProjectId) ? (
                         <ApprovalWorkspace project={selectedProject} />
                     ) : approvedOngoingProjects.some(project => project.proj_no === selectedProjectId) ? (
-                        <UpdateWorkspace project={selectedProject} />
+                        <UpdateWorkspace project={selectedProject} reloadProjects={reloadProjects}/>
                     ) : approvedEndedProjects.some(project => project.proj_no === selectedProjectId) || rejectedProjects.some(project => project.proj_no === selectedProjectId) ? (
                         <ReadOnlyWorkspace project={selectedProject} />
                     ) : null
