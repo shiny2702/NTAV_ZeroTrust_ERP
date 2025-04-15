@@ -1,4 +1,6 @@
 const db = require('../config/db');
+const dayjs = require('dayjs');
+const { roleInfoRegenerate } = require('./roleController'); // 내부용 함수 추가 필요
 
 exports.getProjects = async (req, res) => {
   try {
@@ -70,6 +72,7 @@ exports.getProjects = async (req, res) => {
     // 3. app, employee 정보 가져오기
     const [appEmpRows] = await db.query(`
       SELECT 
+        pae.proj_emp_no,
         pae.proj_no,
         a.app_no, a.app_name, a.related_dept_no AS app_dept_no, a.related_team_no AS app_team_no,
         e.employee_id, CONCAT(e.last_name, e.first_name) AS employee_name,
@@ -112,26 +115,56 @@ exports.getProjects = async (req, res) => {
 
       // 직원 넣기
       if (row.employee_id) {
-        const exists = app.employees.find(e => e.employee_id === row.employee_id);
-        if (!exists) {
+        const existingEmpIndex = app.employees.findIndex(e => e.employee_id === row.employee_id);
+
+        if (existingEmpIndex === -1) {
+          // 아직 등록되지 않은 직원이면 추가
           app.employees.push({
             employee_id: row.employee_id,
             employee_name: row.employee_name,
             from_date: row.from_date,
             to_date: row.to_date
           });
+        } else {
+          // 이미 등록된 직원이면 조건 비교해서 교체할지 결정
+          const existingEmp = app.employees[existingEmpIndex];
+          const existingToDate = existingEmp.to_date;
+          const newToDate = row.to_date;
+
+          const isExistingNull = !existingToDate;
+          const isNewNull = !newToDate;
+
+          const shouldReplace =
+            // 새로운 row의 to_date가 null이면 우선 적용
+            (isNewNull && !isExistingNull) ||
+            // 둘 다 null이 아니면 더 나중 날짜 선택
+            (!isNewNull && !isExistingNull && new Date(newToDate) > new Date(existingToDate));
+
+          if (shouldReplace) {
+            app.employees[existingEmpIndex] = {
+              employee_id: row.employee_id,
+              employee_name: row.employee_name,
+              from_date: row.from_date,
+              to_date: row.to_date
+            };
+          }
         }
       }
+
 
       // 프로젝트 매니저 설정
       if (row.is_manager === 1) {
         if (
           !project.projectManager ||
-          new Date(row.from_date) > new Date(project.projectManager.from_date)
+          new Date(row.from_date) > new Date(project.projectManager.from_date) ||
+          (new Date(row.from_date).getTime() === new Date(project.projectManager.from_date).getTime() &&
+          row.proj_emp_no > project.projectManager.proj_emp_no)
         ) {
           project.projectManager = {
             employee_id: row.employee_id,
-            employee_name: row.employee_name
+            employee_name: row.employee_name,
+            from_date: row.from_date,
+            proj_emp_no: row.proj_emp_no
           };
         }
       }
@@ -147,6 +180,8 @@ exports.getProjects = async (req, res) => {
 
 exports.updateProjectTitleSection = async (req, res) => {
   const { proj_no, security_level, remark } = req.body;
+
+  console.log('body:', req.body);
 
   try {
     // 1. 업데이트 실행
@@ -171,4 +206,133 @@ exports.updateProjectTitleSection = async (req, res) => {
     res.status(500).json({ message: '프로젝트 업데이트 실패' });
   }
 };
+
+
+exports.updateProjectManager = async (req, res) => {
+    const { proj_no, original_manager_id, new_manager_id } = req.body;
+    const today = dayjs().format('YYYY-MM-DD');
+    const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+
+    console.log('body:', req.body);
+
+    const conn = await db.getConnection();
+    try {
+        await conn.beginTransaction();
+
+        // 1. 기존 담당자 처리
+        const [oldRecords] = await conn.query(
+            `SELECT * FROM proj_app_emp 
+             WHERE proj_no = ? AND employee_id = ? AND to_date IS NULL`,
+            [proj_no, original_manager_id]
+        );
+
+        for (const rec of oldRecords) {
+            await conn.query(
+                `UPDATE proj_app_emp SET to_date = ? WHERE proj_emp_no = ?`,
+                [today, rec.proj_emp_no]
+            );
+        }
+
+        for (const rec of oldRecords) {
+            await conn.query(
+                `INSERT INTO proj_app_emp (proj_no, app_no, employee_id, from_date, to_date, is_manager)
+                 VALUES (?, ?, ?, ?, NULL, 0)`,
+                [proj_no, rec.app_no, rec.employee_id, tomorrow]
+            );
+        }
+
+        // 2. 새 담당자 처리
+        const [newRecords] = await conn.query(
+            `SELECT * FROM proj_app_emp 
+             WHERE proj_no = ? AND employee_id = ? AND to_date IS NULL`,
+            [proj_no, new_manager_id]
+        );
+
+        for (const rec of newRecords) {
+            await conn.query(
+                `UPDATE proj_app_emp SET to_date = ? WHERE proj_emp_no = ?`,
+                [today, rec.proj_emp_no]
+            );
+        }
+
+        for (const rec of newRecords) {
+            await conn.query(
+                `INSERT INTO proj_app_emp (proj_no, app_no, employee_id, from_date, to_date, is_manager)
+                 VALUES (?, ?, ?, ?, NULL, 1)`,
+                [proj_no, rec.app_no, rec.employee_id, tomorrow]
+            );
+        }
+
+        console.log('oldRecords:', oldRecords);
+        console.log('newRecords:', newRecords);
+
+        await conn.commit();
+        res.status(200).json({ message: '담당자 변경 완료' });
+
+    } catch (err) {
+        await conn.rollback();
+        console.error(err);
+        res.status(500).send('서버 에러');
+    } finally {
+        conn.release();
+    }
+};
+
+
+exports.deleteEmployeesFromProject = async (req, res) => {
+  const { proj_no, removed_employees } = req.body;
+
+  if (!proj_no || !Array.isArray(removed_employees) || removed_employees.length === 0) {
+    return res.status(400).json({ message: "Invalid request payload." });
+  }
+
+  const now = dayjs().format('YYYY-MM-DD');
+
+  const conn = await db.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    for (const { app_no, employee_id } of removed_employees) {
+      const [result] = await conn.query(
+        `UPDATE proj_app_emp 
+         SET to_date = ?
+         WHERE proj_no = ? AND app_no = ? AND employee_id = ? AND to_date IS NULL`,
+        [now, proj_no, app_no, employee_id]
+      );
+
+      // 업데이트된 행이 0개인 경우 롤백
+      if (result.affectedRows === 0) {
+        throw new Error(`No updatable record found for employee_id: ${employee_id}`);
+      }
+    }
+
+    await conn.commit();
+
+    // 직원 ID 배열 추출
+    const employeeIds = removed_employees.map(e => e.employee_id);
+
+    // roleInfo 재생성 함수 내부 호출 (API로 안 부르고)
+    const roleResult = await roleInfoRegenerate(employeeIds);
+
+    if (!roleResult.success) {
+      return res.status(207).json({
+        message: "직원은 삭제되었으나 일부 roleInfo 재생성에 실패했습니다.",
+        details: roleResult,
+      });
+    }
+
+    return res.status(200).json({ message: "Employees removed and roleInfo updated." });
+  } 
+  catch (error) {
+    await conn.rollback();
+    console.error("Error during employee removal:", error);
+    return res.status(500).json({ message: "Failed to remove employees. All changes reverted." });
+  } 
+  finally {
+    conn.release();
+  }
+};
+
+
 

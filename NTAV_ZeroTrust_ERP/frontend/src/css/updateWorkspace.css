@@ -130,3 +130,75 @@
     resize: vertical;
 }
   
+.manager-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.manager-select {
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    min-width: 240px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.manager-select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.emp-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .employee-add-section {
+    margin-top: 1px;
+    margin-bottom: 10px;
+  }
+  
+  .employee-select {
+    width: 200px;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 0.95rem;
+    color: #333;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  
+  .employee-select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 3px rgba(0, 123, 255, 0.3);
+  }
+  
+
+  .delete-button {
+    margin-left: 8px;
+    background-color: #ff5c5c;
+    border: none;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.6rem;
+  }
+  
+  .delete-button:hover {
+    background-color: #e04545;
+  }
+
+  .delete-button.active {
+    background-color: #c00; /* 혹은 네가 원하는 진한 색 */
+    color: white;
+  }

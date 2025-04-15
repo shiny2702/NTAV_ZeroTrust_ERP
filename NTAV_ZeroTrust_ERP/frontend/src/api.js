@@ -244,27 +244,27 @@ export const roleInfoWholeRegenerate = async () => {
   }
 };
 
-export const roleInfoRegenerate = async (employeeIdList) => {
-  try {
-    const response = await fetch(`${BASE_URL}/api/role/roleInfoRegenerate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ids: employeeIdList }),
-    });
+// export const roleInfoRegenerate = async (employeeIdList) => {
+//   try {
+//     const response = await fetch(`${BASE_URL}/api/role/roleInfoRegenerate`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ ids: employeeIdList }),
+//     });
 
-    const data = await response.json();
-    return data;
-  } 
-  catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      message: "요청 실패",
-    };
-  }
-};
+//     const data = await response.json();
+//     return data;
+//   } 
+//   catch (error) {
+//     console.error(error);
+//     return {
+//       success: false,
+//       message: "요청 실패",
+//     };
+//   }
+// };
 
 
 export const fetchProjects = async () => {
@@ -288,7 +288,7 @@ export const updateProjectTitleSection = async (updatedData) => {
     });
 
     if (!response.ok) {
-      throw new Error('프로젝트 수정 실패');
+      throw new Error('프로젝트 기본정보 수정 실패');
     }
 
     return await response.json();
@@ -297,6 +297,48 @@ export const updateProjectTitleSection = async (updatedData) => {
     throw error;
   }
 }
+
+export const updateProjectManager = async (updatedManagerData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/project/updateProjectManager`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(updatedManagerData),
+    });
+
+    if (!response.ok) {
+        throw new Error(`프로젝트 매니저 업데이트 실패`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('updateProjectManager error:', error);
+    throw error;
+  }
+}
+
+export const deleteEmployeesFromProject = async (payload) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/project/deleteEmployeesFromProject`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to delete employees`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('updateProjectManager error:', error);
+    throw error;
+  }
+};
 
 
 

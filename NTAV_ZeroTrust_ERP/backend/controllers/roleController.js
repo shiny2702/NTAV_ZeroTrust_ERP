@@ -169,9 +169,7 @@ exports.roleInfoWholeRegenerate = async (req, res) => {
   };
 
 
-exports.roleInfoRegenerate = async (req, res) => {
-    const { ids } = req.body;
-
+exports.roleInfoRegenerate = async (ids) => {
     // 1. 유효성 검사
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
         return res.status(400).json({
@@ -202,16 +200,27 @@ exports.roleInfoRegenerate = async (req, res) => {
 
       // roleInfo 재계산 및 업데이트
       const failedIds = await roleGeneratingLogic(activeIds);
-      const result = generateResultResponse(activeIds, failedIds);
-      return res.status(result.success ? 200 : 207).json(result);
 
-    } 
-    catch (error) {
-      console.error(error);
-      return res.status(500).json({
+      // 전체 성공인지 확인
+      if (failedIds.length > 0) {
+        return {
+          success: false,
+          message: '일부 직원의 roleInfo 재생성에 실패하여 전체 롤백 처리됨',
+          failed: failedIds
+        };
+      }
+
+      return {
+        success: true,
+        message: '모든 직원의 roleInfo 재생성 성공',
+      };
+
+    } catch (error) {
+      console.error("roleInfoRegenerateInternal Error:", error);
+      return {
         success: false,
-        message: "ERROR :: 전체 직원 role정보 최신 업데이트 및 동기화 실패. 재시도 필요",
-      });
+        message: 'roleInfo 재생성 중 서버 오류 발생',
+      };
     }
 };
 
