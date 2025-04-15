@@ -182,7 +182,7 @@ exports.roleInfoRegenerate = async (ids) => {
         // is_active = 1인 직원만 필터링
         const placeholders = ids.map(() => '?').join(', ');
         const [activeEmployees] = await db.query(
-            `SELECT employee_id FROM employee WHERE is_active = 1 AND id IN (${placeholders})`,
+            `SELECT employee_id FROM employee WHERE is_active = 1 AND employee_id IN (${placeholders})`,
             ids
         );
 

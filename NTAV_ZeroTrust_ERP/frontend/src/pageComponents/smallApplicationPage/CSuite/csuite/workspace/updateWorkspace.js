@@ -142,14 +142,14 @@ class UpdateWorkspace extends Component {
               try {
                   await deleteEmployeesFromProject(payload);
   
-                  alert("담당자 삭제 완료");
+                  alert("참여 직원 삭제 완료");
   
                   this.setState({ removedEmployees: [] });
   
                   updateSucceeded = true;
               } catch (error) {
-                  console.error("담당자 삭제 실패:", error);
-                  alert("일부 담당자 삭제에 실패했습니다.");
+                  console.error("참여 직원 삭제 실패:", error);
+                  alert("참여 직원 삭제에 실패했습니다.");
               }
           }
   

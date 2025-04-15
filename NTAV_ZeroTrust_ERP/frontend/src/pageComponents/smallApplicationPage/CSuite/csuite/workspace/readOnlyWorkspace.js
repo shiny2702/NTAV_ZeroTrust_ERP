@@ -10,7 +10,7 @@ class ReadOnlyWorkspace extends Component {
 
         return (
             <div className="read-only-container">
-                <h2 className="workspace-title">📁 프로젝트 정보</h2>
+                <h2 className="workspace-titleOnly">📁 프로젝트 정보</h2>
 
                 {/* 기본 정보 */}
                 <section className="section">
