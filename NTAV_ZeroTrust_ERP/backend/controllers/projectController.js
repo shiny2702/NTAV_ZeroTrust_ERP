@@ -263,6 +263,11 @@ exports.updateProjectManager = async (req, res) => {
             );
         }
 
+        await conn.query(
+          `UPDATE project SET updated_at = NOW() WHERE proj_no = ?`,
+          [proj_no]
+        );
+
         console.log('oldRecords:', oldRecords);
         console.log('newRecords:', newRecords);
 
@@ -307,6 +312,11 @@ exports.deleteEmployeesFromProject = async (req, res) => {
       }
     }
 
+    await conn.query(
+      `UPDATE project SET updated_at = NOW() WHERE proj_no = ?`,
+      [proj_no]
+    );
+
     await conn.commit();
 
     // 직원 ID 배열 추출
@@ -335,4 +345,26 @@ exports.deleteEmployeesFromProject = async (req, res) => {
 };
 
 
+exports.addibleEmployeesToProject = async (req, res) => {
+  const { app_no, currentEmpIds } = req.body;
+
+  try {
+    const conn = await db.getConnection();
+
+    // is_active 직원 중 해당 app_no를 job 목록에 포함하고 있는 직원 추출
+    const [availableRows] = await conn.query(
+      `SELECT employee_id, CONCAT(last_name, first_name) AS employee_name
+       FROM employee
+       WHERE is_active = 1
+         AND JSON_CONTAINS(job, JSON_ARRAY(?))
+         ${currentEmpIds.length ? `AND employee_id NOT IN (?)` : ``}`,
+      currentEmpIds.length ? [app_no, currentEmpIds] : [app_no]
+    );
+
+    res.json({ success: true, data: availableRows });
+  } catch (error) {
+    console.error("getAvailableEmployees error:", error);
+    res.status(500).json({ success: false, message: "직원 조회 중 오류 발생" });
+  }
+};
 

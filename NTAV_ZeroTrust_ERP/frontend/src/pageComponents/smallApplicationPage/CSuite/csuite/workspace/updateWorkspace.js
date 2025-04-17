@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import withRouter from "../../../../../hocs/withRouter";
 import '../../../../../css/updateWorkspace.css';
-import { updateProjectTitleSection, updateProjectManager, deleteEmployeesFromProject } from "../../../../../api";
+import { updateProjectTitleSection, updateProjectManager, deleteEmployeesFromProject, addibleEmployeesToProject } from "../../../../../api";
 
 class UpdateWorkspace extends Component {
     constructor(props) {
@@ -15,7 +15,8 @@ class UpdateWorkspace extends Component {
             originalSecurityLevel: props.project.security_level,
             originalRemark: props.project.remark || "",
             originalManagerId: props.project.projectManager?.employee_id || null,
-            removedEmployees: []
+            removedEmployees: [],
+            availableEmployeesMap: {}, // { [app_no]: [직원 리스트] }
         };
     }
 
@@ -30,7 +31,8 @@ class UpdateWorkspace extends Component {
                 managerId: this.props.project.projectManager?.employee_id || null,
                 originalSecurityLevel: this.props.project.security_level,
                 originalRemark: this.props.project.remark || "",
-                originalManagerId: this.props.project.projectManager?.employee_id || null
+                originalManagerId: this.props.project.projectManager?.employee_id || null,
+                availableEmployeesMap: {}, // { [app_no]: [직원 리스트] }
             });
         }
     }
@@ -203,6 +205,18 @@ class UpdateWorkspace extends Component {
       return { removedEmployees: updatedList };
     });
   };
+
+  handleLoadAddibleEmployees = async (app) => {
+    const currentEmpIds = app.employees.map(emp => emp.employee_id);
+    const availableEmployees = await addibleEmployeesToProject(app.app_no, currentEmpIds);
+  
+    this.setState((prevState) => ({
+      availableEmployeesMap: {
+        ...prevState.availableEmployeesMap,
+        [app.app_no]: availableEmployees,
+      },
+    }));
+  };  
   
   
   
@@ -338,26 +352,37 @@ class UpdateWorkspace extends Component {
                                         })}
                                     </ul>
 
-                                        {isEditing && (
-                                          <div className="employee-add-section">
+                                    {isEditing && (
+                                      <div className="employee-add-section">
+                                        {!this.state.availableEmployeesMap[app.app_no] ? (
+                                          <button onClick={() => this.handleLoadAddibleEmployees(app)}>
+                                            가능한 직원 불러오기
+                                          </button>
+                                        ) : (
+                                          <>
                                             <select
                                               className="employee-select"
-                                              value="" // 기본값 유지
+                                              value=""
                                               onChange={(e) => this.handleAddEmployee(team, app, e.target.value)}
                                             >
                                               <option value="" disabled hidden>
                                                 --직원추가--
                                               </option>
-
-                                              {/* 예시로 직원 리스트 들어왔을 때 */}
-                                              {this.state.availableEmployees?.map((emp) => (
+                                              {this.state.availableEmployeesMap[app.app_no].map((emp) => (
                                                 <option key={emp.employee_id} value={emp.employee_id}>
                                                   {emp.employee_name} [{emp.employee_id}]
                                                 </option>
                                               ))}
                                             </select>
-                                          </div>
+
+                                            {/* 🔄 다시 불러오기 버튼은 직원 리스트 있을 때만 보여줘 */}
+                                            <button onClick={() => this.handleLoadAddibleEmployees(app)}>
+                                              🔄 다시 불러오기
+                                            </button>
+                                          </>
                                         )}
+                                      </div>
+                                    )}
 
                                     </div>
                                 ))

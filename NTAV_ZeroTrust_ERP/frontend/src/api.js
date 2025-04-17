@@ -341,4 +341,27 @@ export const deleteEmployeesFromProject = async (payload) => {
 };
 
 
+export const addibleEmployeesToProject = async (app_no, currentEmpIds) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/project/addibleEmployeesToProject`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ app_no, currentEmpIds }),
+    });
+
+    const result = await response.json();
+    if (!result.success) { 
+      throw new Error(result.message);
+    }
+
+    return result.data;
+  } 
+  catch (err) {
+    console.error("fetchAvailableEmployees error:", err);
+    return [];
+  }
+};
+
+
+
 

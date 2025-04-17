@@ -172,10 +172,10 @@ exports.roleInfoWholeRegenerate = async (req, res) => {
 exports.roleInfoRegenerate = async (ids) => {
     // 1. 유효성 검사
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        return res.status(400).json({
-        success: false,
-        message: 'roleInfo 재생성을 위한 직원 ID 목록이 유효하지 않습니다.',
-        });
+        return {
+          success: false,
+          message: 'roleInfo 재생성을 위한 직원 ID 목록이 유효하지 않습니다.'
+        };
     }
 
     try {
@@ -192,10 +192,10 @@ exports.roleInfoRegenerate = async (ids) => {
 
       // 유효성 검사 추가
       if (!activeIds || !Array.isArray(activeIds) || activeIds.length === 0) {
-          return res.status(400).json({
-          success: false,
-          message: '유효한 활성 직원이 존재하지 않습니다.',
-          });
+          return {
+            success: false,
+            message: '유효한 활성 직원이 존재하지 않습니다.'
+          };
       }
 
       // roleInfo 재계산 및 업데이트
