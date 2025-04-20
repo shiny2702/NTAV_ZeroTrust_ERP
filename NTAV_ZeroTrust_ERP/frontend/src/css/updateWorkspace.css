@@ -202,3 +202,53 @@
     background-color: #c00; /* 혹은 네가 원하는 진한 색 */
     color: white;
   }
+
+  .employee-add-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background-color: #f9f9fb;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .employee-add-section select.employee-select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    min-width: 180px;
+    cursor: pointer;
+  }
+  
+  .employee-add-section select.employee-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+  
+  .employee-add-section button {
+    padding: 8px 14px;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #3b82f6;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .employee-add-section button:hover {
+    background-color: #2563eb;
+  }
+  
+  .employee-add-section button:active {
+    background-color: #1d4ed8;
+  }
+  
