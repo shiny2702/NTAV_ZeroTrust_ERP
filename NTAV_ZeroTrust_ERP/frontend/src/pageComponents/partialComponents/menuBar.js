@@ -23,7 +23,7 @@ class MenuBar extends Component {
     }
 
     return (
-      <ul>
+      <ul className="menu">
         {MENU_STRUCTURE.map(menu => (
           <li className="dropdown" key={menu.category}>
             {menu.category} ▾

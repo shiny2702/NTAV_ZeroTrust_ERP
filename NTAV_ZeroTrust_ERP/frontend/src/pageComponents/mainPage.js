@@ -28,7 +28,7 @@ class MainPage extends Component {
           <ProfileCard/>
 
           <div className="contentArea">
-            {/* <Outlet context={{ }} /> */}
+            <Outlet context={{ }} />
           </div>
         </div>
       </div>

@@ -102,7 +102,7 @@ export const MENU_STRUCTURE = [
             { name: "서비스정책수립", app_no: 33, key: "servicePolicy" },
             { name: "회원관리", app_no: 34, key: "registeredCustomerManagement" },
             { name: "고객요청및피드백수집", app_no: 35, key: "customerRequestFeedback" },
-            { name: "고객요청및피드백분석", app_no: 36, key: "customerRequestReedbackAnalysis" },
+            { name: "고객요청및피드백분석", app_no: 36, key: "customerRequestFeedbackAnalysis" },
             { name: "비용처리", app_no: 37, key: "serviceOperatingCost" },
           ],
         },
@@ -131,4 +131,34 @@ export const MENU_STRUCTURE = [
       ],
     },
   ];
+
+
+  
+export const IT_MANAGEMENT_MENU_STRUCTURE = [
+  {
+    category: "IT 관리",
+    sections: [
+      {
+        title: "IT 보안",
+        items: [
+          { name: "보안정책수립", app_no: 45, key: "itSecurityPolicy" },
+          { name: "방화벽및네트워크관리", app_no: 46, key: "firewalAndNetworkManagement" },
+          { name: "시스템로그데이터", app_no: 47, key: "systemLogData" },          
+          { name: "시스템로그관리", app_no: 48, key: "systemLogManagement" },
+          { name: "쿼런틴존모듈관리", app_no: 49, key: "quarantimeModuleManagement" },
+          { name: "비용처리", app_no: 50, key: "itOperatingCost" }
+        ],
+      },
+      {
+        title: "ERP 관리",
+        items: [
+          { name: "직원계정관리", app_no: 51, key: "accountManagement" },
+          { name: "Applications권한관리", app_no: 52, key: "applicationDependencyConfiguration" }
+        ],
+      },
+    ],
+  }
+];
+
+
   

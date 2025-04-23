@@ -15,6 +15,56 @@
     position: relative; /* 추가 */
 }
 
+.itSecurityMenu ul {
+    list-style-type: none;
+    display: flex;
+    gap: 5vw;
+}
+
+/* .menu li에 relative 위치 추가 */
+.itSecurityMenu li {
+    cursor: pointer;
+    font-size: calc(0.3rem + 0.7vw);
+    color: white;
+    white-space: nowrap;
+    padding: 10px 15px;
+    position: relative; /* 추가 */
+}
+
+.erpManagementMenu ul {
+    list-style-type: none;
+    display: flex;
+    gap: 5vw;
+}
+
+
+/* .menu li에 relative 위치 추가 */
+.erpManagementMenu li {
+    cursor: pointer;
+    font-size: calc(0.3rem + 1vw);
+    color: white;
+    white-space: nowrap;
+    padding: 30px 100px;
+    position: relative; /* 추가 */
+}
+
+.itDeptHeadMenu ul {
+    list-style-type: none;
+    display: flex;
+    gap: 5vw;
+}
+
+
+/* .menu li에 relative 위치 추가 */
+.itDeptHeadMenu li {
+    cursor: pointer;
+    font-size: calc(0.3rem + 1vw);
+    color: white;
+    white-space: nowrap;
+    padding: 15px 150px;
+    position: relative; /* 추가 */
+}
+
 /* .dropdown-menu 스타일 수정 */
 .dropdown-menu {
     display: none !important;
