@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './css/index.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { menuRoutes } from './routesConfig';
 
 import LoginPage from './pageComponents/loginPage'; // App 대신 loginPage를 import
 
@@ -41,6 +42,9 @@ root.render(
 
         <Route path="/main" element={<MainPage />} >
           <Route index element={<MainInitialContentArea />} />
+          {menuRoutes.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
         </Route>
 
         <Route path="/deptHead" element={<DeptHeadPage />} >

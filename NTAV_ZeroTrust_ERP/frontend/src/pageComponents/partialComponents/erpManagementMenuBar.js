@@ -8,8 +8,11 @@ class ERPManagementMenuBar extends Component {
     user: JSON.parse(localStorage.getItem('user')) || null,
   };
 
-  handleMenuClick = (key) => {
-    this.props.navigate(`/${key}`);
+  handleMenuClick = (item) => {
+    this.props.navigate(`/main/${item.key}`);
+    if (this.props.onMenuSelect) {
+      this.props.onMenuSelect(item);
+    }
   };
 
   render() {
@@ -30,7 +33,7 @@ class ERPManagementMenuBar extends Component {
         {erpItems
           .filter(item => allowedAppNos.has(item.app_no))
           .map(item => (
-            <li key={item.app_no} onClick={() => this.handleMenuClick(item.key)}>
+            <li key={item.app_no} onClick={() => this.handleMenuClick(item)}>
               {item.name}
             </li>
           ))}

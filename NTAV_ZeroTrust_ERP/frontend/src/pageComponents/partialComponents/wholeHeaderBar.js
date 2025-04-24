@@ -10,6 +10,7 @@ import ItDeptHeadMenuBar from "./itDeptHeadMenuBar";
 class WholeHeaderBar extends Component {
     state = {
         user: JSON.parse(localStorage.getItem('user')) || null,
+        showLogoutModal: false,
     };
 
     handleLogoutClick = () => {
@@ -19,11 +20,11 @@ class WholeHeaderBar extends Component {
       // 로그아웃 확인 후 동작
     handleLogoutConfirmation = (confirm) => {
         if (confirm) { // YES 클릭 시 로그인 페이지로 리디렉션
-        localStorage.removeItem('user'); // 로그아웃 시 localStorage에서 사용자 정보 삭제
-        localStorage.removeItem('token');
-        this.props.navigate('/');
+            localStorage.removeItem('user'); // 로그아웃 시 localStorage에서 사용자 정보 삭제
+            localStorage.removeItem('token');
+            this.props.navigate('/');
         } else { // NO 클릭 시 모달을 닫음
-        this.setState({ showLogoutModal: false });
+            this.setState({ showLogoutModal: false });
         }
     };
 
@@ -41,8 +42,13 @@ class WholeHeaderBar extends Component {
     renderMenuBar = () => {
         const { pathname } = this.props.location;
         const path = Object.keys(this.menuBarMap).find(p => pathname.startsWith(p));
-        return this.menuBarMap[path] || null;
-    };
+        const menuBar = this.menuBarMap[path];
+      
+        // onMenuSelect prop을 주입해서 MenuBar에 전달
+        return menuBar ? React.cloneElement(menuBar, {
+          onMenuSelect: this.props.onMenuSelect
+        }) : null;
+      };      
 
 
     render() {

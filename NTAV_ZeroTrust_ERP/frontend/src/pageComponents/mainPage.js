@@ -9,26 +9,34 @@ import ProfileCard from "./partialComponents/profileCard";
 class MainPage extends Component {
   state = {
     user: JSON.parse(localStorage.getItem('user')) || null,
+    selectedMenu: null,
   };
 
   handleLogoClick = () => {
     this.props.navigate('/main');
   };
 
+  handleMenuSelect = (menuItem) => {
+    this.setState({ selectedMenu: menuItem });
+  };
+
   render() {
-    const { user } = this.state;
+    const { user, selectedMenu } = this.state;
     // `navigate`를 통해 전달된 사용자 데이터 받기
     console.log("받은 사용자 데이터:", user);
 
     return (
       <div className="mainPage">
-        <WholeHeaderBar handleLogoClick={this.handleLogoClick} />
+        <WholeHeaderBar 
+          handleLogoClick={this.handleLogoClick}
+          onMenuSelect={this.handleMenuSelect}
+        />
 
         <div className="mainContent"> 
           <ProfileCard/>
 
           <div className="contentArea">
-            <Outlet context={{ }} />
+            <Outlet context={{ selectedMenu }} />
           </div>
         </div>
       </div>
