@@ -3,6 +3,8 @@ import withRouter from '../../hocs/withRouter';
 import '../../css/wholeHeaderBar.css';
 
 import MenuBar from "./menuBar";
+import DeptHeadMenuBar from "./deptHeadMenuBar";
+import CSuiteMenuBar from "./csuiteMenuBar";
 import ItSecurityMenuBar from "./itSecurityMenuBar";
 import ERPManagementMenuBar from "./erpManagementMenuBar";
 import ItDeptHeadMenuBar from "./itDeptHeadMenuBar";
@@ -34,8 +36,8 @@ class WholeHeaderBar extends Component {
         '/erpManagement': <ERPManagementMenuBar />,
         '/itDeptHead': <ItDeptHeadMenuBar />,
         '/main': <MenuBar />,
-        '/deptHead': <MenuBar />,
-        '/csuite': <MenuBar />,
+        '/deptHead': <DeptHeadMenuBar />,
+        '/csuite': <CSuiteMenuBar />,
     };
 
     // 현재 경로에 따라 MenuBar 결정

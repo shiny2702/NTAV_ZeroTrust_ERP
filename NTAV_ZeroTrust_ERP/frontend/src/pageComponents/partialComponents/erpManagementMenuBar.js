@@ -9,7 +9,7 @@ class ERPManagementMenuBar extends Component {
   };
 
   handleMenuClick = (item) => {
-    this.props.navigate(`/main/${item.key}`);
+    this.props.navigate(`/erpManagement/${item.key}`);
     if (this.props.onMenuSelect) {
       this.props.onMenuSelect(item);
     }

@@ -107,7 +107,7 @@ export const menuRoutes = [
 // 👉 itMenuRoutes
 export const itMenuRoutes = [
   { path: "itSecurityPolicy", element: <ITSecurityPolicyPage /> },
-  { path: "firewalAndNetworkManagement", element: <FirewallAndNetworkManagementPage /> },
+  { path: "firewallAndNetworkManagement", element: <FirewallAndNetworkManagementPage /> },
   { path: "systemLogData", element: <SystemLogDataPage /> },
   { path: "systemLogManagement", element: <SystemLogManagementPage /> },
   { path: "quarantimeModuleManagement", element: <QuarantineModuleManagementPage /> },

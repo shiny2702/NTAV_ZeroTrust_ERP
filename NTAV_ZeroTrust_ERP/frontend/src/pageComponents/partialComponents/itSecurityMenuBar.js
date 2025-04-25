@@ -9,7 +9,7 @@ class ItSecurityMenuBar extends Component {
   };
 
   handleMenuClick = (item) => {
-    this.props.navigate(`/main/${item.key}`);
+    this.props.navigate(`/itSecurity/${item.key}`);
     if (this.props.onMenuSelect) {
       this.props.onMenuSelect(item);
     }

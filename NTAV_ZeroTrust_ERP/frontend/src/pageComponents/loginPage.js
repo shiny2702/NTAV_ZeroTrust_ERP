@@ -14,6 +14,16 @@ class LoginPage extends Component {
     };
   }
 
+  // 페이지 로드 후 바로 새로 고침
+  componentDidMount() {
+    const hasReloaded = sessionStorage.getItem("hasReloaded");
+
+    if (!hasReloaded || hasReloaded !== "true") { // && window.navigation?.type !== 'reload'
+      sessionStorage.setItem("hasReloaded", "true");
+      window.location.reload();
+    }
+  }
+
   // 입력값 변경 처리
   handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -42,6 +52,9 @@ class LoginPage extends Component {
       if (user && token) {
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('token', token);
+
+        sessionStorage.setItem("hasReloaded", "false");  // url접근 차단을 위한 code
+        sessionStorage.setItem("fromApp", "true");
       } else {
         console.error('로그인 정보가 잘못되었습니다.');
       }

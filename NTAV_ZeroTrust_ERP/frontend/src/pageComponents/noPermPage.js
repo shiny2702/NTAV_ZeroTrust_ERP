@@ -1,40 +1,48 @@
-import React, { Component } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom"; // useNavigate import
 
-class NoPermPage extends Component {
-  render() {
-    const containerStyle = {
-      width: "60%", // 박스의 가로 크기 (조정 가능)
-      margin: "5% auto", // 화면 중앙 정렬
-      padding: "20px", // 내부 여백
-      border: "1px solid #ccc", // 테두리
-      borderRadius: "10px", // 둥근 모서리
-      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // 그림자 효과
-      backgroundColor: "#f9f9f9", // 배경색
-      textAlign: "center", // 텍스트 가운데 정렬
-    };
+const NoPermPage = () => {
+  const navigate = useNavigate(); // navigate 함수 생성
 
-    const lineStyle = {
-      border: "none",
-      borderTop: "1px solid #ccc",
-      margin: "20px auto", // 상하 간격
-      width: "80%", // 줄의 가로 길이
-    };
+  const containerStyle = {
+    width: "60%",
+    margin: "5% auto",
+    padding: "20px",
+    border: "1px solid #ccc",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    backgroundColor: "#f9f9f9",
+    textAlign: "center",
+  };
 
-    const linkStyle = {
-      color: "#007bff", // 링크 색상
-      textDecoration: "none", // 밑줄 제거
-    };
+  const lineStyle = {
+    border: "none",
+    borderTop: "1px solid #ccc",
+    margin: "20px auto",
+    width: "80%",
+  };
 
-    return (
-      <div style={containerStyle}>
-        <h1>접근 권한 없음</h1>
-        <hr style={lineStyle} /> {/* h1 아래 줄 추가 */}
-        <p>죄송합니다. 이 페이지에 접근할 권한이 없습니다.</p>
-        <a href="/" style={linkStyle}>로그인 페이지로 돌아가기</a>
-      </div>
-    );
-  }
-}
+  const linkStyle = {
+    color: "#007bff",
+    textDecoration: "none",
+    cursor: "pointer", // 마우스 커서가 링크 모양으로 변경
+  };
+
+  // 로그인 페이지로 이동하는 함수
+  const handleRedirect = () => {
+    navigate("/"); // /login으로 리디렉션
+  };
+
+  return (
+    <div style={containerStyle}>
+      <h1>접근 권한 없음</h1>
+      <hr style={lineStyle} />
+      <p>죄송합니다. 이 페이지에 접근할 권한이 없습니다.</p>
+      <span style={linkStyle} onClick={handleRedirect}>로그인 페이지로 이동하기</span> {/* 클릭 시 handleRedirect 호출 */}
+    </div>
+  );
+};
 
 export default NoPermPage;
+
 
