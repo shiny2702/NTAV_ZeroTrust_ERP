@@ -300,4 +300,3 @@ exports.sendEmployeeEmail = async (req, res) => {
     res.status(500).json({ success: false, message: "이메일 전송 실패" });
   }
 };
-

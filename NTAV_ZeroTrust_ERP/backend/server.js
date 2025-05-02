@@ -10,6 +10,8 @@ const authRoutes = require('./routes/authRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const roleRoutes = require('./routes/roleRoutes');
 const projectRoutes = require('./routes/projectRoutes');
+const orgRoutes = require('./routes/orgRoutes');
+const financeRoutes = require('./routes/financeRoutes');
 
 const app = express();
 
@@ -29,12 +31,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/employee', employeeRoutes);
 app.use('/api/role', roleRoutes);
 app.use('/api/project', projectRoutes);
-
-// // 서버 실행
-// const PORT = process.env.PORT || 4430;
-// app.listen(PORT, '0.0.0.0', () => {
-//   console.log(`서버가 ${PORT}번 포트에서 실행 중입니다.`);
-// });
+app.use('/api/org', orgRoutes);
+app.use('/api/finance', financeRoutes);
 
 // 서버 실행
 const PORT = process.env.PORT || 4430;
@@ -43,3 +41,11 @@ const PORT = process.env.PORT || 4430;
 https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
   console.log(`HTTPS 서버가 ${PORT}번 포트에서 실행 중입니다.`);
 });
+
+
+
+// // 서버 실행
+// const PORT = process.env.PORT || 4430;
+// app.listen(PORT, '0.0.0.0', () => {
+//   console.log(`서버가 ${PORT}번 포트에서 실행 중입니다.`);
+// });

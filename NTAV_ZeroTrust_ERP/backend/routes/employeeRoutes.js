@@ -1,5 +1,6 @@
 const express = require('express');
-const { getEmployees, getRegisterableEmployees, getEmployeeInfo, registerEmployee, deleteEmployees, updateEmployee, resetInitPassword, sendEmployeeEmail } = require('../controllers/employeeController');
+const { getEmployees, getRegisterableEmployees, getEmployeeInfo, registerEmployee, 
+        deleteEmployees, updateEmployee, resetInitPassword, sendEmployeeEmail } = require('../controllers/employeeController');
 
 const router = express.Router();
 
@@ -26,6 +27,7 @@ router.post('/reset-password', resetInitPassword);
 
 // 이메일 전송 API 추가
 router.post("/send-email", sendEmployeeEmail);
+
 
 module.exports = router;
 

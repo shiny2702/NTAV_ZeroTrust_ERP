@@ -363,5 +363,110 @@ export const addibleEmployeesToProject = async (app_no, currentEmpIds) => {
 };
 
 
+// 직원 목록 가져오기
+export const fetchEmployeeLists = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/org/employeeLists`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("fetchEmployeeLists error:", err);
+    return [];
+  }
+};
+
+// 부서 목록 가져오기
+export const fetchDepartment = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/org/department`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("fetchDepartment error:", err);
+    return [];
+  }
+};
+
+// 팀 목록 가져오기
+export const fetchTeam = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/org/team`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("fetchTeam error:", err);
+    return [];
+  }
+};
+
+// 부서장 정보 가져오기
+export const fetchDeptHead = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/org/deptHead`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("fetchDeptHead error:", err);
+    return [];
+  }
+};
+
+// 팀장 정보 가져오기
+export const fetchTeamHead = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/org/teamHead`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("fetchTeamHead error:", err);
+    return [];
+  }
+};
+
+// 직원 상세 정보 가져오기
+export const fetchEmployeeDetail = async (employeeId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/org/employeeDetail`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ employeeId }),
+    });
+    const result = await response.json();
+    if (response.ok) {
+      return result;
+    } else {
+      throw new Error(result.message || "직원 상세 조회 실패");
+    }
+  } catch (err) {
+    console.error("fetchEmployeeDetail error:", err);
+    return null;
+  }
+};
+
+// 직원 정보 업데이트
+export const updateEmployeeDetail = async ({ id, dept_name, team_name, status }) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/org/updateEmployeeDetail`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, dept_name, team_name, status }),
+    });
+    const result = await response.json();
+    if (response.ok) {
+      return result;
+    } else {
+      throw new Error(result.message || "직원 정보 수정 실패");
+    }
+  } catch (err) {
+    console.error("updateEmployeeDetail error:", err);
+    return null;
+  }
+};
+
+
+
+
+
+
 
 
