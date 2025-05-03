@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchSummary } from "../../../../../api"; // API 호출 함수
+
+function Card({ title, value, color }) {
+    return (
+      <div className="bg-white shadow rounded-2xl p-4 w-full sm:w-1/3">
+        <h3 className="text-sm text-gray-500">{title}</h3>
+        <p className={`text-2xl font-bold ${color}`}>₩{value.toLocaleString()}</p>
+      </div>
+    );
+  }
 
 export default function DashboardHeader() {
   const [summary, setSummary] = useState({ income: 0, expense: 0, cashFlow: 0 });
 
   useEffect(() => {
-    axios.get("http://localhost:5050/api/finance/summary")
-      .then(res => setSummary(res.data))
-      .catch(err => console.error(err));
+    fetchSummary()
+      .then(setSummary)
+      .catch((err) => console.error(err));
   }, []);
 
   return (
@@ -19,11 +28,3 @@ export default function DashboardHeader() {
   );
 }
 
-function Card({ title, value, color }) {
-  return (
-    <div className="bg-white shadow rounded-2xl p-4 w-full sm:w-1/3">
-      <h3 className="text-sm text-gray-500">{title}</h3>
-      <p className={`text-2xl font-bold ${color}`}>₩{value.toLocaleString()}</p>
-    </div>
-  );
-}

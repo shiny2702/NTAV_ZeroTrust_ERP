@@ -3,6 +3,7 @@ const https = require('https');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 // require('dotenv').config({ path: '/home/ntavadmin/ntavProject/backend/.env' });
 require('dotenv').config();
 
@@ -33,6 +34,9 @@ app.use('/api/role', roleRoutes);
 app.use('/api/project', projectRoutes);
 app.use('/api/org', orgRoutes);
 app.use('/api/finance', financeRoutes);
+
+// 정적 파일 서비스 (PDF 다운로드용)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 서버 실행
 const PORT = process.env.PORT || 4430;

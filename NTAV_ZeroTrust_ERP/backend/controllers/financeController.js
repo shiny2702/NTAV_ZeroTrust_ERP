@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 exports.getSummary = (req, res) => {
     const summary = {
@@ -60,25 +61,23 @@ exports.getYearlyProfitComparison = (req, res) => {
   res.json(data);
 };
 
+// PDF 업로드 처리 (multer를 통해 업로드된 파일은 req.file에 존재)
 exports.uploadPDF = (req, res) => {
-  console.log("📥 업로드 요청 수신");
-  console.log("파일 정보:", req.file);
-
   if (!req.file) {
-    return res.status(400).json({ error: "PDF 파일이 필요합니다." });
+    return res.status(400).json({ message: '파일이 업로드되지 않았습니다.' });
   }
 
-  res.status(200).json({ message: "업로드 성공", filename: req.file.filename });
+  res.status(200).json({ message: '업로드 성공', filename: req.file.filename });
 };
 
+// PDF 리스트 조회
 exports.getPDFList = (req, res) => {
-  const fs = require('fs');
-  const dirPath = path.join(__dirname, '../uploads');
-
-  fs.readdir(dirPath, (err, files) => {
+  const uploadsDir = path.join(__dirname, '..', 'uploads');
+  fs.readdir(uploadsDir, (err, files) => {
     if (err) {
-      return res.status(500).json({ error: "파일 목록을 불러올 수 없습니다." });
+      return res.status(500).json({ message: '파일 목록을 불러오는 데 실패했습니다.' });
     }
-    res.json(files.filter(file => file.endsWith('.pdf')));
+    const pdfFiles = files.filter(file => path.extname(file).toLowerCase() === '.pdf');
+    res.status(200).json(pdfFiles);
   });
 };

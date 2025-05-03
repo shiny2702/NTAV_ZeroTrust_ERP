@@ -464,6 +464,83 @@ export const updateEmployeeDetail = async ({ id, dept_name, team_name, status })
 };
 
 
+export const fetchSummary = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/finance/summary`);
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching summary:", error);
+    return null;
+  }
+};
+
+export const fetchProfitLoss = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/finance/profit-loss`);
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching profit-loss:", error);
+    return null;
+  }
+};
+
+export const fetchYearlyComparison = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/finance/yearly-profit-comparison`);
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching yearly comparison:", error);
+    return null;
+  }
+};
+
+export const fetchBudgetActual = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/finance/budget-actual`);
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching budget vs actual:", error);
+    return null;
+  }
+};
+
+export const fetchDepartmentComparison = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/finance/department-comparison`);
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching department comparison:", error);
+    return null;
+  }
+};
+
+export const uploadPDF = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch(`${BASE_URL}/api/finance/upload-pdf`, {
+      method: "POST",
+      body: formData,
+    });
+    return await res.json();
+  } catch (error) {
+    console.error("Error uploading PDF:", error);
+    return null;
+  }
+};
+
+export const fetchPDFList = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/finance/pdf-list`);
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching PDF list:", error);
+    return [];
+  }
+};
+
+
+
 
 
 
