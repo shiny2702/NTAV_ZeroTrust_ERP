@@ -14,7 +14,7 @@ const getResultFilePath = () => {
 };
 
 // security_result.txt 파일을 읽어서 보안 검사를 수행
-const readSecurityResult = () => {
+/*const readSecurityResult = () => {
     const filePath = getResultFilePath();
     if (!filePath || !fs.existsSync(filePath)) {
         console.error("Error: security_result 파일을 찾을 수 없습니다.");
@@ -23,9 +23,31 @@ const readSecurityResult = () => {
 
     // 파일을 읽어서 UTF-8로 디코딩 후 줄 단위로 분할
     const buffer = fs.readFileSync(filePath);
-    const decodedData = iconv.decode(buffer, 'utf-16le');
+    const decodedData = iconv.decode(buffer, 'utf-8');
     return decodedData.split("\n");
+};*/
+
+const readSecurityResult = () => {
+    const filePath = getResultFilePath();
+    if (!filePath || !fs.existsSync(filePath)) {
+        console.error("Error: security_result 파일을 찾을 수 없습니다.");
+        return null;
+    }
+
+    // 파일을 읽어서 UTF-8로 디코딩 후 줄 단위로 분할 (줄바꿈과 \r 모두 안전 처리)
+    const buffer = fs.readFileSync(filePath);
+    const decodedData = iconv.decode(buffer, 'utf-16le');
+
+    // 방법 1: 정규식으로 \r\n 또는 \n 모두 안전하게 분리
+    const lines = decodedData.split(/\r?\n/);
+
+    // 디버깅용 로그
+    console.log("전체 줄 출력:", lines);
+    console.log("OS 타입 원본:", JSON.stringify(lines[0]));
+
+    return lines;
 };
+
 
 const checkSecurityStatusWindows = (lines) => {
     const result = {
@@ -101,10 +123,12 @@ const checkSecurityStatusLinux = (lines) => {
 const performSecurityCheck = () => {
     const securityResult = readSecurityResult();
     if (securityResult) {
-        const osType = securityResult[0].trim();
+        const osTypeLine = securityResult.find(line => line.trim() !== "");
+        const osType = osTypeLine ? osTypeLine.trim() : "";
+        console.log("OS 타입 원본:", osType);
         let isClientSecure = false;
 
-        if (osType === "Windows") {
+        if (osType =="Windows") {
             isClientSecure = checkSecurityStatusWindows(securityResult);
         } else if (osType === "Linux") {
             isClientSecure = checkSecurityStatusLinux(securityResult);
@@ -125,9 +149,11 @@ const watchUploadsAndCheckSecurity = (callback) => {
             if (fs.existsSync(filePath)) {  // 새 파일이 추가되었을 경우
                 console.log(`새로운 파일이 업로드됨: ${filename}`);
                 
+                setTimeout(() => {
+                    const isSecure = performSecurityCheck();
+                    callback(isSecure);
+                }, 200); // 200ms 기다림
                 // 보안 검사를 수행하고 결과를 반환
-                const isSecure = performSecurityCheck();
-                callback(isSecure);
             }
         }
     });
