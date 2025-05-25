@@ -1,0 +1,116 @@
+/* 전체 페이지 컨테이너 */
+.supplier-management {
+    padding: 20px;
+    font-family: "Noto Sans KR", sans-serif;
+    color: #333;
+    background-color: #fafafa;
+  }
+  
+  /* 페이지 제목 */
+  .supplier-management > h2 {
+    margin-bottom: 24px;
+    font-size: 1.75rem;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+  }
+  
+  /* 각 섹션 (새등록, 목록 등) */
+  .section {
+    margin-bottom: 32px;
+  }
+  
+  /* 섹션 제목 */
+  .section > h3 {
+    margin-bottom: 16px;
+    font-size: 1.25rem;
+    color: #444;
+  }
+  
+  /* 입력폼 행 : flex로 정렬 */
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;    /* 요소 간 간격 */
+    margin-bottom: 12px;
+    align-items: center;
+  }
+  
+  /* 텍스트 입력, 셀렉트 공통 스타일 */
+  .form-row input,
+  .form-row select {
+    flex: 1;
+    min-width: 140px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.2s;
+  }
+  
+  .form-row input:focus,
+  .form-row select:focus {
+    outline: none;
+    border-color: #007BFF;
+  }
+  
+  /* 버튼 스타일 */
+  .form-row button {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #007BFF;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .form-row button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* 테이블 공통 */
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  /* 테이블 헤더 */
+  .table th {
+    padding: 12px 8px;
+    border-bottom: 2px solid #e0e0e0;
+    text-align: left;
+    font-size: 0.95rem;
+    color: #555;
+    background-color: #f7f7f7;
+  }
+  
+  /* 테이블 바디 셀 */
+  .table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #eaeaea;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  /* 줄무늬 효과 */
+  .table tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+  }
+  
+  /* 모바일 대응: 600px 이하에서 폼 요소 세로 정렬 */
+  @media (max-width: 600px) {
+    .form-row {
+      flex-direction: column;
+    }
+    .form-row input,
+    .form-row select,
+    .form-row button {
+      width: 100%;
+    }
+  }
+  

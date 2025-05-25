@@ -120,7 +120,11 @@ exports.login = async (req, res) => {
 
     // 7. 토큰 발급
     const token = jwt.sign(
-      { id: account.employee_id, role: employee.roleInfo },
+      { id: account.employee_id, 
+        role: employee.roleInfo,
+        is_initial_password: account.is_initial_password, 
+        department: department,
+        team: team },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );

@@ -1,0 +1,36 @@
+{
+    "name": "frontend",
+    "version": "1.0.0",
+    "dependencies": {
+        "prop-types": "^15.8.1",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-router-dom": "^7.2.0",
+        "react-scripts": "^5.0.1",
+        "yarn": "^1.22.22"
+    },
+    "main": "index.js",
+    "scripts": {
+        "start": "react-scripts start",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "cross-env": "^7.0.3"
+    }
+}
