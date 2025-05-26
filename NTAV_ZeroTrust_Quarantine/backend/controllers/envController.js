@@ -59,24 +59,34 @@ if (!SECRET_KEY) {
 
 exports.generateDeviceToken = (req, res) => {
   try {
+    console.log("📥 [generateDeviceToken] 요청 처리 시작");
+    console.log("📥 요청 바디:", req.body);
+
     const { osInfo, browserInfo, networkInfo } = req.body;
 
     if (!osInfo || !browserInfo || !networkInfo) {
+      console.warn("⚠️ 필수 데이터 누락:", { osInfo, browserInfo, networkInfo });
       return res.status(400).json({ error: "필수 데이터가 누락되었습니다." });
     }
 
+    console.log("🔍 디바이스 검증 함수 호출 전");
     verifyDevice({ osInfo, browserInfo, networkInfo });
+    console.log("✅ 디바이스 검증 완료");
 
     const deviceHash = `${osInfo}-${browserInfo}-${Date.now()}`;
-    const deviceToken = jwt.sign({ deviceHash }, SECRET_KEY, { expiresIn: "7d" });
+    console.log("🔑 deviceHash 생성:", deviceHash);
 
-    // 디바이스 토큰을 HttpOnly 쿠키로 설정
+    const deviceToken = jwt.sign({ deviceHash }, SECRET_KEY, { expiresIn: "7d" });
+    console.log("🔑 deviceToken 생성 완료");
+
+    // 쿠키 설정
     res.cookie("deviceToken", deviceToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
+      secure: false,           // HTTP 환경이므로 false
+      sameSite: "Lax",      // 개발 중이라면 'Lax'로 바꾸는 걸 추천
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
+    console.log("🍪 deviceToken 쿠키 설정 완료");
 
     return res.status(200).json({
       success: true,
@@ -84,7 +94,8 @@ exports.generateDeviceToken = (req, res) => {
     });
 
   } catch (error) {
-    console.error("디바이스 토큰 생성 오류:", error.message);
+    console.error("❌ 디바이스 토큰 생성 오류:", error.message);
     return res.status(400).json({ success: false, error: error.message });
   }
 };
+

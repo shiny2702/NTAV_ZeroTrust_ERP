@@ -1,4 +1,4 @@
-const SERVER_URL = "http://localhost:3001"
+const SERVER_URL = "http://192.168.100.52:3001"
 
 export const sendInfoToServer = async (osInfo, browserInfo, networkInfo) => {
     
@@ -42,38 +42,40 @@ export const sendInfoToServer = async (osInfo, browserInfo, networkInfo) => {
     }
   };
 
-  export const getSecurityToken = async () => {
-    try {
-      console.log("Security Checking...");
-      // 디바이스 정보 전송
-      const response = await fetch(`${SERVER_URL}/security/verify-security`, {
-        method: 'GET',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: 'include', // ✅ 쿠키 포함(임시)
-      });
+export const getSecurityToken = async () => {
+  try {
+    console.log("🔐 Security Checking... (클라이언트)");
+    
+    const response = await fetch(`${SERVER_URL}/security/verify-security`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: 'include', // 쿠키 포함
+    });
 
+    console.log("🌐 서버 응답 상태:", response.status);
 
-      console.log("Start security checking in client...");
-
-      // 서버 응답 처리
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          console.log("보안프로그램 정보 전송 성공:", data.message);
-          console.log(data);
-          return data; // 서버에서 반환한 security token 반환
-        } else {
-          console.error("보안프로그램 검증 실패:", data.error);
-        }
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success) {
+        console.log("✅ 보안 검증 성공:", data.message);
+        console.log("📦 서버 응답 데이터:", data);
+        return data;
       } else {
-        console.error("Failed to send data");
+        console.warn("⚠️ 보안 검증 실패:", data.error);
+        return null;
       }
-    } catch (error) {
-      console.error("Error sending data:", error);
+    } else {
+      console.error("❌ 서버 응답 실패:", response.status);
+      return null;
     }
-  };
+  } catch (error) {
+    console.error("❌ 클라이언트 요청 오류:", error);
+    return null;
+  }
+};
+
 
 // 서버에서 디바이스 토큰을 가져오는 함수
 /*export const getDeviceToken = async () => {

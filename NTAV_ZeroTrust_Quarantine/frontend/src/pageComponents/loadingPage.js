@@ -127,7 +127,7 @@ class LoadingPage extends Component {
 
     return (
       <div className="loading-container">
-        <img src="ntav_loading.gif" alt="Loading..." />
+        <img src="/ntav_loading.gif" alt="Loading..." />
         <div className="milestone-container" style={{ display: 'flex', justifyContent: 'space-between', width: '40%', margin: '10px auto' }}>
           {milestones.map((milestone, index) => (
             <span key={index} className={`milestone ${progress >= milestone ? 'checked' : ''}`} style={{ margin: '0 10px' }}>

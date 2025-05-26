@@ -39,7 +39,7 @@ app.use('/api/finance', financeRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 서버 실행
-const PORT = process.env.PORT || 4430;
+const PORT = process.env.PORT || 5000;
 
 // HTTPS 서버로 실행
 https.createServer(options, app).listen(PORT, '0.0.0.0', () => {

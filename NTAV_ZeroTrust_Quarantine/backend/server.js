@@ -4,7 +4,8 @@ const cookieParser = require('cookie-parser'); // ✅ 쿠키 파서 추가
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config();
+// require('dotenv').config();
+require('dotenv').config({ path: '/home/ntavadmin/ntavProject/backend/.env' });
 
 const envRoutes = require('./routes/envRoutes');
 const securityRoutes = require('./routes/securityRoutes');
@@ -13,10 +14,11 @@ const app = express();
 
 // ✅ CORS 설정 (자격 증명 허용)
 const corsOptions = {
-    origin: process.env.CLIENT_URL,
+    origin: "http://192.168.100.1:3000",
+    // origin: process.env.CLIENT_URL,
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
-    credentials: true // ✅ 쿠키 주고받기 허용
+    credentials: true, // ✅ 쿠키 주고받기 허용
 };
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // ✅ preflight 요청 허용
@@ -96,5 +98,5 @@ app.use((err, req, res, next) => {
 // 서버 실행
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
+    console.log(`🚀 서버가 http://192.168.100.52:${PORT} 에서 실행 중입니다.`);
 });

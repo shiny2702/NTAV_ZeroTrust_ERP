@@ -67,29 +67,38 @@ class DownloadPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedFile: null, // 선택한 파일
+      selectedFile: null,
       pollingInterval: null,
     };
   }
 
   startPollingSecurityToken = () => {
-    if (this.state.pollingInterval) return; // 이미 polling 중이면 중복 실행 방지
+    if (this.state.pollingInterval) return;
+
+    console.log("🔁 Polling 시작");
 
     const interval = setInterval(() => {
+      console.log("🔁 5초마다 보안 토큰 요청");
       getSecurityToken()
         .then(token => {
-          console.log("보안 토큰:", token);
-          clearInterval(this.state.pollingInterval); // 성공하면 polling 중지
-          this.setState({ pollingInterval: null });
+          if (token) {
+            console.log("✅ 보안 토큰 수신 완료:", token);
+            clearInterval(this.state.pollingInterval);
+            this.setState({ pollingInterval: null });
+          } else {
+            console.warn("⚠️ 아직 보안 토큰 없음");
+          }
         })
-        .catch(error => console.error("보안 토큰 가져오기 실패:", error));
-    }, 5000); // 5초 간격으로 요청
+        .catch(error => {
+          console.error("❌ 보안 토큰 가져오기 실패:", error);
+        });
+    }, 5000);
 
     this.setState({ pollingInterval: interval });
   };
 
   handleDownload = (event, fileName) => {
-    event.preventDefault(); // 기본 다운로드 동작 방지
+    event.preventDefault();
 
     const userConfirmed = window.confirm(`${fileName}을(를) 다운로드하시겠습니까?`);
 
@@ -97,7 +106,6 @@ class DownloadPage extends Component {
       this.setState({ selectedFile: fileName }, () => {
         let downloadUrl = "";
 
-        // 파일 이름에 따른 다운로드 URL 설정
         if (fileName === "Windows") {
           downloadUrl = "https://github.com/notry345/test/releases/download/test2/windows_scan.exe";
         } else if (fileName === "macOS") {
@@ -106,13 +114,15 @@ class DownloadPage extends Component {
           downloadUrl = "https://github.com/notry345/test/releases/download/untagged-1e361c96eed14322971a/linux_scan";
         }
 
-        // 일정 시간 후 다운로드 시작
+        console.log(`🧾 ${fileName} 다운로드를 시작합니다...`);
+
         setTimeout(() => {
           window.location.href = downloadUrl;
-          this.startPollingSecurityToken(); // 다운로드 후 보안 토큰 polling 시작
+          this.startPollingSecurityToken();
         }, 1500);
       });
     } else {
+      console.log("❌ 다운로드 취소");
       this.setState({ selectedFile: null });
     }
   };
@@ -137,3 +147,4 @@ class DownloadPage extends Component {
 }
 
 export default DownloadPage;
+
