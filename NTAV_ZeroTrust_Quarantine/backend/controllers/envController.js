@@ -82,8 +82,8 @@ exports.generateDeviceToken = (req, res) => {
     // 쿠키 설정
     res.cookie("deviceToken", deviceToken, {
       httpOnly: true,
-      secure: false,           // HTTP 환경이므로 false
-      sameSite: "Lax",      // 개발 중이라면 'Lax'로 바꾸는 걸 추천
+      secure: true,           // HTTP 환경이므로 false
+      sameSite: "Strict",      // 개발 중이라면 'Lax'로 바꾸는 걸 추천
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
     console.log("🍪 deviceToken 쿠키 설정 완료");

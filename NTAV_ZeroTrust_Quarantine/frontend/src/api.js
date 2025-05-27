@@ -1,4 +1,4 @@
-const SERVER_URL = "http://192.168.100.52:3001"
+const SERVER_URL = "https://ntav.project:4430/quarantine";
 
 export const sendInfoToServer = async (osInfo, browserInfo, networkInfo) => {
     

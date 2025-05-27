@@ -3,9 +3,10 @@ const https = require('https');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const path = require('path');
-// require('dotenv').config({ path: '/home/ntavadmin/ntavProject/backend/.env' });
-require('dotenv').config();
+require('dotenv').config({ path: '/home/ntavadmin/ntavProject/backend/.env' });
+// require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
@@ -18,13 +19,24 @@ const app = express();
 
 // SSL 인증서 로딩
 const options = {
-  key: fs.readFileSync('./ssl/key.pem'), // 개인 키 파일 경로
-  cert: fs.readFileSync('./ssl/cert.pem') // 인증서 파일 경로
+  key: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem')), // 개인 키 파일 경로
+  cert: fs.readFileSync(path.join(__dirname, 'ssl', 'cert.pem')) // 인증서 파일 경로
 };
 
-// 미들웨어 설정
-app.use(cors());
+const corsOptions = {
+  origin: 'https://ntav.project', // 프론트 도메인 (정확히 작성)
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // 쿠키 포함 허용
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); 
+
+
 app.use(bodyParser.json()); // JSON 요청 본문 처리
+app.use(cookieParser());
+
 app.use(express.json()); // bodyParser와 중복되지만, 유지 가능
 
 // 라우터 연결

@@ -1,4 +1,4 @@
-const BASE_URL = "https://192.168.100.51:5000";
+const BASE_URL = "https://ntav.project:4430/erp";
 
 export const login = async (username, password) => {
   try {
@@ -8,6 +8,7 @@ export const login = async (username, password) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
+      credentials: 'include',
     });
     return response.json();
   } catch (error) {
@@ -21,6 +22,7 @@ export const verifyPassword = async (userId, password) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, password }),
+      credentials: 'include',
     });
 
     const result = await response.json();
@@ -38,6 +40,7 @@ export const updatePassword = async (userId, newPassword) => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, newPassword }),
+      credentials: 'include',
     });
 
     const data = await response.json();
@@ -55,6 +58,7 @@ export const updateInitialPasswordStatus = async (userId) => {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId }),
+      credentials: 'include',
     });
 
     const data = await response.json();
@@ -70,7 +74,10 @@ export const updateInitialPasswordStatus = async (userId) => {
 
 export const fetchEmployees = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/employee/employees`);
+    const response = await fetch(`${BASE_URL}/api/employee/employees`, {
+      method: 'GET',
+      credentials: 'include',
+  });
     return response.json();
   } catch (error) {
     console.error("직원 리스트를 가져오는 중 오류 발생:", error);
@@ -80,7 +87,10 @@ export const fetchEmployees = async () => {
 
 export const fetchRegisterableEmployeeIds = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/employee/registerable`);
+    const res = await fetch(`${BASE_URL}/api/employee/registerable`, {
+      method: 'GET',
+      credentials: 'include',
+  });
     if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
     return await res.json();
   } catch (err) {
@@ -91,7 +101,10 @@ export const fetchRegisterableEmployeeIds = async () => {
 
 export const fetchEmployeeDetails = async (employeeId) => {
   try {
-    const res = await fetch(`${BASE_URL}/api/employee/details/${employeeId}`);
+    const res = await fetch(`${BASE_URL}/api/employee/details/${employeeId}`, {
+      method: 'GET',
+      credentials: 'include',
+  });
     if (!res.ok) throw new Error(`직원 정보 조회 실패 (code: ${res.status})`);
     return await res.json();
   } catch (err) {
@@ -106,6 +119,7 @@ export const registerEmployee = async (employeeId) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ employee_id: employeeId }),
+      credentials: 'include',
     });
     
     const data = await response.json();
@@ -130,6 +144,7 @@ export const deleteSelectedEmployees = async (selectedEmployees) => {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: selectedEmployees }),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -156,6 +171,7 @@ export const updateEmployee = async (data) => {
         is_active: data.is_active,
         is_initial_password: data.is_initial_password,
       }),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -185,6 +201,7 @@ export const resetInitPassword = async (data) => {
       body: JSON.stringify({
         id: data.id,
       }),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -210,6 +227,7 @@ export const sendEmployeeEmail = async (employeeId, password) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ employeeId, password }),
+      credentials: 'include',
     });
 
     if (!response.ok) throw new Error("이메일 전송 실패");
@@ -230,6 +248,7 @@ export const roleInfoWholeRegenerate = async () => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: 'include',
     });
 
     const data = await response.json();
@@ -269,7 +288,10 @@ export const roleInfoWholeRegenerate = async () => {
 
 export const fetchProjects = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/project/projects`); 
+    const response = await fetch(`${BASE_URL}/api/project/projects`, {
+      method: 'GET',
+      credentials: 'include',
+  }); 
     return response.json();
   } catch (error) {
     console.error("프로젝트트 리스트를 가져오는 중 오류 발생:", error);
@@ -285,6 +307,7 @@ export const updateProjectTitleSection = async (updatedData) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(updatedData),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -306,6 +329,7 @@ export const updateProjectManager = async (updatedManagerData) => {
           'Content-Type': 'application/json' 
         },
         body: JSON.stringify(updatedManagerData),
+        credentials: 'include',
     });
 
     if (!response.ok) {
@@ -326,7 +350,8 @@ export const deleteEmployeesFromProject = async (payload) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        credentials: 'include',
     });
 
     if (!response.ok) {
@@ -347,6 +372,7 @@ export const addibleEmployeesToProject = async (app_no, currentEmpIds) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ app_no, currentEmpIds }),
+      credentials: 'include',
     });
 
     const result = await response.json();
@@ -366,7 +392,10 @@ export const addibleEmployeesToProject = async (app_no, currentEmpIds) => {
 // 직원 목록 가져오기
 export const fetchEmployeeLists = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/employeeLists`);
+    const response = await fetch(`${BASE_URL}/api/org/employeeLists`, {
+      method: 'GET',
+      credentials: 'include', 
+  });
     const data = await response.json();
     return data;
   } catch (err) {
@@ -378,7 +407,10 @@ export const fetchEmployeeLists = async () => {
 // 부서 목록 가져오기
 export const fetchDepartment = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/department`);
+    const response = await fetch(`${BASE_URL}/api/org/department`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     const data = await response.json();
     return data;
   } catch (err) {
@@ -390,7 +422,10 @@ export const fetchDepartment = async () => {
 // 팀 목록 가져오기
 export const fetchTeam = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/team`);
+    const response = await fetch(`${BASE_URL}/api/org/team`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     const data = await response.json();
     return data;
   } catch (err) {
@@ -402,7 +437,10 @@ export const fetchTeam = async () => {
 // 부서장 정보 가져오기
 export const fetchDeptHead = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/deptHead`);
+    const response = await fetch(`${BASE_URL}/api/org/deptHead`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     const data = await response.json();
     return data;
   } catch (err) {
@@ -414,7 +452,10 @@ export const fetchDeptHead = async () => {
 // 팀장 정보 가져오기
 export const fetchTeamHead = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/teamHead`);
+    const response = await fetch(`${BASE_URL}/api/org/teamHead`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     const data = await response.json();
     return data;
   } catch (err) {
@@ -430,6 +471,7 @@ export const fetchEmployeeDetail = async (employeeId) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ employeeId }),
+      credentials: 'include',
     });
     const result = await response.json();
     if (response.ok) {
@@ -450,6 +492,7 @@ export const updateEmployeeDetail = async ({ id, dept_name, team_name, status })
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, dept_name, team_name, status }),
+      credentials: 'include',
     });
     const result = await response.json();
     if (response.ok) {
@@ -466,7 +509,10 @@ export const updateEmployeeDetail = async ({ id, dept_name, team_name, status })
 
 export const fetchSummary = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/summary`);
+    const res = await fetch(`${BASE_URL}/api/finance/summary`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     return await res.json();
   } catch (error) {
     console.error("Error fetching summary:", error);
@@ -476,7 +522,10 @@ export const fetchSummary = async () => {
 
 export const fetchProfitLoss = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/profit-loss`);
+    const res = await fetch(`${BASE_URL}/api/finance/profit-loss`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     return await res.json();
   } catch (error) {
     console.error("Error fetching profit-loss:", error);
@@ -486,7 +535,10 @@ export const fetchProfitLoss = async () => {
 
 export const fetchYearlyComparison = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/yearly-profit-comparison`);
+    const res = await fetch(`${BASE_URL}/api/finance/yearly-profit-comparison`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     return await res.json();
   } catch (error) {
     console.error("Error fetching yearly comparison:", error);
@@ -496,7 +548,10 @@ export const fetchYearlyComparison = async () => {
 
 export const fetchBudgetActual = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/budget-actual`);
+    const res = await fetch(`${BASE_URL}/api/finance/budget-actual`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     return await res.json();
   } catch (error) {
     console.error("Error fetching budget vs actual:", error);
@@ -506,7 +561,10 @@ export const fetchBudgetActual = async () => {
 
 export const fetchDepartmentComparison = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/department-comparison`);
+    const res = await fetch(`${BASE_URL}/api/finance/department-comparison`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     return await res.json();
   } catch (error) {
     console.error("Error fetching department comparison:", error);
@@ -521,6 +579,7 @@ export const uploadPDF = async (file) => {
     const res = await fetch(`${BASE_URL}/api/finance/upload-pdf`, {
       method: "POST",
       body: formData,
+      credentials: 'include',
     });
     return await res.json();
   } catch (error) {
@@ -531,7 +590,10 @@ export const uploadPDF = async (file) => {
 
 export const fetchPDFList = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/pdf-list`);
+    const res = await fetch(`${BASE_URL}/api/finance/pdf-list`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     return await res.json();
   } catch (error) {
     console.error("Error fetching PDF list:", error);

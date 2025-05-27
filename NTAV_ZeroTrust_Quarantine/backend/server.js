@@ -1,3 +1,4 @@
+const https = require('https');
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser'); // ✅ 쿠키 파서 추가
@@ -12,14 +13,20 @@ const securityRoutes = require('./routes/securityRoutes');
 
 const app = express();
 
+// SSL 인증서 로딩
+const options = {
+  key: fs.readFileSync(path.join(__dirname, 'ssl', '192.168.100.52-key.pem')), // 개인 키 파일 경로
+  cert: fs.readFileSync(path.join(__dirname, 'ssl', '192.168.100.52.pem')) // 인증서 파일 경로
+};
+
 // ✅ CORS 설정 (자격 증명 허용)
 const corsOptions = {
-    origin: "http://192.168.100.1:3000",
-    // origin: process.env.CLIENT_URL,
-    methods: 'GET,POST,PUT,DELETE',
-    allowedHeaders: 'Content-Type,Authorization',
-    credentials: true, // ✅ 쿠키 주고받기 허용
+  origin: 'https://ntav.project',   
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true                      // 쿠키/세션 전송 허용
 };
+
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // ✅ preflight 요청 허용
 
@@ -97,6 +104,12 @@ app.use((err, req, res, next) => {
 
 // 서버 실행
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 서버가 http://192.168.100.52:${PORT} 에서 실행 중입니다.`);
+
+// HTTPS 서버로 실행
+https.createServer(options, app).listen(PORT, '0.0.0.0', () => {
+  console.log(`HTTPS 서버가 ${PORT}번 포트에서 실행 중입니다.`);
 });
+
+// app.listen(PORT, '0.0.0.0', () => {
+//     console.log(`🚀 서버가 http://192.168.100.52:${PORT} 에서 실행 중입니다.`);
+// });
