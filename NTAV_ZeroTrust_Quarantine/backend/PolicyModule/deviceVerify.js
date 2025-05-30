@@ -3,8 +3,11 @@ const ALLOWED_BROWSERS = ["Chrome", "Edge", "Firefox", "Safari", "Brave"];
 const ALLOWED_NETWORK_TYPES = ["4g", "ethernet", "wifi", "wimax", "cellular"];
 const MIN_DOWNLINK = 1; // 최소 3Mbps 필요
 const MAX_RTT = 300; // 최대 250ms 응답 시간
+const ALLOWED_IPS = ["127.0.0.1"]; // 허용할 IP 범위나 개별 IP
 
-// 검증만 담당
+
+// 간단한 IP 체크 함수 추가
+const ipRangeCheck = require('ip-range-check');// 검증만 담당
 function verifyDevice(deviceInfo) {
     const { osInfo, browserInfo, networkInfo } = deviceInfo;
     const { isOnline, networkType, downlink, rtt, saveData } = networkInfo;
@@ -34,6 +37,11 @@ function verifyDevice(deviceInfo) {
     }
     if (saveData) {
         throw new Error("데이터 절약 모드가 활성화되어 보안에 취약할 수 있습니다.");
+    }
+
+    // IP 주소 검증 추가
+    if (!ipRangeCheck(clientIp, ALLOWED_IPS)) {
+        throw new Error(`접속 IP(${clientIp})가 허용된 범위가 아닙니다.`);
     }
 
     return true;

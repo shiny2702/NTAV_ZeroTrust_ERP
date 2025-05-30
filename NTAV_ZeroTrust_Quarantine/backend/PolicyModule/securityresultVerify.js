@@ -10,22 +10,10 @@ const getResultFilePath = () => {
     const files = fs.readdirSync(uploadsDir)
         .map(file => ({ file, time: fs.statSync(path.join(uploadsDir, file)).mtime.getTime() }))
         .sort((a, b) => b.time - a.time);
+
+    console.log("📁 업로드된 파일 목록 (최신순):", files.map(f => f.file));
     return files.length > 0 ? path.join(uploadsDir, files[0].file) : null;
 };
-
-// security_result.txt 파일을 읽어서 보안 검사를 수행
-/*const readSecurityResult = () => {
-    const filePath = getResultFilePath();
-    if (!filePath || !fs.existsSync(filePath)) {
-        console.error("Error: security_result 파일을 찾을 수 없습니다.");
-        return null;
-    }
-
-    // 파일을 읽어서 UTF-8로 디코딩 후 줄 단위로 분할
-    const buffer = fs.readFileSync(filePath);
-    const decodedData = iconv.decode(buffer, 'utf-8');
-    return decodedData.split("\n");
-};*/
 
 const readSecurityResult = () => {
     const filePath = getResultFilePath();
@@ -40,6 +28,9 @@ const readSecurityResult = () => {
 
     // 방법 1: 정규식으로 \r\n 또는 \n 모두 안전하게 분리
     const lines = decodedData.split(/\r?\n/);
+
+    console.log("📄 보안 결과 파일 경로:", filePath);
+    console.log("📋 전체 줄:", lines);
 
     // 디버깅용 로그
     console.log("전체 줄 출력:", lines);
@@ -106,6 +97,8 @@ const checkSecurityStatusWindows = (lines) => {
                 break;
         }
     }
+
+    console.log("🛡️ Windows 보안 상태 분석 결과:", result);
     return Object.values(result).every(status => status);
 };
 
@@ -116,6 +109,8 @@ const checkSecurityStatusLinux = (lines) => {
         ufwact: lines.includes("UFW is active."),
         firewalld: lines.includes("firewalld is active.")
     };
+
+    console.log("🛡️ Linux 보안 상태 분석 결과:", result);
     return Object.values(result).every(status => status);
 };
 
@@ -136,6 +131,7 @@ const performSecurityCheck = () => {
             console.error("Error: 지원되지 않는 운영체제입니다.");
         }
 
+        console.log("🔐 클라이언트 보안 점검 최종 결과:", isClientSecure);
         return isClientSecure;
     }
     return false;
@@ -143,7 +139,10 @@ const performSecurityCheck = () => {
 
 // 파일 변경 감지 및 보안 검사 후 결과 반환하는 함수
 const watchUploadsAndCheckSecurity = (callback) => {
+    console.log("👀 파일 시스템 감시 시작됨: uploads/");
     fs.watch(uploadsDir, (eventType, filename) => {
+        console.log(`🔍 이벤트 감지됨: ${eventType} → ${filename}`);
+
         if (filename && eventType === 'rename') { // 파일이 추가되거나 삭제될 때 감지
             const filePath = path.join(uploadsDir, filename);
             if (fs.existsSync(filePath)) {  // 새 파일이 추가되었을 경우
@@ -151,6 +150,7 @@ const watchUploadsAndCheckSecurity = (callback) => {
                 
                 setTimeout(() => {
                     const isSecure = performSecurityCheck();
+                    console.log(`🔎 보안 검사 결과 (${filename}):`, isSecure);
                     callback(isSecure);
                 }, 200); // 200ms 기다림
                 // 보안 검사를 수행하고 결과를 반환
@@ -163,11 +163,19 @@ const watchUploadsAndCheckSecurity = (callback) => {
 const getSecurityVerification = (callback) => {
     // 파일 변경 감지를 시작하고, 결과를 콜백으로 반환
     //console.log("callback type: ", typeof callback); //에러체크용
+
+    console.log("📡 보안검증 함수 진입");  // 함수 진입 확인
+
     watchUploadsAndCheckSecurity((isSecure) => {
-        callback({
+        const result = {
             isSecure,
-            message: isSecure ? "✅ 클라이언트가 보안 요구 사항을 만족합니다." : "❌ 클라이언트는 보안 요구 사항을 만족하지 않습니다."
-        });
+            message: isSecure
+                ? "✅ 클라이언트가 보안 요구 사항을 만족합니다."
+                : "❌ 클라이언트는 보안 요구 사항을 만족하지 않습니다."
+        };
+
+        console.log("📬 콜백으로 반환될 보안 결과:", result);
+        callback(result);
     });
 };
 
@@ -176,4 +184,16 @@ module.exports = {
 };
 
 
+// security_result.txt 파일을 읽어서 보안 검사를 수행
+/*const readSecurityResult = () => {
+    const filePath = getResultFilePath();
+    if (!filePath || !fs.existsSync(filePath)) {
+        console.error("Error: security_result 파일을 찾을 수 없습니다.");
+        return null;
+    }
 
+    // 파일을 읽어서 UTF-8로 디코딩 후 줄 단위로 분할
+    const buffer = fs.readFileSync(filePath);
+    const decodedData = iconv.decode(buffer, 'utf-8');
+    return decodedData.split("\n");
+};*/

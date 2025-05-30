@@ -601,7 +601,41 @@ export const fetchPDFList = async () => {
   }
 };
 
+export const verifyTokens = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/tokenVerify/verifyTokens`, {
+      method: 'GET',
+      credentials: 'include',
+    });
 
+    if (res.status === 200) return true;
+    return false;
+  } catch (error) {
+    console.error("토큰 검증 요청 실패:", error);
+    return false;
+  }
+};
+
+export const clearCookies = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingCookies`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      console.log('서버에서 쿠키 삭제 성공');
+      return true;
+    } else {
+      const data = await res.json();
+      console.error('서버 응답 실패:', data?.message || res.statusText);
+      return false;
+    }
+  } catch (error) {
+    console.error('쿠키 삭제 요청 실패:', error);
+    return false;
+  }
+};
 
 
 

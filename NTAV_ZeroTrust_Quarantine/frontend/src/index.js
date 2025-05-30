@@ -11,7 +11,7 @@ import ErrorPage from './pageComponents/errorPage';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Router>
+    <Router basename="/quarantine-frontend">
       <Routes>
         <Route path="/" element={<LoadingPage />} /> {/* 클라이언트가 접속 요청 시 시작되는 페이지 */}
         <Route path="/exe-download" element={<DownLoadPage />} /> {/* quarantine zone */}

@@ -1,6 +1,7 @@
 {
     "name": "frontend",
     "version": "1.0.0",
+    "homepage": "/quarantine-frontend",
     "dependencies": {
         "prop-types": "^15.8.1",
         "react": "^19.0.0",
@@ -12,6 +13,7 @@
     "main": "index.js",
     "scripts": {
         "start": "react-scripts start",
+        "build": "react-scripts build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],

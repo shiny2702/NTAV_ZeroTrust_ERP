@@ -1,6 +1,7 @@
 {
   "name": "website",
   "version": "0.1.0",
+  "homepage": "/erp-frontend",
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.12.1",

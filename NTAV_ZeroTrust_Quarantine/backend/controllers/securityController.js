@@ -89,9 +89,19 @@ exports.getSecurityStatus = (req, res) => {
       );
 
       console.log("✅ 보안 토큰 생성 완료");
+
+      // 쿠키 설정
+      res.cookie("securityToken", securityToken, {
+        httpOnly: true,
+        secure: true,        
+        sameSite: "Strict",     
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      });
+
+      console.log("🍪 securityToken 쿠키 설정 완료");
+
       return res.status(200).json({
         success: true,
-        securityToken,
         message: isSecure
           ? "✅ 클라이언트가 보안 요구 사항을 만족합니다."
           : "❌ 클라이언트는 보안 요구 사항을 만족하지 않습니다."

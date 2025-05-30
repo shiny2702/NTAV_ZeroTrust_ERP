@@ -4,6 +4,7 @@ import './css/index.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { menuRoutes, itMenuRoutes } from './routesConfig';
 import RedirectOnDirectAccess from './redirectOnDirectAccess';
+import SecureRoute from './tokenVerification'; // 토큰 검증을 위한 컴포넌트
 
 
 import LoginPage from './pageComponents/loginPage'; // App 대신 loginPage를 import
@@ -34,26 +35,40 @@ import NoPermPage from './pageComponents/noPermPage';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Router>
+    <Router basename="/erp-frontend">
       <Routes>
         <Route path="/" element={<LoginPage />} />        {/* 기존 App 대신 LoginPage 적용 */}
 
 
-        <Route path="/main" element={<RedirectOnDirectAccess><MainPage /></RedirectOnDirectAccess>} >
+        <Route path="/main" element={
+          <SecureRoute>
+            <RedirectOnDirectAccess><MainPage /></RedirectOnDirectAccess>
+          </SecureRoute>
+        }>
           <Route index element={<MainInitialContentArea />} />
           {menuRoutes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
           ))}
         </Route>
 
-        <Route path="/deptHead" element={<RedirectOnDirectAccess><DeptHeadPage /></RedirectOnDirectAccess>} >
+
+        <Route path="/deptHead" element={
+          <SecureRoute>
+            <RedirectOnDirectAccess><DeptHeadPage /></RedirectOnDirectAccess>
+          </SecureRoute>
+        }>
           <Route index element={<DeptHeadInitialContentArea />} />
           {menuRoutes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
           ))}
         </Route>
 
-        <Route path="/csuite" element={<RedirectOnDirectAccess><CSuitePage /></RedirectOnDirectAccess>} >
+
+        <Route path="/csuite" element={
+          <SecureRoute>
+            <RedirectOnDirectAccess><CSuitePage /></RedirectOnDirectAccess>
+          </SecureRoute>
+        }>
           <Route index element={<CsuiteInitialContentArea />} />
           {menuRoutes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
@@ -61,28 +76,47 @@ root.render(
           <Route path="projectApproval" element={<ProjectApprovalPage />} />
         </Route>
 
-        <Route path="/itSecurity" element={<RedirectOnDirectAccess><ItSecurityPage /></RedirectOnDirectAccess>} >
+
+        <Route path="/itSecurity" element={
+          <SecureRoute>
+            <RedirectOnDirectAccess><ItSecurityPage /></RedirectOnDirectAccess>
+          </SecureRoute>
+        }>
           <Route index element={<ItSecurityInitialContentArea />} />
           {itMenuRoutes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
           ))}
         </Route>
 
-        <Route path="/erpManagement" element={<RedirectOnDirectAccess><ERPManagementPage /></RedirectOnDirectAccess>} >
+
+        <Route path="/erpManagement" element={
+          <SecureRoute>
+            <RedirectOnDirectAccess><ERPManagementPage /></RedirectOnDirectAccess>
+          </SecureRoute>
+        }>
           <Route index element={<ERPManagementInitialContentArea />} />
           {itMenuRoutes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
           ))}
         </Route>
 
-        <Route path="/itDeptHead" element={<RedirectOnDirectAccess><ItDeptHeadPage /></RedirectOnDirectAccess>} >
+        <Route path="/itDeptHead" element={
+          <SecureRoute>
+            <RedirectOnDirectAccess><ItDeptHeadPage /></RedirectOnDirectAccess>
+          </SecureRoute>
+        }>
           <Route index element={<ItDeptHeadInitialContentArea />} />
           {itMenuRoutes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
           ))}
         </Route>
 
-        <Route path="/passwordReset" element={<RedirectOnDirectAccess><PasswordResetPage /></RedirectOnDirectAccess>} />
+
+        <Route path="/passwordReset" element={
+          <SecureRoute>
+            <RedirectOnDirectAccess><PasswordResetPage /></RedirectOnDirectAccess>
+          </SecureRoute>
+        } />
 
         <Route path="/noPerm" element={<NoPermPage />} />
 

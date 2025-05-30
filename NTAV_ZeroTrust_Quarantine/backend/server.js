@@ -21,7 +21,7 @@ const options = {
 
 // ✅ CORS 설정 (자격 증명 허용)
 const corsOptions = {
-  origin: 'https://ntav.project',   
+  origin: 'https://ntav.project:4430',   
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true                      // 쿠키/세션 전송 허용
@@ -45,25 +45,33 @@ app.use((req, res, next) => {
 // 업로드 폴더 생성
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
+  console.log("📁 uploads 폴더 없음. 생성 중...");
+  fs.mkdirSync(uploadDir);
 }
+console.log("📁 업로드 디렉토리 경로:", uploadDir);
 
 // multer 설정 (파일명 유지)
 const storage = multer.diskStorage({
-    destination: uploadDir,
-    filename: (req, file, cb) => {
-        cb(null, file.originalname);
-    }
+  destination: (req, file, cb) => {
+    console.log("📥 multer: 저장 경로 설정 →", uploadDir);
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    console.log("📛 multer: 저장할 파일명 →", file.originalname);
+    cb(null, file.originalname);
+  }
 });
+
 const upload = multer({ storage });
+
+console.log("📦 multer 설정 완료");
 
 // 기본 GET 요청
 app.get('/', (req, res) => {
     res.send('🚀 서버가 정상적으로 실행 중입니다.');
 });
 
-// 파일 업로드 엔드포인트
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/uploads', upload.single('file'), (req, res) => {
     if (!req.file) {
         console.log("파일 업로드 실패: 요청에 파일이 없음.");
         return res.status(400).send('File upload failed!\n');
@@ -72,24 +80,39 @@ app.post('/upload', upload.single('file'), (req, res) => {
     res.send('File uploaded successfully\n');  // JSON 대신 단순 텍스트 응답
 });
 
-// 파일 목록 조회
-app.get('/files', (req, res) => {
-    fs.readdir(uploadDir, (err, files) => {
-        if (err) {
-            return res.status(500).json({ error: '파일 목록을 불러오는 중 오류 발생' });
-        }
-        res.json({ files });
-    });
+// 파일 업로드 엔드포인트
+app.get('/upload', upload.single('file'), (req, res) => {
+    if (!req.file) {
+        console.log("파일 업로드 실패: 요청에 파일이 없음.");
+        return res.status(400).send('File upload failed!\n');
+    }
+    console.log(`파일 업로드 성공: ${req.file.originalname} → ${req.file.path}`);
+    res.send('File uploaded successfully\n');  // JSON 대신 단순 텍스트 응답
 });
 
-// 파일 다운로드
-app.get('/uploads/:filename', (req, res) => {
-    const filePath = path.join(uploadDir, req.params.filename);
-    if (fs.existsSync(filePath)) {
-        res.download(filePath);
-    } else {
-        res.status(404).json({ error: '파일을 찾을 수 없습니다.' });
+// ✅ 업로드 파일 목록 조회
+app.get('/files', (req, res) => {
+  console.log("📄 [GET] /files 요청 수신");
+  fs.readdir(uploadDir, (err, files) => {
+    if (err) {
+      console.error("❌ 파일 목록 조회 에러:", err);
+      return res.status(500).json({ error: '파일 목록을 불러오는 중 오류 발생' });
     }
+    console.log("📄 업로드된 파일 목록:", files);
+    res.json({ files });
+  });
+});
+
+// ✅ 파일 다운로드
+app.get('/uploads/:filename', (req, res) => {
+  const filePath = path.join(uploadDir, req.params.filename);
+  console.log("📥 파일 다운로드 요청:", filePath);
+  if (fs.existsSync(filePath)) {
+    res.download(filePath);
+  } else {
+    console.warn("❌ 파일 존재하지 않음:", filePath);
+    res.status(404).json({ error: '파일을 찾을 수 없습니다.' });
+  }
 });
 
 // 라우트 등록

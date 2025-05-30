@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import withRouter from '../../hocs/withRouter';    
 import '../../css/wholeHeaderBar.css';
+import { clearCookies } from '../../api';
 
 import MenuBar from "./menuBar";
 import DeptHeadMenuBar from "./deptHeadMenuBar";
@@ -20,11 +21,23 @@ class WholeHeaderBar extends Component {
     };
 
       // 로그아웃 확인 후 동작
-    handleLogoutConfirmation = (confirm) => {
+    handleLogoutConfirmation = async (confirm) => {
         if (confirm) { // YES 클릭 시 로그인 페이지로 리디렉션
-            localStorage.removeItem('user'); // 로그아웃 시 localStorage에서 사용자 정보 삭제
-            localStorage.removeItem('token');
-            this.props.navigate('/');
+            try {
+                // 백엔드 로그아웃 API 호출
+                const success = await clearCookies(); // 서버에 쿠키 삭제 요청
+
+                if (!success) {
+                    alert('서버 쿠키 삭제 실패');
+                    return;
+                }
+                
+                localStorage.removeItem('user'); // 로컬 저장 정보 삭제
+                this.props.navigate('/'); // 로그인 페이지로 이동
+            } catch (error) {
+                console.error('로그아웃 실패:', error);
+                alert('로그아웃에 실패했습니다. 다시 시도해 주세요.');
+            }
         } else { // NO 클릭 시 모달을 닫음
             this.setState({ showLogoutModal: false });
         }

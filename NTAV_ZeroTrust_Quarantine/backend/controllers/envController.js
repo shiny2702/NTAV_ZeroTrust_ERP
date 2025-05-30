@@ -47,7 +47,6 @@ exports.generateDeviceToken = (req, res) => {
     }
 };*/
 
-require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const { verifyDevice } = require("../PolicyModule/deviceVerify");
 
@@ -68,9 +67,14 @@ exports.generateDeviceToken = (req, res) => {
       console.warn("⚠️ 필수 데이터 누락:", { osInfo, browserInfo, networkInfo });
       return res.status(400).json({ error: "필수 데이터가 누락되었습니다." });
     }
-
+    //  요청 IP 주소 추출
+    let clientIp = req.connection.remoteAddress;
+    if (clientIp.startsWith('::ffff:')) {
+      clientIp = clientIp.substring(7);
+    }
+    console.log("🌐 접속자 IP:", clientIp);
     console.log("🔍 디바이스 검증 함수 호출 전");
-    verifyDevice({ osInfo, browserInfo, networkInfo });
+    verifyDevice({ osInfo, browserInfo, networkInfo, clientIp});
     console.log("✅ 디바이스 검증 완료");
 
     const deviceHash = `${osInfo}-${browserInfo}-${Date.now()}`;
@@ -82,8 +86,8 @@ exports.generateDeviceToken = (req, res) => {
     // 쿠키 설정
     res.cookie("deviceToken", deviceToken, {
       httpOnly: true,
-      secure: true,           // HTTP 환경이므로 false
-      sameSite: "Strict",      // 개발 중이라면 'Lax'로 바꾸는 걸 추천
+      secure: true,        
+      sameSite: "Strict",     
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
     console.log("🍪 deviceToken 쿠키 설정 완료");

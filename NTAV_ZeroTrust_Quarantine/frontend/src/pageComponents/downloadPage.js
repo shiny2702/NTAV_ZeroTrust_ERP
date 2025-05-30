@@ -84,7 +84,10 @@ class DownloadPage extends Component {
           if (token) {
             console.log("✅ 보안 토큰 수신 완료:", token);
             clearInterval(this.state.pollingInterval);
-            this.setState({ pollingInterval: null });
+            this.setState({ pollingInterval: null }, () => {
+              // ERP 로그인 페이지로 이동
+              window.location.href = "https://ntav.project:4430/erp-frontend/";
+            });
           } else {
             console.warn("⚠️ 아직 보안 토큰 없음");
           }
@@ -107,7 +110,7 @@ class DownloadPage extends Component {
         let downloadUrl = "";
 
         if (fileName === "Windows") {
-          downloadUrl = "https://github.com/notry345/test/releases/download/test2/windows_scan.exe";
+          downloadUrl = "https://github.com/notry345/test/releases/download/test2/scan.exe";
         } else if (fileName === "macOS") {
           downloadUrl = "https://github.com/shiny2702/NTAV_ZeroTrust_ERP/blob/seunghee/exe_dev/dev_mac/mac_scan";
         } else if (fileName === "Linux") {

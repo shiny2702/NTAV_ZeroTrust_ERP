@@ -14,6 +14,8 @@ const roleRoutes = require('./routes/roleRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const orgRoutes = require('./routes/orgRoutes');
 const financeRoutes = require('./routes/financeRoutes');
+const tokenVerifyRoutes = require('./routes/tokenVerifyRoutes');
+const clearCookiesRoutes = require('./routes/clearCookiesRoutes');
 
 const app = express();
 
@@ -24,7 +26,7 @@ const options = {
 };
 
 const corsOptions = {
-  origin: 'https://ntav.project', // 프론트 도메인 (정확히 작성)
+  origin: 'https://ntav.project:4430', // 프론트 도메인 (정확히 작성)
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true, // 쿠키 포함 허용
@@ -39,6 +41,10 @@ app.use(cookieParser());
 
 app.use(express.json()); // bodyParser와 중복되지만, 유지 가능
 
+// 기본 GET 요청
+app.get('/', (req, res) => {
+    res.send('🚀 서버가 정상적으로 실행 중입니다.');
+});
 // 라우터 연결
 app.use('/api/auth', authRoutes);
 app.use('/api/employee', employeeRoutes);
@@ -46,6 +52,8 @@ app.use('/api/role', roleRoutes);
 app.use('/api/project', projectRoutes);
 app.use('/api/org', orgRoutes);
 app.use('/api/finance', financeRoutes);
+app.use('/api/tokenVerify', tokenVerifyRoutes);
+app.use('/api/clearCookies', clearCookiesRoutes);
 
 // 정적 파일 서비스 (PDF 다운로드용)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

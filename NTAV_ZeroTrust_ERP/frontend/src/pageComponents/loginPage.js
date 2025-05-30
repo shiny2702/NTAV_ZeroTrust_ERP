@@ -45,13 +45,12 @@ class LoginPage extends Component {
       const data = await login(username, password);
       console.log('Login success:', data);
 
-      // 로그인 응답에서 user와 token 추출
-      const { user, token } = data;
+      // 로그인 응답에서 user 추출
+      const { user } = data;
 
       // 로그인 성공 시 localStorage에 저장
-      if (user && token) {
+      if (user) {
         localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('token', token);
 
         sessionStorage.setItem("hasReloaded", "false");  // url접근 차단을 위한 code
         sessionStorage.setItem("fromApp", "true");

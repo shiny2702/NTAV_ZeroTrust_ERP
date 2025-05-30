@@ -119,19 +119,26 @@ exports.login = async (req, res) => {
     }
 
     // 7. 토큰 발급
-    const token = jwt.sign(
-      { id: account.employee_id, 
-        role: employee.roleInfo,
-        is_initial_password: account.is_initial_password, 
-        department: department,
-        team: team },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    const userPayload = {
+      id: account.employee_id,
+      role: employee.roleInfo,
+      is_initial_password: account.is_initial_password,
+      department: department,
+      team: team
+    };
+
+    const userToken = jwt.sign( userPayload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // 쿠키 설정
+    res.cookie("userToken", userToken, {
+      httpOnly: true,
+      secure: true,         
+      sameSite: "Strict",      
+      maxAge: 1 * 60 * 60 * 1000
+    });
 
     // 8. 응답
     res.json({
-      token,
       user: {
         employee_id: employee.employee_id,
         name: `${employee.last_name}${employee.first_name}`,
