@@ -71,6 +71,9 @@ bool uploadFile(const std::string& url, const std::string& filePath) {
     // cURL 옵션 설정
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_MIMEPOST, mime);
+
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);   // 서버 인증서 검증 OFF
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);   // 호스트 이름 확인 OFF
     curl_easy_setopt(curl, CURLOPT_SSL_OPTIONS, CURLSSLOPT_NO_REVOKE); 
 
     // 요청 수행
