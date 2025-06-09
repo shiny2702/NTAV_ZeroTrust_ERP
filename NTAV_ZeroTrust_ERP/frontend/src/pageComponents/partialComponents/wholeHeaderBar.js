@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import withRouter from '../../hocs/withRouter';    
 import '../../css/wholeHeaderBar.css';
-import { clearCookies } from '../../api';
+import { clearUserCookie } from '../../api';
 
 import MenuBar from "./menuBar";
 import DeptHeadMenuBar from "./deptHeadMenuBar";
@@ -25,7 +25,7 @@ class WholeHeaderBar extends Component {
         if (confirm) { // YES 클릭 시 로그인 페이지로 리디렉션
             try {
                 // 백엔드 로그아웃 API 호출
-                const success = await clearCookies(); // 서버에 쿠키 삭제 요청
+                const success = await clearUserCookie(); // 서버에 user 쿠키 삭제 요청
 
                 if (!success) {
                     alert('서버 쿠키 삭제 실패');

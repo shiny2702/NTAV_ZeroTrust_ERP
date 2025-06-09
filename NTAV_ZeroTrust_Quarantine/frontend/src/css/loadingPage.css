@@ -38,41 +38,39 @@
   }
   
   /* 로딩바 스타일 추가 */
-  .loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh; /* 화면 전체를 채움 */
-    background-color: #282c34;
-    font-size: calc(15px + 2vmin);
-    color: white;
-  }
-  
-  .progress-bar {
-    width: 80%; /* 로딩 바 너비 */
-    height: 10px; /* 로딩 바 높이 */
-    background: #444; /* 로딩 바 배경색 */
-    border-radius: 5px; /* 둥근 모서리 */
-    overflow: hidden; /* 넘치는 부분 숨기기 */
-    margin-bottom: 20px; /* 텍스트와의 간격 */
-  }
-  
-  .progress {
-    width: 50%; /* 초기 너비 */
-    height: 100%;
-    background: #61dafb; /* 진행 색상 */
-    animation: load 1.5s linear infinite; /* 부드러운 애니메이션 */
-  }
-  
-  @keyframes load {
-    from {
-      width: 0;
-    }
-    to {
-      width: 100%;
-    }
-  }
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #282c34;
+  font-size: calc(15px + 2vmin);
+  color: white;
+}
+
+.loading-container img {
+  max-width: 600px !important;
+  height: auto;
+  z-index: 1;
+}
+
+.progress-bar {
+  width: 80%;
+  height: 10px;
+  background: #444;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.progress {
+  height: 100%;
+  background: #61dafb;
+  transition: width 0.3s ease-in-out; /* 부드러운 변화 */
+}
+
   
   
     

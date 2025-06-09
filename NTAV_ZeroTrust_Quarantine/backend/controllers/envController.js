@@ -80,7 +80,7 @@ exports.generateDeviceToken = (req, res) => {
     const deviceHash = `${osInfo}-${browserInfo}-${Date.now()}`;
     console.log("🔑 deviceHash 생성:", deviceHash);
 
-    const deviceToken = jwt.sign({ deviceHash }, SECRET_KEY, { expiresIn: "7d" });
+    const deviceToken = jwt.sign({ deviceHash }, SECRET_KEY, { expiresIn: "1d" });
     console.log("🔑 deviceToken 생성 완료");
 
     // 쿠키 설정
@@ -88,7 +88,7 @@ exports.generateDeviceToken = (req, res) => {
       httpOnly: true,
       secure: true,        
       sameSite: "Strict",     
-      maxAge: 7 * 24 * 60 * 60 * 1000
+      maxAge: 24 * 60 * 60 * 1000
     });
     console.log("🍪 deviceToken 쿠키 설정 완료");
 

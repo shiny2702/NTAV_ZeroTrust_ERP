@@ -608,23 +608,26 @@ export const verifyTokens = async () => {
       credentials: 'include',
     });
 
-    if (res.status === 200) return true;
-    return false;
+    if (res.status === 200) return { valid: true };
+
+    const data = await res.json();
+    return { valid: false, reason: data.reason };
   } catch (error) {
     console.error("토큰 검증 요청 실패:", error);
-    return false;
+    return { valid: false, reason: 'network_error' };
   }
 };
 
-export const clearCookies = async () => {
+
+export const clearUserCookie = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingCookies`, {
+    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingUserCookie`, {
       method: 'POST',
       credentials: 'include',
     });
 
     if (res.ok) {
-      console.log('서버에서 쿠키 삭제 성공');
+      console.log('서버에서 user 쿠키 삭제 성공');
       return true;
     } else {
       const data = await res.json();
@@ -632,7 +635,51 @@ export const clearCookies = async () => {
       return false;
     }
   } catch (error) {
-    console.error('쿠키 삭제 요청 실패:', error);
+    console.error('user 쿠키 삭제 요청 실패:', error);
+    return false;
+  }
+};
+
+
+export const clearDeviceCookie = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingDeviceCookie`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      console.log('서버에서 device 쿠키 삭제 성공');
+      return true;
+    } else {
+      const data = await res.json();
+      console.error('서버 응답 실패:', data?.message || res.statusText);
+      return false;
+    }
+  } catch (error) {
+    console.error('device 쿠키 삭제 요청 실패:', error);
+    return false;
+  }
+};
+
+
+export const clearSecurityCookie = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingSecurityCookie`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (res.ok) {
+      console.log('서버에서 security 쿠키 삭제 성공');
+      return true;
+    } else {
+      const data = await res.json();
+      console.error('서버 응답 실패:', data?.message || res.statusText);
+      return false;
+    }
+  } catch (error) {
+    console.error('security 쿠키 삭제 요청 실패:', error);
     return false;
   }
 };

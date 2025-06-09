@@ -1,8 +1,12 @@
 const express = require('express');
-const { clearingCookies } = require('../controllers/clearCookiesController');
+const { clearingUserCookie, clearingDeviceCookie, clearingSecurityCookie } = require('../controllers/clearCookiesController');
 
 const router = express.Router();
 
-router.post('/clearingCookies', clearingCookies);
+router.post('/clearingUserCookie', clearingUserCookie);
+
+router.post('/clearingDeviceCookie', clearingDeviceCookie);
+
+router.post('/clearingSecurityCookie', clearingSecurityCookie);
 
 module.exports = router;

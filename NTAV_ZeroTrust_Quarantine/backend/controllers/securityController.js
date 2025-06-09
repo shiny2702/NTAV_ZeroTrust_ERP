@@ -85,7 +85,7 @@ exports.getSecurityStatus = (req, res) => {
           timestamp: Date.now()
         },
         SECRET_KEY,
-        { expiresIn: "7d" }
+        { expiresIn: "1d" }
       );
 
       console.log("✅ 보안 토큰 생성 완료");
@@ -95,7 +95,7 @@ exports.getSecurityStatus = (req, res) => {
         httpOnly: true,
         secure: true,        
         sameSite: "Strict",     
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 24 * 60 * 60 * 1000
       });
 
       console.log("🍪 securityToken 쿠키 설정 완료");
