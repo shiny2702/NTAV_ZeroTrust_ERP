@@ -32,7 +32,7 @@ exports.generateDeviceToken = (req, res) => {
         /*res.cookie("deviceDone", "true", {
             httpOnly: false, // 클라이언트에서도 접근 가능하게 설정 (보안 고려 필요)
             secure: true, // HTTPS에서만 전송되도록 설정
-            sameSite: "Strict", // CSRF 방지
+            sameSite: "Lax", // CSRF 방지
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7일간 유지
         });*/
 /*
@@ -87,7 +87,7 @@ exports.generateDeviceToken = (req, res) => {
     res.cookie("deviceToken", deviceToken, {
       httpOnly: true,
       secure: true,        
-      sameSite: "Strict",     
+      sameSite: "Lax",     
       maxAge: 24 * 60 * 60 * 1000
     });
     console.log("🍪 deviceToken 쿠키 설정 완료");

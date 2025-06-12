@@ -19,6 +19,6 @@ router.post('/deleteEmployeesFromProject', deleteEmployeesFromProject);
 router.post('/addibleEmployeesToProject', addibleEmployeesToProject);
 
 // 참여직원 추가
-router.post('/addEmployeesToProject', addEmployeesToProject);
+// router.post('/addEmployeesToProject', addEmployeesToProject);
 
 module.exports = router;

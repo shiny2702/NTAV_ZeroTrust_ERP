@@ -6,7 +6,7 @@ exports.clearingUserCookie = (req, res) => {  // 로그아웃 시 userToken 쿠�
     res.clearCookie('userToken', {
       httpOnly: true,
       secure: true,
-      sameSite: 'Strict',
+      sameSite: 'Lax',
     });
 
     return res.status(200).json({ message: 'userToken 쿠키 삭제 완료' });
@@ -22,7 +22,7 @@ exports.clearingDeviceCookie = (req, res) => {  // 로그아웃 시 userToken �
     res.clearCookie('deviceToken', {
       httpOnly: true,
       secure: true,
-      sameSite: 'Strict',
+      sameSite: 'Lax',
     });
 
     return res.status(200).json({ message: 'deviceToken 쿠키 삭제 완료' });
@@ -38,7 +38,7 @@ exports.clearingSecurityCookie = (req, res) => {  // 로그아웃 시 userToken 
     res.clearCookie('securityToken', {
       httpOnly: true,
       secure: true,
-      sameSite: 'Strict',
+      sameSite: 'Lax',
     });
 
     return res.status(200).json({ message: 'securityToken 쿠키 삭제 완료' });

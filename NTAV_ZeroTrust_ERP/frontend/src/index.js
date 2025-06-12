@@ -31,6 +31,11 @@ import ItDeptHeadInitialContentArea from './pageComponents/initialPageContentAre
 import PasswordResetPage from './pageComponents/passwordResetPage';
 import NoPermPage from './pageComponents/noPermPage';
 
+//mfa
+import MfaStartPage from './pageComponents/MfaStart';
+import MfaCallbackPage from './pageComponents/MfaCallback';
+import MfaCallbackFinalizePage from './pageComponents/MfaCallbackFinalize';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -119,6 +124,11 @@ root.render(
         } />
 
         <Route path="/noPerm" element={<NoPermPage />} />
+
+        {/* mfa */}
+        <Route path="/mfa/start" element={<MfaStartPage />} />
+        <Route path="/mfa/callback" element={<MfaCallbackPage />} />
+        <Route path="/mfa/callbackFinalize" element={<MfaCallbackFinalizePage />} />
 
       </Routes>
     </Router>

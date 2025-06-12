@@ -1,10 +1,11 @@
+import { fetchWithMfa } from './utils/fetchWithMfa';
 const BASE_URL = "https://ntav.project:4430/erp";
 
 export const login = async (username, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/login`, {
-    // const response = await fetch('http://222.110.177.89:8080/api/auth/login', {
-    // const response = await fetch('http://127.0.0.1:8080/api/auth/login', {
+    const response = await fetchWithMfa(`${BASE_URL}/api/auth/login`, {
+    // const response = await fetchWithMfa('http://222.110.177.89:8080/api/auth/login', {
+    // const response = await fetchWithMfa('http://127.0.0.1:8080/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
@@ -18,7 +19,7 @@ export const login = async (username, password) => {
 
 export const verifyPassword = async (userId, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/verify-password`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/auth/verify-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, password }),
@@ -36,7 +37,7 @@ export const verifyPassword = async (userId, password) => {
 
 export const updatePassword = async (userId, newPassword) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/update-password`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/auth/update-password`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, newPassword }),
@@ -54,7 +55,7 @@ export const updatePassword = async (userId, newPassword) => {
 // is_initial_password 값 업데이트 API 추가
 export const updateInitialPasswordStatus = async (userId) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/update-initial-password`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/auth/update-initial-password`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId }),
@@ -74,7 +75,7 @@ export const updateInitialPasswordStatus = async (userId) => {
 
 export const fetchEmployees = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/employee/employees`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/employee/employees`, {
       method: 'GET',
       credentials: 'include',
   });
@@ -87,7 +88,7 @@ export const fetchEmployees = async () => {
 
 export const fetchRegisterableEmployeeIds = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/employee/registerable`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/employee/registerable`, {
       method: 'GET',
       credentials: 'include',
   });
@@ -101,7 +102,7 @@ export const fetchRegisterableEmployeeIds = async () => {
 
 export const fetchEmployeeDetails = async (employeeId) => {
   try {
-    const res = await fetch(`${BASE_URL}/api/employee/details/${employeeId}`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/employee/details/${employeeId}`, {
       method: 'GET',
       credentials: 'include',
   });
@@ -115,7 +116,7 @@ export const fetchEmployeeDetails = async (employeeId) => {
 
 export const registerEmployee = async (employeeId) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/employee/employees`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/employee/employees`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ employee_id: employeeId }),
@@ -140,7 +141,7 @@ export const registerEmployee = async (employeeId) => {
 
 export const deleteSelectedEmployees = async (selectedEmployees) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/employee/employees`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/employee/employees`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: selectedEmployees }),
@@ -161,7 +162,7 @@ export const deleteSelectedEmployees = async (selectedEmployees) => {
 
 export const updateEmployee = async (data) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/employee/employees`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/employee/employees`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -193,7 +194,7 @@ export const updateEmployee = async (data) => {
 
 export const resetInitPassword = async (data) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/employee/reset-password`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/employee/reset-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -221,7 +222,7 @@ export const resetInitPassword = async (data) => {
 
 export const sendEmployeeEmail = async (employeeId, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/employee/send-email`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/employee/send-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -243,7 +244,7 @@ export const sendEmployeeEmail = async (employeeId, password) => {
 
 export const roleInfoWholeRegenerate = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/role/roleInfoWholeRegenerate`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/role/roleInfoWholeRegenerate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -265,7 +266,7 @@ export const roleInfoWholeRegenerate = async () => {
 
 // export const roleInfoRegenerate = async (employeeIdList) => {
 //   try {
-//     const response = await fetch(`${BASE_URL}/api/role/roleInfoRegenerate`, {
+//     const response = await fetchWithMfa(`${BASE_URL}/api/role/roleInfoRegenerate`, {
 //       method: "POST",
 //       headers: {
 //         "Content-Type": "application/json",
@@ -288,7 +289,7 @@ export const roleInfoWholeRegenerate = async () => {
 
 export const fetchProjects = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/project/projects`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/project/projects`, {
       method: 'GET',
       credentials: 'include',
   }); 
@@ -301,7 +302,7 @@ export const fetchProjects = async () => {
 // api.js
 export const updateProjectTitleSection = async (updatedData) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/project/updateProjectTitleSection`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/project/updateProjectTitleSection`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -323,7 +324,7 @@ export const updateProjectTitleSection = async (updatedData) => {
 
 export const updateProjectManager = async (updatedManagerData) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/project/updateProjectManager`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/project/updateProjectManager`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json' 
@@ -345,7 +346,7 @@ export const updateProjectManager = async (updatedManagerData) => {
 
 export const deleteEmployeesFromProject = async (payload) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/project/deleteEmployeesFromProject`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/project/deleteEmployeesFromProject`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -368,7 +369,7 @@ export const deleteEmployeesFromProject = async (payload) => {
 
 export const addibleEmployeesToProject = async (app_no, currentEmpIds) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/project/addibleEmployeesToProject`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/project/addibleEmployeesToProject`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ app_no, currentEmpIds }),
@@ -392,7 +393,7 @@ export const addibleEmployeesToProject = async (app_no, currentEmpIds) => {
 // 직원 목록 가져오기
 export const fetchEmployeeLists = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/employeeLists`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/org/employeeLists`, {
       method: 'GET',
       credentials: 'include', 
   });
@@ -407,7 +408,7 @@ export const fetchEmployeeLists = async () => {
 // 부서 목록 가져오기
 export const fetchDepartment = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/department`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/org/department`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -422,7 +423,7 @@ export const fetchDepartment = async () => {
 // 팀 목록 가져오기
 export const fetchTeam = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/team`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/org/team`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -437,7 +438,7 @@ export const fetchTeam = async () => {
 // 부서장 정보 가져오기
 export const fetchDeptHead = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/deptHead`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/org/deptHead`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -452,7 +453,7 @@ export const fetchDeptHead = async () => {
 // 팀장 정보 가져오기
 export const fetchTeamHead = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/teamHead`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/org/teamHead`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -467,7 +468,7 @@ export const fetchTeamHead = async () => {
 // 직원 상세 정보 가져오기
 export const fetchEmployeeDetail = async (employeeId) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/employeeDetail`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/org/employeeDetail`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ employeeId }),
@@ -488,10 +489,16 @@ export const fetchEmployeeDetail = async (employeeId) => {
 // 직원 정보 업데이트
 export const updateEmployeeDetail = async ({ id, dept_name, team_name, status }) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/org/updateEmployeeDetail`, {
+    const response = await fetchWithMfa(`${BASE_URL}/api/org/updateEmployeeDetail`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, dept_name, team_name, status }),
+      body: JSON.stringify({
+        id,
+        dept_name,
+        team_name,
+        status,
+        table: ["employee", "dept_emp", "team_emp"], // 테이블명 배열 추가
+      }),
       credentials: 'include',
     });
     const result = await response.json();
@@ -509,7 +516,7 @@ export const updateEmployeeDetail = async ({ id, dept_name, team_name, status })
 
 export const fetchSummary = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/summary`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/finance/summary`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -522,7 +529,7 @@ export const fetchSummary = async () => {
 
 export const fetchProfitLoss = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/profit-loss`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/finance/profit-loss`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -535,7 +542,7 @@ export const fetchProfitLoss = async () => {
 
 export const fetchYearlyComparison = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/yearly-profit-comparison`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/finance/yearly-profit-comparison`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -548,7 +555,7 @@ export const fetchYearlyComparison = async () => {
 
 export const fetchBudgetActual = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/budget-actual`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/finance/budget-actual`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -561,7 +568,7 @@ export const fetchBudgetActual = async () => {
 
 export const fetchDepartmentComparison = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/department-comparison`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/finance/department-comparison`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -576,7 +583,7 @@ export const uploadPDF = async (file) => {
   try {
     const formData = new FormData();
     formData.append("file", file);
-    const res = await fetch(`${BASE_URL}/api/finance/upload-pdf`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/finance/upload-pdf`, {
       method: "POST",
       body: formData,
       credentials: 'include',
@@ -590,7 +597,7 @@ export const uploadPDF = async (file) => {
 
 export const fetchPDFList = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/finance/pdf-list`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/finance/pdf-list`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -603,7 +610,7 @@ export const fetchPDFList = async () => {
 
 export const verifyTokens = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/tokenVerify/verifyTokens`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/tokenVerify/verifyTokens`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -621,7 +628,7 @@ export const verifyTokens = async () => {
 
 export const clearUserCookie = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingUserCookie`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/clearCookies/clearingUserCookie`, {
       method: 'POST',
       credentials: 'include',
     });
@@ -643,7 +650,7 @@ export const clearUserCookie = async () => {
 
 export const clearDeviceCookie = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingDeviceCookie`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/clearCookies/clearingDeviceCookie`, {
       method: 'POST',
       credentials: 'include',
     });
@@ -665,7 +672,7 @@ export const clearDeviceCookie = async () => {
 
 export const clearSecurityCookie = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingSecurityCookie`, {
+    const res = await fetchWithMfa(`${BASE_URL}/api/clearCookies/clearingSecurityCookie`, {
       method: 'POST',
       credentials: 'include',
     });
@@ -681,6 +688,52 @@ export const clearSecurityCookie = async () => {
   } catch (error) {
     console.error('security 쿠키 삭제 요청 실패:', error);
     return false;
+  }
+};
+
+
+export const verifyMfaToken = async (idToken) => {
+  try {
+    const res = await fetchWithMfa(`${BASE_URL}/api/auth/mfa/verify`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id_token: idToken }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || 'Id Token 인증 실패');
+    }
+
+    const data = await res.json();
+    return data.email; //여기서 email 반환
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const finalizeMfaAndIssueNewUserToken = async (email) => {
+  try {
+    const res = await fetchWithMfa(`${BASE_URL}/api/auth/mfa/finalize`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: email }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || 'MFA 인증 및 userToken 발급 실패');
+    }
+
+    return true;
+  } catch (error) {
+    throw error;
   }
 };
 

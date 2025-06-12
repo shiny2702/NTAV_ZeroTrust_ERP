@@ -56,6 +56,11 @@ import ITOperatingCostPage from "./pageComponents/smallApplicationPage/itManagem
 import AccountManagementPage from "./pageComponents/smallApplicationPage/itManagement/ERPManagement/accountManagementPage";
 import ApplicationDependencyConfigurationPage from "./pageComponents/smallApplicationPage/itManagement/ERPManagement/applicationDependencyConfigurationPage";
 
+import MfaStartPage from "./pageComponents/MfaStart";
+import MfaCallbackPage from "./pageComponents/MfaCallback";
+import MfaCallbackFinalizePage from "./pageComponents/MfaCallbackFinalize";
+
+
 // 👉 menuRoutes
 export const menuRoutes = [
   { path: "businessTarget", element: <BusinessTargetPage /> },
@@ -114,4 +119,12 @@ export const itMenuRoutes = [
   { path: "itOperatingCost", element: <ITOperatingCostPage /> },
   { path: "accountManagement", element: <AccountManagementPage /> },
   { path: "applicationDependencyConfiguration", element: <ApplicationDependencyConfigurationPage /> },
+];
+
+
+// 👉 MFA 관련 페이지 import
+export const mfaRoutes = [
+  { path: "/mfa/start", element: <MfaStartPage /> },
+  { path: "/mfa/callback", element: <MfaCallbackPage /> },
+  { path: "/mfa/callbackFinalize", element: <MfaCallbackFinalizePage /> },
 ];

@@ -124,7 +124,8 @@ exports.login = async (req, res) => {
       role: employee.roleInfo,
       is_initial_password: account.is_initial_password,
       department: department,
-      team: team
+      team: team,
+      mfa_verified: false, // MFA 상태는 기본적으로 false로 설정
     };
 
     const userToken = jwt.sign( userPayload, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -133,7 +134,7 @@ exports.login = async (req, res) => {
     res.cookie("userToken", userToken, {
       httpOnly: true,
       secure: true,         
-      sameSite: "Strict",      
+      sameSite: "Lax",      
       maxAge: 1 * 60 * 60 * 1000
     });
 
@@ -236,5 +237,96 @@ exports.updateInitialPasswordStatus = async (req, res) => {
 
 
 
+// MFA 
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+exports.verifyGoogleMfa = async (req, res) => {
+  const { id_token } = req.body;
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: id_token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const email = payload.email;
+
+    if (!payload.email_verified) {
+      return res.status(401).json({ message: 'Google MFA 인증 실패' });
+    }
+
+    res.status(200).json({ email });
+  } catch (err) {
+    console.error('Google MFA 인증 오류:', err);
+    res.status(500).json({ message: '서버 오류로 MFA 인증 실패' });
+  }
+};
+
+exports.finalizeMfaAndIssueNewUserToken = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const [userResult] = await db.query(
+      'SELECT employee_id, roleInfo FROM employee WHERE email = ?',
+      [email]
+    );
+
+    if (userResult.length === 0) {
+      return res.status(404).json({ message: '사내 사용자 없음' });
+    }
+
+    const user = userResult[0];
+
+    const [accountResult] = await db.query(
+      'SELECT is_initial_password FROM account WHERE employee_id = ?',
+      [user.employee_id]
+    );
+    const account = accountResult[0] || { is_initial_password: false };
+
+    const [deptResult] = await db.query(
+      `SELECT d.dept_no, d.dept_name, de.is_manager
+       FROM dept_emp de
+       JOIN department d ON de.dept_no = d.dept_no
+       WHERE de.employee_id = ? AND de.is_active = 1`,
+      [user.employee_id]
+    );
+    const department = deptResult[0] || null;
+
+    const [teamResult] = await db.query(
+      `SELECT t.team_no, t.team_name, te.is_manager
+       FROM team_emp te
+       JOIN team t ON te.team_no = t.team_no
+       WHERE te.employee_id = ? AND te.is_active = 1`,
+      [user.employee_id]
+    );
+    const team = teamResult[0] || null;
+
+    const newToken = jwt.sign(
+      {
+        id: user.employee_id,
+        role: user.roleInfo,
+        is_initial_password: account.is_initial_password,
+        department,
+        team,
+        mfa_verified: true,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.cookie('userToken', newToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Lax',
+      maxAge: 1 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({ message: 'MFA 완료' });
+  } catch (err) {
+    console.error('MFA 완료 처리 오류:', err);
+    res.status(500).json({ message: 'MFA 최종 처리 실패' });
+  }
+};
 

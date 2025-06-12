@@ -43,7 +43,7 @@ class LoginPage extends Component {
     try {
       // 로그인 API 호출
       const data = await login(username, password);
-      console.log('Login success:', data);
+      console.log('Login success:', data.message);
 
       // 로그인 응답에서 user 추출
       const { user } = data;

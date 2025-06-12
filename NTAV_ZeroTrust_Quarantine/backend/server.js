@@ -19,12 +19,23 @@ const options = {
   cert: fs.readFileSync(path.join(__dirname, 'ssl', '192.168.100.52.pem')) // 인증서 파일 경로
 };
 
-// ✅ CORS 설정 (자격 증명 허용)
+const allowedOrigins = [
+  'https://ntav.project:4430',
+  process.env.NGROK_BASE_URL,
+];
+
 const corsOptions = {
-  origin: 'https://ntav.project:4430',   
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Postman, curl 같은 도구를 위한 예외 처리
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true                      // 쿠키/세션 전송 허용
+  credentials: true, // 쿠키 포함 허용
 };
 
 app.use(cors(corsOptions));

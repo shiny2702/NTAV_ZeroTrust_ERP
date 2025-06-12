@@ -17,6 +17,9 @@ const financeRoutes = require('./routes/financeRoutes');
 const tokenVerifyRoutes = require('./routes/tokenVerifyRoutes');
 const clearCookiesRoutes = require('./routes/clearCookiesRoutes');
 
+const authenticate = require('./middleware/authenticate');
+const writeCheckWithMfa = require('./middleware/writeCheckWithMfa');
+
 const app = express();
 
 // SSL 인증서 로딩
@@ -25,8 +28,20 @@ const options = {
   cert: fs.readFileSync(path.join(__dirname, 'ssl', 'cert.pem')) // 인증서 파일 경로
 };
 
+const allowedOrigins = [
+  'https://ntav.project:4430',
+  process.env.NGROK_BASE_URL,
+];
+
 const corsOptions = {
-  origin: 'https://ntav.project:4430', // 프론트 도메인 (정확히 작성)
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Postman, curl 같은 도구를 위한 예외 처리
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true, // 쿠키 포함 허용
@@ -41,10 +56,20 @@ app.use(cookieParser());
 
 app.use(express.json()); // bodyParser와 중복되지만, 유지 가능
 
+// JWT 인증 미들웨어 적용
+app.use(authenticate); // 모든 API에 인증 미들웨어 적용 
+// MFA 미들웨어 - write 요청에 대해서만 적용
+app.use(writeCheckWithMfa); // 모든 write요청 중 민감한 DB 접근시 MFA 체크  
+
+
+// 정적 파일 서비스 (PDF 다운로드용)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // 기본 GET 요청
 app.get('/', (req, res) => {
     res.send('🚀 서버가 정상적으로 실행 중입니다.');
 });
+
 // 라우터 연결
 app.use('/api/auth', authRoutes);
 app.use('/api/employee', employeeRoutes);
@@ -55,8 +80,6 @@ app.use('/api/finance', financeRoutes);
 app.use('/api/tokenVerify', tokenVerifyRoutes);
 app.use('/api/clearCookies', clearCookiesRoutes);
 
-// 정적 파일 서비스 (PDF 다운로드용)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 서버 실행
 const PORT = process.env.PORT || 5000;
