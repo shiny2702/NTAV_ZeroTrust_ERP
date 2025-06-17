@@ -16,7 +16,13 @@ export default function SecureRoute({ children }) {
       }
 
       const reasons = result.reasons || {};
+      console.log('[SecureRoute] Token verification failed:', reasons);
+      
       const { deviceToken, securityToken, userToken } = reasons;
+
+      console.log('[SecureRoute] Token status - deviceToken:', deviceToken);
+      console.log('[SecureRoute] Token status - securityToken:', securityToken);
+      console.log('[SecureRoute] Token status - userToken:', userToken);
 
       // 1. invalid or error 처리 → 모든 쿠키 삭제 + noPerm 이동
       const hasCriticalError =

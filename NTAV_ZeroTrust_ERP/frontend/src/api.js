@@ -610,7 +610,7 @@ export const fetchPDFList = async () => {
 
 export const verifyTokens = async () => {
   try {
-    const res = await fetchWithMfa(`${BASE_URL}/api/tokenVerify/verifyTokens`, {
+    const res = await fetch(`${BASE_URL}/api/tokenVerify/verifyTokens`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -618,17 +618,17 @@ export const verifyTokens = async () => {
     if (res.status === 200) return { valid: true };
 
     const data = await res.json();
-    return { valid: false, reason: data.reason };
+    return { valid: false, reasons: data.reasons };
   } catch (error) {
     console.error("토큰 검증 요청 실패:", error);
-    return { valid: false, reason: 'network_error' };
+    return { valid: false, reasons: 'network_error' };
   }
 };
 
 
 export const clearUserCookie = async () => {
   try {
-    const res = await fetchWithMfa(`${BASE_URL}/api/clearCookies/clearingUserCookie`, {
+    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingUserCookie`, {
       method: 'POST',
       credentials: 'include',
     });
@@ -650,7 +650,7 @@ export const clearUserCookie = async () => {
 
 export const clearDeviceCookie = async () => {
   try {
-    const res = await fetchWithMfa(`${BASE_URL}/api/clearCookies/clearingDeviceCookie`, {
+    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingDeviceCookie`, {
       method: 'POST',
       credentials: 'include',
     });
@@ -672,7 +672,7 @@ export const clearDeviceCookie = async () => {
 
 export const clearSecurityCookie = async () => {
   try {
-    const res = await fetchWithMfa(`${BASE_URL}/api/clearCookies/clearingSecurityCookie`, {
+    const res = await fetch(`${BASE_URL}/api/clearCookies/clearingSecurityCookie`, {
       method: 'POST',
       credentials: 'include',
     });

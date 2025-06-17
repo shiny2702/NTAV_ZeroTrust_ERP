@@ -20,20 +20,34 @@ exports.verifyTokens = (req, res) => {
   };
 
   // 쿠키 존재 여부 확인
-  if (!deviceToken) results.deviceToken = 'missing';
-  if (!securityToken) results.securityToken = 'missing';
-  if (!userToken) results.userToken = 'missing';
+  if (!deviceToken) {
+    results.deviceToken = 'missing';
+    console.log('[Token Status] deviceToken: missing');
+  }
+  if (!securityToken) {
+    results.securityToken = 'missing';
+    console.log('[Token Status] securityToken: missing');
+  }
+  if (!userToken) {
+    results.userToken = 'missing';
+    console.log('[Token Status] userToken: missing');
+  }
 
   // 존재하는 경우만 유효성 검사
   if (deviceToken) {
     try {
       jwt.verify(deviceToken, SECRET_KEY_QUARANTINE);
       results.deviceToken = 'valid';
+      console.log('[Token Status] deviceToken: valid');
     } catch (err) {
-      results.deviceToken =
-        err.name === 'TokenExpiredError' ? 'expired' :
-        err.name === 'JsonWebTokenError' ? 'invalid' :
-        'error';
+      if (err.name === 'TokenExpiredError') {
+        results.deviceToken = 'expired';
+      } else if (err.name === 'JsonWebTokenError') {
+        results.deviceToken = 'invalid';
+      } else {
+        results.deviceToken = 'error';
+      }
+      console.log(`[Token Status] deviceToken: ${results.deviceToken}`);
     }
   }
 
@@ -41,11 +55,16 @@ exports.verifyTokens = (req, res) => {
     try {
       jwt.verify(securityToken, SECRET_KEY_QUARANTINE);
       results.securityToken = 'valid';
+      console.log('[Token Status] securityToken: valid');
     } catch (err) {
-      results.securityToken =
-        err.name === 'TokenExpiredError' ? 'expired' :
-        err.name === 'JsonWebTokenError' ? 'invalid' :
-        'error';
+      if (err.name === 'TokenExpiredError') {
+        results.securityToken = 'expired';
+      } else if (err.name === 'JsonWebTokenError') {
+        results.securityToken = 'invalid';
+      } else {
+        results.securityToken = 'error';
+      }
+      console.log(`[Token Status] securityToken: ${results.securityToken}`);
     }
   }
 
@@ -53,11 +72,16 @@ exports.verifyTokens = (req, res) => {
     try {
       jwt.verify(userToken, SECRET_KEY_ERP);
       results.userToken = 'valid';
+      console.log('[Token Status] userToken: valid');
     } catch (err) {
-      results.userToken =
-        err.name === 'TokenExpiredError' ? 'expired' :
-        err.name === 'JsonWebTokenError' ? 'invalid' :
-        'error';
+      if (err.name === 'TokenExpiredError') {
+        results.userToken = 'expired';
+      } else if (err.name === 'JsonWebTokenError') {
+        results.userToken = 'invalid';
+      } else {
+        results.userToken = 'error';
+      }
+      console.log(`[Token Status] userToken: ${results.userToken}`);
     }
   }
 
@@ -70,4 +94,5 @@ exports.verifyTokens = (req, res) => {
     return res.status(401).json({ valid: false, reasons: results });
   }
 };
+
 
